@@ -1,0 +1,34 @@
+name: industry-research-assistant
+version: 1.0.0
+description: 基于「产业研究方法论」的时间轴驱动产业深度研究助手
+
+modules:
+  core:
+    - timeline
+    - task_decomposer
+    - data_collector
+    - validator
+    - analyzer
+    - report_generator
+
+config:
+  search_budget_per_task: 5
+  min_validation_sources: 2
+  max_timeline_past_years: 5
+  max_timeline_future_years: 2
+  chapter_min_events: 3
+  freshness_thresholds:
+    realtime_hours: 1
+    recent_hours: 24
+    stale_days: 7
+  analysis_frameworks:
+    - PEST
+    - SWOT
+    - scenario_analysis
+    - porters_five_forces
+  source_reliability_levels:
+    5: "官方数据"
+    4: "专业机构"
+    3: "权威媒体"
+    2: "一般来源"
+    1: "需要验证"
