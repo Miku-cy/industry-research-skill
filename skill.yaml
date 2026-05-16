@@ -2,7 +2,24 @@ name: chronovisor
 display_name: "ChronoVisor · 时轴之眼"
 version: 1.0.0
 description: 时间轴驱动的深度研究智能引擎 —— 像看纪录片一样做研究
-
+author:
+  name: Miku-cy
+  email: ""
+  url: https://github.com/Miku-cy
+repository:
+  type: github
+  url: https://github.com/Miku-cy/industry-research-skill
+homepage: https://github.com/Miku-cy/industry-research-skill
+keywords:
+  - time-axis
+  - research
+  - intelligence
+  - causal-chain
+  - timeline
+  - analysis
+  - deep-research
+  - knowledge-management
+license: MIT
 modules:
   core:
     - timeline
@@ -10,6 +27,7 @@ modules:
     - data_collector
     - validator
     - analyzer
+    - semantic
     - report_generator
 
 config:
