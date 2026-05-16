@@ -1,6 +1,7 @@
-name: industry-research-assistant
+name: chronovisor
+display_name: "ChronoVisor · 时轴之眼"
 version: 1.0.0
-description: 基于「产业研究方法论」的时间轴驱动产业深度研究助手
+description: 时间轴驱动的深度研究智能引擎 —— 像看纪录片一样做研究
 
 modules:
   core:
