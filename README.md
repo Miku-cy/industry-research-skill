@@ -3,7 +3,13 @@
 </p>
 
 <p align="center">
-  <h1 align="center">⏳ ChronoVisor · 时轴之眼</h1>
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)
+![Python](https://img.shields.io/badge/python-3.8+-yellow?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+![Framework](https://img.shields.io/badge/framework-Time--Axis-orange?style=flat-square)
+
+<h1 align="center">⏳ ChronoVisor · 时轴之眼</h1>
   <p align="center"><strong>时间轴驱动的深度研究智能引擎</strong></p>
   <p align="center">
     <em>不再堆砌数据。像看电影一样，让知识在时间轴上展开。</em>
@@ -262,19 +268,24 @@ print(report.to_markdown())
 ```
 chronovisor/
 ├── skill.yaml                  # 配置文件
+├── skill.md                    # 使用文档
 ├── README.md                   # 你在这里（中文默认）
 ├── README_EN.md                # English
+├── CHANGELOG.md                # 变更记录
+├── CONTRIBUTING.md             # 贡献指南
 ├── src/
-│   ├── core/
-│   │   ├── timeline.py         # 🎬 时间轴引擎
-│   │   ├── task_decomposer.py  # 任务拆解器
-│   │   ├── data_collector.py   # 时间标记数据收集器
-│   │   ├── validator.py        # 实时新鲜度验证器
-│   │   ├── analyzer.py         # PEST/SWOT/因果链引擎
-│   │   └── report_generator.py # 报告生成器
-│   ├── prompts/                # LLM 提示模板
-│   └── templates/              # 输出模板
-└── examples/                   # 使用示例
+│   ├── __init__.py
+│   └── core/
+│       ├── __init__.py
+│       ├── timeline.py         # 🎬 时间轴引擎
+│       ├── task_decomposer.py  # 任务拆解器
+│       ├── data_collector.py   # 时间标记数据收集器
+│       ├── validator.py         # 实时新鲜度验证器
+│       ├── analyzer.py          # PEST/SWOT/因果链引擎
+│       ├── semantic.py          # 语义分类增强层
+│       └── report_generator.py  # 报告生成器
+└── tests/
+    └── test_timeline.py        # 基础测试
 ```
 
 ---
