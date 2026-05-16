@@ -3,7 +3,13 @@
 </p>
 
 <p align="center">
-  <h1 align="center">⏳ ChronoVisor</h1>
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)
+![Python](https://img.shields.io/badge/python-3.8+-yellow?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+![Framework](https://img.shields.io/badge/framework-Time--Axis-orange?style=flat-square)
+
+<h1 align="center">⏳ ChronoVisor</h1>
   <p align="center"><strong>Time-Axis Intelligence for Deep Research</strong></p>
   <p align="center">
     <em>Stop stacking data. Start watching knowledge unfold like a film.</em>
@@ -189,23 +195,23 @@ ChronoVisor's time-axis paradigm unlocks capabilities far beyond its current imp
                     │    ChronoVisor Core   │
                     │  ┌─────────────────┐  │
                     │  │ Task Decomposer │  │
-                    │  │ Data Collector  │  │
+                    │  │ Data Collector │  │
                     │  │ Freshness Valid.│  │
-                    │  │ Analyzer Engine │  │
+                    │  │ Analyzer Engine│  │
                     │  │ Report Generator│  │
                     │  └────────┬────────┘  │
                     └───────────┼───────────┘
                                 │
               ┌─────────────────┼─────────────────┐
               │     Analysis Frameworks           │
-              │  PEST │ SWOT │ Scenario │ Custom  │
+              │  PEST │ SWOT │ Scenario │ Custom    │
               └─────────────────┼─────────────────┘
                                 │
               ┌─────────────────┴─────────────────┐
               │       TIME AXIS FOUNDATION        │
               │  ┌─────────────────────────────┐  │
               │  │ 🎬 Knowledge Video Player   │  │
-              │  │ [Ch1] [Ch2] [Ch3] [Ch4]     │  │
+              │  │ [Ch1] [Ch2] [Ch3] [Ch4]   │  │
               │  │ ●────●────●────●────●        │  │
               │  │ ⏮ ⏪ ⏸ ⏩ ⏭                  │  │
               │  └─────────────────────────────┘  │
@@ -262,19 +268,24 @@ print(report.to_markdown())
 ```
 chronovisor/
 ├── skill.yaml                  # Configuration
+├── skill.md                    # Usage documentation
 ├── README.md                   # 中文默认 (Chinese default)
-├── README_EN.md                # English
+├── README_EN.md                # English (You are here)
+├── CHANGELOG.md               # Changelog
+├── CONTRIBUTING.md             # Contributing guidelines
 ├── src/
-│   ├── core/
-│   │   ├── timeline.py         # 🎬 Time axis engine
-│   │   ├── task_decomposer.py  # Task decomposition
-│   │   ├── data_collector.py   # Timestamped data collection
-│   │   ├── validator.py        # Real-time freshness validation
-│   │   ├── analyzer.py         # PEST/SWOT/Causal chain engine
-│   │   └── report_generator.py # Report generation
-│   ├── prompts/                # LLM prompt templates
-│   └── templates/              # Output templates
-└── examples/                   # Usage examples
+│   ├── __init__.py
+│   └── core/
+│       ├── __init__.py
+│       ├── timeline.py         # 🎬 Time axis engine
+│       ├── task_decomposer.py  # Task decomposition
+│       ├── data_collector.py   # Timestamped data collection
+│       ├── validator.py        # Real-time freshness validation
+│       ├── analyzer.py         # PEST/SWOT/Causal chain engine
+│       ├── semantic.py         # Semantic classification layer
+│       └── report_generator.py # Report generation
+└── tests/
+    └── test_timeline.py        # Basic tests
 ```
 
 ---
