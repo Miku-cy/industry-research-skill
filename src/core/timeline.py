@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Callable
 from enum import Enum
 import uuid
-import copy
 
 
 class TimeType(Enum):
@@ -68,7 +67,7 @@ class Chapter:
     def duration_label(self) -> str:
         start = self.start_time.strftime("%Y-%m")
         end = self.end_time.strftime("%Y-%m")
-        return f"{start} → {end}"
+        return f"{start} -> {end}"
 
 
 @dataclass
@@ -410,56 +409,91 @@ class TimelineBase:
 
 
 class ChapterDetector:
+    LARGE_GAP_DAYS = 180
+    MIN_GAP_DAYS = 60
+
     def __init__(self, timeline: Timeline):
         self.timeline = timeline
 
     def detect(self, min_events: int = 3) -> List[Chapter]:
         events = self.timeline.get_all_events()
-        if len(events) < min_events * 2:
+        if len(events) < 3:
             return []
 
-        inflection_points = self._find_inflection_points(events)
-        return self._build_chapters(events, inflection_points)
+        raw_boundaries = self._find_time_gaps(events)
+        raw_chapters = self._build_raw_chapters(events, raw_boundaries)
+        merged = self._merge_small_chapters(raw_chapters, min_events)
+        chapters = self._finalize_chapters(merged)
+        return chapters
 
-    def _find_inflection_points(self, events: List[TimelineEvent]) -> List[TimelineEvent]:
-        inflection_points = [events[0]]
-        for i in range(1, len(events) - 1):
-            prev = events[i - 1]
-            curr = events[i]
-            if self._is_inflection(prev, curr):
-                inflection_points.append(curr)
-        inflection_points.append(events[-1])
-        return inflection_points
+    def _find_time_gaps(self, events: List[TimelineEvent]) -> List[int]:
+        boundaries = [0]
+        for i in range(1, len(events)):
+            gap_days = (events[i].timestamp - events[i - 1].timestamp).days
+            if gap_days > self.LARGE_GAP_DAYS:
+                boundaries.append(i)
+            elif gap_days > self.MIN_GAP_DAYS and self._is_semantic_shift(
+                events[i - 1], events[i]
+            ):
+                boundaries.append(i)
+        boundaries.append(len(events))
+        return boundaries
 
-    def _is_inflection(self, prev: TimelineEvent, curr: TimelineEvent) -> bool:
-        gap = curr.timestamp - prev.timestamp
-        if gap > timedelta(days=180):
-            return True
-        prev_tags = set(prev.tags)
-        curr_tags = set(curr.tags)
-        if prev_tags and curr_tags and not prev_tags.intersection(curr_tags):
-            return True
+    def _is_semantic_shift(self, prev: TimelineEvent, curr: TimelineEvent) -> bool:
         if curr.time_type == TimeType.PREDICTED and prev.time_type != TimeType.PREDICTED:
             return True
+        prev_text = (prev.summary or "") + " " + " ".join(prev.tags)
+        curr_text = (curr.summary or "") + " " + " ".join(curr.tags)
+        negation_keywords = ["停止", "取消", "逆转", "收紧", "放开", "转向", "重启"]
+        for kw in negation_keywords:
+            if kw in curr_text and kw not in prev_text:
+                return True
         return False
 
-    def _build_chapters(
-        self, events: List[TimelineEvent], inflection_points: List[TimelineEvent]
-    ) -> List[Chapter]:
+    def _build_raw_chapters(
+        self, events: List[TimelineEvent], boundaries: List[int]
+    ) -> List[List[TimelineEvent]]:
         chapters = []
-        for i in range(len(inflection_points) - 1):
-            start = inflection_points[i]
-            end = inflection_points[i + 1]
-            chapter_events = self.timeline.get_events_between(start.timestamp, end.timestamp)
-            if len(chapter_events) < 2:
-                continue
+        for i in range(len(boundaries) - 1):
+            start_idx = boundaries[i]
+            end_idx = boundaries[i + 1]
+            chapter_events = events[start_idx:end_idx]
+            if chapter_events:
+                chapters.append(chapter_events)
+        return chapters
+
+    def _merge_small_chapters(
+        self, raw_chapters: List[List[TimelineEvent]], min_events: int
+    ) -> List[List[TimelineEvent]]:
+        if not raw_chapters:
+            return raw_chapters
+        merged = []
+        buffer = []
+        for ch in raw_chapters:
+            buffer.extend(ch)
+            if len(buffer) >= min_events:
+                merged.append(buffer)
+                buffer = []
+        if buffer:
+            if merged:
+                merged[-1].extend(buffer)
+            else:
+                merged.append(buffer)
+        return merged
+
+    def _finalize_chapters(self, event_groups: List[List[TimelineEvent]]) -> List[Chapter]:
+        chapters = []
+        for i, group in enumerate(event_groups):
+            group.sort(key=lambda e: e.timestamp)
+            start_time = group[0].timestamp
+            end_time = group[-1].timestamp
             chapter = Chapter(
-                title=self._generate_title(chapter_events, i),
-                start_time=start.timestamp,
-                end_time=end.timestamp,
-                summary=self._generate_summary(chapter_events),
-                tags=self._extract_tags(chapter_events),
-                event_ids=[e.id for e in chapter_events],
+                title=self._generate_title(group, i),
+                start_time=start_time,
+                end_time=end_time,
+                summary=self._generate_summary(group),
+                tags=self._extract_tags(group),
+                event_ids=[e.id for e in group],
             )
             chapters.append(chapter)
             self.timeline.add_chapter(chapter)
@@ -473,7 +507,7 @@ class ChapterDetector:
             primary_tag = "发展阶段"
         start = events[0].timestamp.strftime("%Y-%m")
         end = events[-1].timestamp.strftime("%Y-%m")
-        return f"第{index + 1}章：{primary_tag} ({start} → {end})"
+        return f"第{index + 1}章：{primary_tag} ({start} -> {end})"
 
     def _generate_summary(self, events: List[TimelineEvent]) -> str:
         summaries = [e.summary for e in events if e.summary]
