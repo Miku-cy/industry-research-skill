@@ -1,36 +1,40 @@
+<p align="right">
+  <a href="README_EN.md">English</a> | 中文
+</p>
+
 <p align="center">
-  <h1 align="center">⏳ ChronoVisor</h1>
-  <p align="center"><strong>Time-Axis Intelligence for Deep Research</strong></p>
+  <h1 align="center">⏳ ChronoVisor · 时轴之眼</h1>
+  <p align="center"><strong>时间轴驱动的深度研究智能引擎</strong></p>
   <p align="center">
-    <em>Stop stacking data. Start watching knowledge unfold like a film.</em>
+    <em>不再堆砌数据。像看电影一样，让知识在时间轴上展开。</em>
   </p>
 </p>
 
 ---
 
-## 💡 The Problem
+## 💡 一个被忽视的致命缺陷
 
-Traditional research is a pile of disconnected facts. You collect data, write analysis, draw conclusions — but when was that data actually valid? Did event A really cause event B, or did you reverse the timeline? How do you prove your reasoning is temporally sound?
+传统研究是什么？一堆互相割裂的事实堆在一起。你收集数据、写分析、下结论——但这些数据是什么时候生效的？事件 A 真的导致了事件 B，还是你把因果顺序搞反了？你的推理在时间上站得住脚吗？
 
-**Every research paper, every investment memo, every industry report has a hidden fatal flaw: no one validates the arrow of time.**
+**每一份研究报告、每一篇投资备忘录、每一份行业分析，都有一个隐藏的致命缺陷：没人验证时间的箭头。**
 
 ---
 
-## 🎬 What Makes ChronoVisor Different
+## 🎬 ChronoVisor 做了什么不同的事
 
-ChronoVisor introduces a radical paradigm: **treat research as a knowledge documentary film**.
+ChronoVisor 引入了一个彻底的范式转换：**把研究当作一部知识纪录片**。
 
-Instead of a static document, your research becomes a **time-axis driven, navigable, replayable narrative** — where every data point has a precise timestamp, every causal claim is chronologically verified, and every conclusion can be traced back to its moment of origin.
+你的研究不再是一份静态文档，而是一个**时间轴驱动的、可导航的、可反复播放的叙事**——每个数据点都有精确的时间戳，每个因果主张都经过时间顺序验证，每个结论都能追溯到它诞生的那一刻。
 
 ```
-Traditional Research:                    ChronoVisor:
+传统研究：                              ChronoVisor：
 
-┌──────────────────┐              🎬 Knowledge Documentary
-│  Data Pile       │              ┌───────────────────────────┐
-│  ├── Event A     │              │ ▶ [Intro] [Rise] [Crisis] │
-│  ├── Data B      │      →       │ [Turn] [Outlook]          │
-│  ├── Analysis C  │              │ ───────────────────────── │
-│  └── Conclusion  │              │ ●────●────●────●────●     │
+┌──────────────────┐              🎬 知识纪录片
+│  数据堆砌        │              ┌───────────────────────────┐
+│  ├── 事件 A      │              │ ▶ [序幕] [发展] [危机]    │
+│  ├── 数据 B      │      →       │ [转折] [展望]             │
+│  ├── 分析 C      │              │ ───────────────────────── │
+│  └── 结论        │              │ ●────●────●────●────●     │
 └──────────────────┘              │ Q1  Q2  Q3  Q4  Q1'      │
                                   │ ⏮ ⏪ ⏸ ⏩ ⏭              │
                                   └───────────────────────────┘
@@ -38,267 +42,267 @@ Traditional Research:                    ChronoVisor:
 
 ---
 
-## 🧬 Core Innovations
+## 🧬 四大核心创新
 
-### 1. The Time Axis Foundation
+### 1. 时间轴底座
 
-ChronoVisor is built on a single, unified timeline that spans from the past into the future. **Every piece of data, every analysis, every prediction shares this one axis.** This is not a visualization layer — it is the infrastructure.
+ChronoVisor 建立在一个统一的、从过去延伸到未来的时间轴上。**每一个数据、每一份分析、每一个预测，共享同一条时间轴。**这不是可视化层，这是基础设施。
 
-| Capability | What It Enables |
+| 能力 | 它让你可以做什么 |
 |---|---|
-| **Sub-minute timestamps** | Pinpoint exactly when each fact became true |
-| **Auto-chapter detection** | Research auto-segments into stages (growth → crisis → turn → outlook) |
-| **Bookmarks & annotations** | Mark critical moments, revisit anytime |
-| **Predictive extension** | The timeline extends into the future for scenario modeling |
-| **Bi-directional navigation** | Jump to any time point. Rewind. Fast-forward. Like a video. |
+| **精确到分钟的时间戳** | 精确定位每个事实生效的时间点 |
+| **自动章节检测** | 研究自动分段（成长期→危机期→转折期→展望期） |
+| **书签与标注** | 标记关键瞬间，随时回看 |
+| **预测延伸** | 时间轴延伸到未来，支持情景建模 |
+| **双向导航** | 跳到任意时间点。回看。快进。像看视频一样 |
 
-### 2. Real-Time Freshness Validation
+### 2. 实时性交叉验证
 
-The most dangerous data is **stale data that looks current**. ChronoVisor automatically classifies every data point's freshness and raises warnings when you're building analysis on outdated information.
-
-```
-🔴 FRESH     (< 1 hour)   — Stock price, live metrics
-🟡 RECENT    (< 1 day)    — Today's news, announcements
-🟢 STALE     (< 7 days)   — ⚠️ Warning triggered
-🔵 EXPIRED   (< 1 year)   — ⚠️ Severely outdated
-⚫ ARCHIVE   (> 1 year)   — Historical reference only
-```
-
-**Example:** Your PPT says "Perfect World stock: ¥17.55" but the real-time price is ¥16.00. ChronoVisor flags the conflict instantly — preventing analysis built on phantom data.
-
-### 3. Causality Chain Engine
-
-ChronoVisor refuses to let you put the cart before the horse. Every causal claim is validated against the timeline:
-
-- **Cause must precede effect** — temporal order is non-negotiable
-- **Confidence scoring** — shared tags, time proximity, source reliability all factor in
-- **Automatic chain discovery** — the engine finds and ranks causal relationships across the entire timeline
+最危险的数据是什么？**看起来像"当下"的过时数据。**ChronoVisor 自动对每个数据点的新鲜度进行分级，当你在过时信息上构建分析时，会立刻发出警告。
 
 ```
-✅ Valid Chain:     [Policy Change 2024-01] → [Industry Recovery 2024-06] → [Stock Rally 2024-09]
-❌ Rejected Chain:  [Stock Rally 2024-09] → [Policy Change 2024-01]  ← TIME VIOLATION
+🔴 实时     (< 1 小时)   — 股价、实时指标
+🟡 近期     (< 1 天)     — 今日新闻、公告
+🟢 过期     (< 7 天)     — ⚠️ 触发警告
+🔵 严重过期 (< 1 年)     — ⚠️ 高度不可靠
+⚫ 归档     (> 1 年)     — 仅作历史参考
 ```
 
-### 4. Plug-In Analysis Frameworks
+**举例：**你的 PPT 写着"完美世界股价 17.55 元"，但实时股价是 16.00 元。ChronoVisor 会立刻标记冲突——杜绝基于幽灵数据做分析。
 
-ChronoVisor's time axis is the **foundation**, not the ceiling. All your existing analytical frameworks plug into it:
+### 3. 因果链引擎
 
-| Framework | On the Timeline |
+ChronoVisor 不允许你倒果为因。每一个因果主张都必须通过时间轴验证：
+
+- **因必须在果之前**——时间顺序不容妥协
+- **置信度评分**——共享标签、时间接近度、来源可靠性共同决定
+- **自动因果发现**——引擎自动在整个时间轴上发现并排序因果关系
+
+```
+✅ 有效因果链：   [政策收紧 2024-01] → [行业复苏 2024-06] → [股价反弹 2024-09]
+❌ 拒绝的因果链： [股价反弹 2024-09] → [政策收紧 2024-01]  ← 时间违规
+```
+
+### 4. 可插拔分析框架
+
+ChronoVisor 的时间轴是**地基**，不是天花板。你学到的所有分析框架都可以插在上面：
+
+| 分析框架 | 在时间轴上的工作方式 |
 |---|---|
-| **PEST** | Political/Economic/Social/Tech analysis per chapter |
-| **SWOT** | Compare SWOT between chapters (e.g., crisis vs. recovery) |
-| **Scenario** | Optimistic/Baseline/Pessimistic mapped to future timeline |
-| **Porter's Five** | Competitive forces analyzed at specific time points |
-| **Your own** | Any framework — just plug it into the timeline |
+| **PEST** | 按章节分别分析政治/经济/社会/技术 |
+| **SWOT** | 跨章节对比 SWOT（如危机期 vs 恢复期） |
+| **情景分析** | 乐观/基准/风险映射到未来时间轴 |
+| **波特五力** | 在特定时间点分析竞争格局 |
+| **你的框架** | 任何框架——接入时间轴即可 |
 
-**The timeline never changes. You just add more lenses to view it through.**
+**时间轴不变，你只是增加了更多观察的镜头。**
 
 ---
 
-## 📊 Real Case Study: Game Industry Deep-Dive
+## 📊 实战案例：游戏产业深度研究
 
-### The Research Question
-*"Is Perfect World a viable investment in 2026?"*
+### 研究问题
+*"2026 年完美世界是否具有投资价值？"*
 
-### ChronoVisor in Action
+### ChronoVisor 实战全流程
 
-**Step 1: Timeline Initialization**
+**第一步：初始化时间轴**
 ```
-Time Range: 2023-01-01 → 2027-12-31
-Base Time:  2026-05-16 (today)
-Chapters:   Auto-detected 5 chapters
+时间范围：2023-01-01 → 2027-12-31
+基准时间：2026-05-16（今天）
+自动章节：5 章
 ```
 
-**Step 2: Data Collection with Timestamps**
-| Timestamp | Event | Source | Freshness |
+**第二步：带时间标记的数据收集**
+| 时间戳 | 事件 | 来源 | 新鲜度 |
 |---|---|---|---|
-| 2023-03-15 | Game license freeze begins | Gov announcement | ARCHIVE |
-| 2024-06-01 | License approvals resume | NPPA official | EXPIRED |
-| 2025-03-28 | Perfect World reports ¥1.29B loss | Annual report | EXPIRED |
-| 2025-08-20 | 32% workforce reduction | Company filing | STALE ⚠️ |
-| 2026-03-01 | "Isekai Ring" receives license | NPPA official | RECENT |
-| 2026-05-01 | Global open beta launch | Official PR | RECENT |
-| 2026-05-16 15:00 | Stock price: ¥16.00 | Real-time feed | FRESH ✅ |
+| 2023-03-15 | 游戏版号冻结开始 | 官方公告 | 归档 |
+| 2024-06-01 | 版号审批恢复 | 国家新闻出版署 | 严重过期 |
+| 2025-03-28 | 完美世界年报亏损 12.88 亿 | 年报 | 严重过期 |
+| 2025-08-20 | 裁员 32% | 公司公告 | 过期 ⚠️ |
+| 2026-03-01 | 异环获得版号 | 国家新闻出版署 | 近期 |
+| 2026-05-01 | 异环全球公测 | 官方 PR | 近期 |
+| 2026-05-16 15:00 | 股价：16.00 元 | 实时行情 | 实时 ✅ |
 
-**Step 3: Auto-Chapter Detection**
+**第三步：自动章节识别**
 ```
-Chapter 1: Industry Winter    (2023-01 → 2024-06)   2 events
-Chapter 2: Company Crisis     (2024-06 → 2025-08)   2 events
-Chapter 3: Strategic Pivot    (2025-08 → 2026-03)   1 event
-Chapter 4: Critical Inflection (2026-03 → 2026-05)   2 events
-Chapter 5: Prediction Horizon  (2026-05 → 2027-12)   —
-```
-
-**Step 4: Causal Chain Analysis**
-```
-✅ Confirmed Chain (confidence: 0.85):
-   [License Freeze 2023-03] → [Industry Winter] → [Company ¥1.29B Loss]
-
-✅ Confirmed Chain (confidence: 0.75):
-   [32% Layoffs 2025-08] → [Strategic Pivot] → [Isekai Ring License 2026-03]
-
-⚠️  Warning: Causal chain confidence drops at prediction boundary.
-   Historical chains: verified. Predictive chains: speculative.
+第一章：行业寒冬期  (2023-01 → 2024-06)   2 个事件
+第二章：公司困境期  (2024-06 → 2025-08)   2 个事件
+第三章：战略转型期  (2025-08 → 2026-03)   1 个事件
+第四章：关键转折期  (2026-03 → 2026-05)   2 个事件
+第五章：预测展望期  (2026-05 → 2027-12)   —
 ```
 
-**Step 5: SWOT Comparison Across Chapters**
+**第四步：因果链分析**
 ```
-Chapter 2 (Crisis):         Chapter 4 (Inflection):
-  Strengths:  1               Strengths:  3  ▲
-  Weaknesses: 4               Weaknesses: 2  ▼
-  Opportunities: 1            Opportunities: 3 ▲
-  Threats:    3               Threats:    2 ▼
+✅ 确认因果链（置信度 0.85）：
+   [版号冻结 2023-03] → [行业寒冬] → [完美巨亏 12.88 亿]
 
-→ The SWOT delta confirms: the inflection is real.
+✅ 确认因果链（置信度 0.75）：
+   [裁员 32% 2025-08] → [战略调整] → [异环版号获批 2026-03]
+
+⚠️  注意：进入预测区间后因果链置信度下降。
+   历史链已验证，预测链仅供参考。
 ```
 
-### What Traditional Research Misses
+**第五步：跨章节 SWOT 对比**
+```
+第二章（困境期）：          第四章（转折期）：
+  优势：  1 项              优势：  3 项 ▲
+  劣势：  4 项              劣势：  2 项 ▼
+  机会：  1 项              机会：  3 项 ▲
+  威胁：  3 项              威胁：  2 项 ▼
 
-| Issue | Traditional | ChronoVisor |
+→ SWOT 差值确认：转折是真实的。
+```
+
+### 传统方法会漏掉什么
+
+| 问题 | 传统方法 | ChronoVisor |
 |---|---|---|
-| Stale stock price in PPT | Silent failure | ⚠️ FRESH flag: ¥17.55 → ¥16.00 |
-| Reversed causality | "Stock fell because of layoffs" (layoffs happened first? wrong!) | Timeline validates: layoffs (Aug) → pivot (Sep) ✓ |
-| Missing inflection | Analyst might miss the license moment | Auto-chapter detects inflection at 2026-03 |
-| Unverifiable predictions | "Target ¥25" with no timeline | Prediction mapped to Chapter 5 with assumptions |
+| PPT 中过时的股价 | 静默失败 | ⚠️ 实时标记：17.55 → 16.00 元 |
+| 因果倒置 | "股价跌因为裁员"（裁员在跌之后？错了！） | 时间轴验证：裁员(8月) → 调整(9月) ✓ |
+| 遗漏拐点 | 分析师可能忽略版号时刻 | 自动章节检测 2026-03 为拐点 |
+| 不可验证的预测 | "目标价 25 元"无时间锚点 | 预测映射到第五章，附带假设前提 |
 
 ---
 
-## 🚀 Beyond Today: The Potential
+## 🚀 超越当下：ChronoVisor 的潜力
 
-ChronoVisor's time-axis paradigm unlocks capabilities far beyond its current implementation:
+ChronoVisor 的时间轴范式，将解锁远超当前实现的能力：
 
-| Horizon | Capability |
+| 阶段 | 能力 |
 |---|---|
-| **Near-term** | Multi-source auto-collection with timestamp extraction from web |
-| **Mid-term** | LLM-powered causal reasoning that reads the timeline like a detective |
-| **Long-term** | Interactive knowledge documentaries — exportable, embeddable, collaborative |
-| **Vision** | Every research artifact becomes a living, replayable timeline — not a dead PDF |
+| **近期** | 多源自动采集，从网页自动提取时间戳 |
+| **中期** | LLM 驱动的因果推理，像侦探一样阅读时间轴 |
+| **远期** | 交互式知识纪录片——可导出、可嵌入、可协作 |
+| **愿景** | 每一份研究成果都成为活的、可回放的时间轴——而非死掉的 PDF |
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ 架构图
 
 ```
-                        User Research Request
-                                │
-                    ┌───────────┴───────────┐
-                    │    ChronoVisor Core   │
-                    │  ┌─────────────────┐  │
-                    │  │ Task Decomposer │  │
-                    │  │ Data Collector  │  │
-                    │  │ Freshness Valid.│  │
-                    │  │ Analyzer Engine │  │
-                    │  │ Report Generator│  │
-                    │  └────────┬────────┘  │
-                    └───────────┼───────────┘
-                                │
-              ┌─────────────────┼─────────────────┐
-              │     Analysis Frameworks           │
-              │  PEST │ SWOT │ Scenario │ Custom  │
-              └─────────────────┼─────────────────┘
-                                │
-              ┌─────────────────┴─────────────────┐
-              │       TIME AXIS FOUNDATION        │
-              │  ┌─────────────────────────────┐  │
-              │  │ 🎬 Knowledge Video Player   │  │
-              │  │ [Ch1] [Ch2] [Ch3] [Ch4]     │  │
-              │  │ ●────●────●────●────●        │  │
-              │  │ ⏮ ⏪ ⏸ ⏩ ⏭                  │  │
-              │  └─────────────────────────────┘  │
-              └───────────────────────────────────┘
+                        用户研究需求
+                             │
+                 ┌───────────┴───────────┐
+                 │    ChronoVisor 核心   │
+                 │  ┌─────────────────┐  │
+                 │  │ 任务拆解器      │  │
+                 │  │ 数据收集器      │  │
+                 │  │ 新鲜度验证器    │  │
+                 │  │ 分析引擎        │  │
+                 │  │ 报告生成器      │  │
+                 │  └────────┬────────┘  │
+                 └───────────┼───────────┘
+                             │
+           ┌─────────────────┼─────────────────┐
+           │     上层分析框架                  │
+           │  PEST │ SWOT │ 情景 │ 自定义      │
+           └─────────────────┼─────────────────┘
+                             │
+           ┌─────────────────┴─────────────────┐
+           │         时间轴底座（基础设施）     │
+           │  ┌─────────────────────────────┐  │
+           │  │ 🎬 知识视频播放器            │  │
+           │  │ [第1章][第2章][第3章][第4章] │  │
+           │  │ ●────●────●────●────●        │  │
+           │  │ ⏮ ⏪ ⏸ ⏩ ⏭                  │  │
+           │  └─────────────────────────────┘  │
+           └───────────────────────────────────┘
 ```
 
 ---
 
-## ⚡ Quick Start
+## ⚡ 快速开始
 
 ```python
 from src import TimelineBase, TaskDecomposer, DataCollector
 from src import RealTimeValidator, AnalyzerEngine, ReportGenerator
 from datetime import datetime
 
-# 1. Initialize the time axis
-timeline = TimelineBase(title="Industry Deep-Dive")
+# 1. 建立时间轴底座
+timeline = TimelineBase(title="游戏产业深度研究")
 timeline.timeline.set_range(
     start=datetime(2020, 1, 1),
     end=datetime(2027, 12, 31)
 )
 
-# 2. Decompose research tasks
-plan = TaskDecomposer().decompose("Analyze the gaming industry")
+# 2. 拆解研究任务
+plan = TaskDecomposer().decompose("分析中国游戏产业的投资机会")
 
-# 3. Collect time-stamped data
+# 3. 收集带时间标记的数据
 collector = DataCollector(timeline)
 collector.collect(
     data={"price": 16.00},
-    source="Real-time Market Data",
+    source="实时行情",
     timestamp=datetime(2026, 5, 16, 15, 0),
-    summary="Perfect World closing price ¥16.00"
+    summary="完美世界收盘价 16.00 元"
 )
 
-# 4. Validate freshness
+# 4. 验证数据新鲜度
 validator = RealTimeValidator(timeline)
 summary = validator.get_validation_summary()
-print(f"Confidence: {summary['overall_confidence']:.0%}")
+print(f"整体置信度：{summary['overall_confidence']:.0%}")
 
-# 5. Run analysis on the timeline
+# 5. 在时间轴上运行分析
 analyzer = AnalyzerEngine(timeline)
 causal_chains = analyzer.find_causal_chains()
-swot_over_time = analyzer.compare_swot("ch1", "ch4")
+swot_compare = analyzer.compare_swot("ch1", "ch4")
 
-# 6. Generate navigable report
-report = ReportGenerator(timeline).generate("Investment Analysis Report")
+# 6. 生成可导航的报告
+report = ReportGenerator(timeline).generate("完美世界投资分析报告")
 print(report.to_markdown())
 ```
 
 ---
 
-## 📁 Project Structure
+## 📁 项目结构
 
 ```
 chronovisor/
-├── skill.yaml                  # Configuration
-├── README.md                   # You are here
-├── README_CN.md                # 中文文档
+├── skill.yaml                  # 配置文件
+├── README.md                   # 你在这里（中文默认）
+├── README_EN.md                # English
 ├── src/
 │   ├── core/
-│   │   ├── timeline.py         # 🎬 Time axis engine
-│   │   ├── task_decomposer.py  # Task decomposition
-│   │   ├── data_collector.py   # Timestamped data collection
-│   │   ├── validator.py        # Real-time freshness validation
-│   │   ├── analyzer.py         # PEST/SWOT/Causal chain engine
-│   │   └── report_generator.py # Report generation
-│   ├── prompts/                # LLM prompt templates
-│   └── templates/              # Output templates
-└── examples/                   # Usage examples
+│   │   ├── timeline.py         # 🎬 时间轴引擎
+│   │   ├── task_decomposer.py  # 任务拆解器
+│   │   ├── data_collector.py   # 时间标记数据收集器
+│   │   ├── validator.py        # 实时新鲜度验证器
+│   │   ├── analyzer.py         # PEST/SWOT/因果链引擎
+│   │   └── report_generator.py # 报告生成器
+│   ├── prompts/                # LLM 提示模板
+│   └── templates/              # 输出模板
+└── examples/                   # 使用示例
 ```
 
 ---
 
-## 🔮 Roadmap
+## 🔮 路线图
 
-- [x] Time axis core engine
-- [x] Freshness validation (5-tier)
-- [x] Auto-chapter detection
-- [x] Causal chain discovery
-- [x] PEST / SWOT / Scenario frameworks
-- [x] Markdown + JSON report export
-- [ ] Web timestamp auto-extraction
-- [ ] LLM-powered causal reasoning
-- [ ] Interactive timeline visualization (HTML/JS)
-- [ ] Collaborative multi-researcher timelines
-- [ ] Real-time data feed integration
+- [x] 时间轴核心引擎
+- [x] 五级新鲜度验证
+- [x] 自动章节检测
+- [x] 因果链发现
+- [x] PEST / SWOT / 情景分析框架
+- [x] Markdown + JSON 报告导出
+- [ ] 网页时间戳自动提取
+- [ ] LLM 驱动的因果推理
+- [ ] 交互式时间轴可视化（HTML/JS）
+- [ ] 多人协作研究时间轴
+- [ ] 实时数据源接入
 - [ ] ChronoVisor Cloud API
 
 ---
 
-## 📄 License
+## 📄 许可证
 
 MIT
 
 ---
 
 <p align="center">
-  <strong>Research should be watched, not just read.</strong><br/>
-  <sub>Made with ⏳ by researchers, for researchers.</sub>
+  <strong>研究不应该只是被阅读，而应该被观看。</strong><br/>
+  <sub>研究者为研究者打造 ⏳</sub>
 </p>
