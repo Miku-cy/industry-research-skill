@@ -141,37 +141,67 @@ class SemanticClassifier:
     def enhance_pest(
         self, events: List[TimelineEvent], base_result: PESTResult
     ) -> PESTResult:
+        # 去重：收集已有结果中的所有摘要
+        seen = set()
+        for lst in [base_result.political, base_result.economic,
+                    base_result.social, base_result.technological]:
+            seen.update(lst)
+
         for event in events:
             scores = self.classify(event)
             if scores.confidence < 0.3:
                 continue
             summary = event.summary or str(event.data)[:100]
+            if summary in seen:
+                continue
             pest = scores.pest_scores
+            added = False
             if pest.get("political", 0) > 0.4:
                 base_result.political.append(summary)
+                added = True
             if pest.get("economic", 0) > 0.4:
                 base_result.economic.append(summary)
+                added = True
             if pest.get("social", 0) > 0.4:
                 base_result.social.append(summary)
+                added = True
             if pest.get("technological", 0) > 0.4:
                 base_result.technological.append(summary)
+                added = True
+            if added:
+                seen.add(summary)
         return base_result
 
     def enhance_swot(
         self, events: List[TimelineEvent], base_result: SWOTResult
     ) -> SWOTResult:
+        # 去重：收集已有结果中的所有摘要
+        seen = set()
+        for lst in [base_result.strengths, base_result.weaknesses,
+                    base_result.opportunities, base_result.threats]:
+            seen.update(lst)
+
         for event in events:
             scores = self.classify(event)
             if scores.confidence < 0.3:
                 continue
             summary = event.summary or str(event.data)[:100]
+            if summary in seen:
+                continue
             swot = scores.swot_scores
+            added = False
             if swot.get("strengths", 0) > 0.4:
                 base_result.strengths.append(summary)
+                added = True
             if swot.get("weaknesses", 0) > 0.4:
                 base_result.weaknesses.append(summary)
+                added = True
             if swot.get("opportunities", 0) > 0.4:
                 base_result.opportunities.append(summary)
+                added = True
             if swot.get("threats", 0) > 0.4:
                 base_result.threats.append(summary)
+                added = True
+            if added:
+                seen.add(summary)
         return base_result

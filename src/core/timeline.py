@@ -362,8 +362,8 @@ class TimelineBase:
             ids.append(event_id)
         return ids
 
-    def auto_detect_chapters(self, min_events: int = 3) -> List[Chapter]:
-        return self._chapter_detector.detect(min_events)
+    def auto_detect_chapters(self, min_events: int = 3, max_chapters: int = None) -> List[Chapter]:
+        return self._chapter_detector.detect(min_events, max_chapters)
 
     def add_bookmark(self, timestamp: datetime, title: str, note: str = "", color: str = "#FFD700") -> str:
         bookmark = Bookmark(timestamp=timestamp, title=title, note=note, color=color)
@@ -411,18 +411,34 @@ class TimelineBase:
 class ChapterDetector:
     LARGE_GAP_DAYS = 180
     MIN_GAP_DAYS = 60
+    DEFAULT_MAX_CHAPTERS = 8
+    DEFAULT_TARGET_CHAPTERS = 5
 
     def __init__(self, timeline: Timeline):
         self.timeline = timeline
 
-    def detect(self, min_events: int = 3) -> List[Chapter]:
+    def detect(self, min_events: int = 3, max_chapters: int = None) -> List[Chapter]:
+        if max_chapters is None:
+            max_chapters = self.DEFAULT_MAX_CHAPTERS
         events = self.timeline.get_all_events()
         if len(events) < 3:
             return []
 
         raw_boundaries = self._find_time_gaps(events)
+
+        # 兜底：边界太少时按时间均匀分段
+        if len(raw_boundaries) < 3 and len(events) >= 6:
+            raw_boundaries = self._fallback_even_split(
+                events, target_chapters=self.DEFAULT_TARGET_CHAPTERS
+            )
+
         raw_chapters = self._build_raw_chapters(events, raw_boundaries)
         merged = self._merge_small_chapters(raw_chapters, min_events)
+
+        # 合并后仍太多时，强制合并到 max_chapters
+        if len(merged) > max_chapters:
+            merged = self._force_merge_to_max(merged, max_chapters)
+
         chapters = self._finalize_chapters(merged)
         return chapters
 
@@ -438,6 +454,42 @@ class ChapterDetector:
                 boundaries.append(i)
         boundaries.append(len(events))
         return boundaries
+
+    def _fallback_even_split(
+        self, events: List[TimelineEvent], target_chapters: int = 5
+    ) -> List[int]:
+        """兜底策略：按时间均匀分段，确保数据密集时也能产生合理章节"""
+        if len(events) < target_chapters:
+            target_chapters = len(events)
+        n = len(events)
+        chunk_size = max(1, n // target_chapters)
+        boundaries = [0]
+        for i in range(chunk_size, n, chunk_size):
+            boundaries.append(i)
+        boundaries.append(n)
+        # 去重并排序
+        boundaries = sorted(set(boundaries))
+        return boundaries
+
+    def _force_merge_to_max(
+        self, chapters: List[List[TimelineEvent]], max_chapters: int
+    ) -> List[List[TimelineEvent]]:
+        """强制合并到最大章节数，均匀分配事件"""
+        if len(chapters) <= max_chapters:
+            return chapters
+        all_events = []
+        for ch in chapters:
+            all_events.extend(ch)
+        n = len(all_events)
+        chunk_size = max(1, n // max_chapters)
+        result = []
+        for i in range(0, n, chunk_size):
+            result.append(all_events[i : i + chunk_size])
+        # 确保不超过 max_chapters
+        if len(result) > max_chapters:
+            last = result.pop()
+            result[-1].extend(last)
+        return result
 
     def _is_semantic_shift(self, prev: TimelineEvent, curr: TimelineEvent) -> bool:
         if curr.time_type == TimeType.PREDICTED and prev.time_type != TimeType.PREDICTED:
