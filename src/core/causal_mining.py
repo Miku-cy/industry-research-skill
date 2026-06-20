@@ -14,6 +14,8 @@ from datetime import datetime
 from .timeline import TimelineEvent, TimelineBase
 from .analyzer import CausalChain, CausalNetwork
 from .causal_lag import CausalLagModel
+from .causal_graph import CausalGraph, causal_graph
+import re
 
 
 class CausalMiningEngine:
@@ -31,6 +33,7 @@ class CausalMiningEngine:
         self.api_key = api_key or config.get("api_key", "") or os.environ.get("OPENAI_API_KEY", "")
         self.api_model = api_model or config.get("api_model", "mimo-v2.5")
         self.lag_model = CausalLagModel()
+        self.graph = causal_graph
 
     @staticmethod
     def _load_config(config_path: str = "") -> Dict:
@@ -66,6 +69,8 @@ class CausalMiningEngine:
         四层漏斗过滤：
         Layer 1: 时序过滤 — A.timestamp < B.timestamp
         Layer 2: 时间窗口过滤 — 超出领域最大传导时间的淘汰
+        Layer 3: 动态路由 — 图谱认识走快车道，不认识走 TF-IDF/LLM
+        Layer 4: LLM 精细分析 — mechanism + similar_cases
         """
         # Layer 1: 时序过滤 + Layer 2: 时间窗口过滤
         pairs = []
@@ -89,11 +94,35 @@ class CausalMiningEngine:
 
                 pairs.append((cause, effect))
 
-        # 批量分析
-        all_chains = []
+        # Layer 3: 动态路由
+        fast_lane = []   # 图谱认识，直接进后处理
+        slow_lane = []   # 图谱不认识，送 LLM
+        for cause, effect in pairs:
+            all_tags = cause.tags + effect.tags
+            graph_result = self.graph.score(cause.summary, effect.summary, all_tags)
+
+            if graph_result.known:
+                # 快车道：图谱认识，直接生成 CausalChain
+                chain = CausalChain(
+                    cause_event=cause,
+                    effect_event=effect,
+                    time_gap=effect.timestamp - cause.timestamp,
+                    confidence=graph_result.score,
+                    description=f"{cause.summary} → {effect.summary} [图谱:{graph_result.match_info}]",
+                )
+                fast_lane.append(chain)
+            else:
+                # 慢车道：图谱不认识，用 TF-IDF 粗筛
+                tfidf = self._tfidf_score(cause.summary, effect.summary, all_tags)
+                if tfidf >= 0.1:
+                    slow_lane.append((cause, effect))
+                # TF-IDF 也低分 → 淘汰（太无关）
+
+        # Layer 4: LLM 精细分析（只分析慢车道）
+        all_chains = list(fast_lane)  # 快车道直接加入
         all_similar_cases: Dict[str, List[Dict]] = {}
-        for batch_start in range(0, len(pairs), batch_size):
-            batch = pairs[batch_start:batch_start + batch_size]
+        for batch_start in range(0, len(slow_lane), batch_size):
+            batch = slow_lane[batch_start:batch_start + batch_size]
             chains, similar_cases_map = self._analyze_batch(batch)
             all_chains.extend(chains)
             all_similar_cases.update(similar_cases_map)
@@ -154,6 +183,17 @@ class CausalMiningEngine:
             self.lag_model.learn()
             self.lag_model.save()
 
+        # 图谱自动学习：从挖掘结果扩充因果图谱
+        for chain in all_chains:
+            if chain.confidence >= min_confidence:
+                self.graph.learn_from_chain(
+                    chain.cause_event.summary,
+                    chain.effect_event.summary,
+                    chain.cause_event.tags,
+                    chain.effect_event.tags,
+                    chain.confidence,
+                )
+
         return network
 
     def predict(self, summary: str, tags: List[str] = None) -> Dict:
@@ -194,6 +234,23 @@ class CausalMiningEngine:
         return self.lag_model.predict_with_evidence(
             tags or [], summary, cases,
         )
+
+    @staticmethod
+    def _tfidf_score(cause: str, effect: str, tags: List[str] = None) -> float:
+        """TF-IDF 关键词重叠评分（纯统计，零 API 调用）"""
+        def tokenize(text: str):
+            cn = set(re.findall(r'[\u4e00-\u9fff]{2,}', text))
+            cn_chars = set(re.findall(r'[\u4e00-\u9fff]', text))
+            en = set(re.findall(r'[a-zA-Z]+', text.lower()))
+            return cn | cn_chars | en
+
+        cause_text = cause + " " + " ".join(tags or [])
+        effect_text = effect + " " + " ".join(tags or [])
+        tc = tokenize(cause_text)
+        te = tokenize(effect_text)
+        common = tc & te
+        union = tc | te
+        return len(common) / len(union) if union else 0
 
     def _analyze_batch(
         self, pairs: List[Tuple[TimelineEvent, TimelineEvent]]
