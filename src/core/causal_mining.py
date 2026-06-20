@@ -130,6 +130,18 @@ class CausalMiningEngine:
                 )
                 network.add_chain(chain)
 
+                # 自动闭环：记录观测数据，用于更新滞后模型
+                self.lag_model.observe(
+                    cause.tags, cause.summary,
+                    effect.tags, effect.summary,
+                    gap_days, calibrated,
+                )
+
+        # 累积够 3 条观测 → 自动学习更新滞后参数
+        if len(self.lag_model.observations) >= 3:
+            self.lag_model.learn()
+            self.lag_model.save()
+
         return network
 
     def predict(self, summary: str, tags: List[str] = None) -> Dict:
@@ -150,6 +162,26 @@ class CausalMiningEngine:
             }
         """
         return self.lag_model.predict_lag(tags or [], summary)
+
+    def predict_with_evidence(
+        self,
+        summary: str,
+        tags: List[str] = None,
+        cases: List[Dict] = None,
+    ) -> Dict:
+        """结合历史案例的贝叶斯预测
+
+        Args:
+            summary: 事件摘要
+            tags: 标签列表
+            cases: 历史案例，如 [{"gap_days": 3, "confidence": 0.9}, ...]
+
+        Returns:
+            同 predict()，但用贝叶斯更新了先验
+        """
+        return self.lag_model.predict_with_evidence(
+            tags or [], summary, cases,
+        )
 
     def _analyze_batch(
         self, pairs: List[Tuple[TimelineEvent, TimelineEvent]]

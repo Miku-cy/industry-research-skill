@@ -258,6 +258,57 @@ def cmd_predict(args):
         print(f"     {label:>5s}  {bar} {prob:.0%}")
 
 
+def cmd_predict_be(args):
+    """贝叶斯更新预测：先验 + 历史案例 → 后验"""
+    config = load_config()
+    miner = CausalMiningEngine(
+        api_url=config.get("api_url", ""),
+        api_key=config.get("api_key", ""),
+        api_model=args.model or config.get("api_model", "mimo-v2.5"),
+        config_path=args.config,
+    )
+
+    tags = [t.strip() for t in args.tags.split(",")] if args.tags else []
+
+    # 加载历史案例
+    cases = []
+    if args.cases:
+        with open(args.cases, "r", encoding="utf-8") as f:
+            cases = json.load(f)
+    elif args.case:
+        # 格式：gap_days:confidence，如 "3:0.9,7:0.8"
+        for item in args.case.split(","):
+            parts = item.strip().split(":")
+            if len(parts) == 2:
+                cases.append({"gap_days": float(parts[0]), "confidence": float(parts[1])})
+
+    if not cases:
+        print("❌ 请提供历史案例：--case '3:0.9,7:0.8' 或 --cases cases.json")
+        sys.exit(1)
+
+    # 先验预测
+    prior = miner.predict(args.summary, tags)
+    # 贝叶斯更新
+    posterior = miner.predict_with_evidence(args.summary, tags, cases)
+
+    ci90 = posterior["ci_90"]
+    ci50 = posterior["ci_50"]
+    print(f"\n🔮 贝叶斯预测：{args.summary}")
+    print(f"   领域：{posterior['domain']}")
+    print(f"   历史案例：{len(cases)} 个")
+    print(f"")
+    print(f"   先验（领域知识）: {prior['peak_days']} 天")
+    print(f"   后验（+案例更新）: {posterior['peak_days']} 天")
+    print(f"")
+    print(f"   90% 置信区间：[{ci90[0]}, {ci90[1]}] 天")
+    print(f"   50% 置信区间：[{ci50[0]}, {ci50[1]}] 天")
+    print(f"   预测置信度：{posterior['confidence']:.0%}")
+    print(f"\n   各时间段内发生概率：")
+    for label, prob in posterior["prob_within"].items():
+        bar = "█" * int(prob * 20)
+        print(f"     {label:>5s}  {bar} {prob:.0%}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="ChronoVisor 因果挖掘 CLI")
     subparsers = parser.add_subparsers(dest="command")
@@ -280,11 +331,22 @@ def main():
     pred_parser.add_argument("--model", default="", help="LLM 模型名")
     pred_parser.add_argument("--config", default="", help="配置文件路径")
 
+    # predict-be 子命令（贝叶斯更新预测）
+    be_parser = subparsers.add_parser("predict-be", help="贝叶斯更新预测：先验+案例→后验")
+    be_parser.add_argument("summary", help="事件摘要")
+    be_parser.add_argument("--tags", default="", help="逗号分隔的标签")
+    be_parser.add_argument("--case", default="", help="历史案例，格式：gap_days:confidence，如 '3:0.9,7:0.8'")
+    be_parser.add_argument("--cases", default="", help="历史案例 JSON 文件")
+    be_parser.add_argument("--model", default="", help="LLM 模型名")
+    be_parser.add_argument("--config", default="", help="配置文件路径")
+
     args = parser.parse_args()
 
     # 兼容：无子命令时当作 mine
     if args.command == "predict":
         cmd_predict(args)
+    elif args.command == "predict-be":
+        cmd_predict_be(args)
     else:
         # 兼容旧用法：python mine.py events.csv -o ...
         if args.command is None and args.input:
