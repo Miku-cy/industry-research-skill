@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChronoVisor · 因果分析控制台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'SF Pro Display','PingFang SC','Microsoft YaHei',sans-serif;background:#f4f4f6;color:#1d1d1f;height:100vh;display:flex;flex-direction:column}
+
+/* 顶栏 */
+.topbar{background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.08);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar h1{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.topbar h1 span{color:#D55E00}
+.topbar .status{font-size:11px;color:#86868b}
+
+/* 主布局 */
+.main{flex:1;display:flex;overflow:hidden}
+
+/* 左侧面板 */
+.sidebar{width:320px;background:#fff;border-right:0.5px solid rgba(0,0,0,0.06);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-section{padding:16px;border-bottom:0.5px solid rgba(0,0,0,0.06)}
+.sidebar-section h3{font-size:12px;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+
+/* 搜索 */
+.search-box{display:flex;gap:6px}
+.search-box input{flex:1;padding:8px 12px;border:0.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;background:#f8f8fa;outline:none}
+.search-box input:focus{border-color:#D55E00;background:#fff}
+.search-box button{padding:8px 14px;background:#1d1d1f;color:#fff;border:0;border-radius:8px;font-size:12px;cursor:pointer}
+
+/* 事件列表 */
+.event-list{flex:1;overflow-y:auto;padding:8px}
+.event-item{padding:10px 12px;border-radius:8px;margin-bottom:4px;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:10px}
+.event-item:hover{background:#f0f0f4}
+.event-item.selected{background:#FFF5F0;border:1px solid rgba(213,94,0,0.2)}
+.event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.event-info{flex:1;min-width:0}
+.event-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.event-meta{font-size:10px;color:#86868b;margin-top:2px}
+.event-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.event-tag{font-size:9px;background:#f0f0f4;color:#555;padding:2px 6px;border-radius:4px}
+
+/* 任务输入 */
+.task-area{padding:16px;border-top:0.5px solid rgba(0,0,0,0.06);background:#fafafa}
+.task-area textarea{width:100%;padding:10px;border:0.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:12px;resize:none;height:60px;outline:none;font-family:inherit}
+.task-area textarea:focus{border-color:#D55E00}
+.task-actions{display:flex;gap:6px;margin-top:8px}
+.task-actions button{flex:1;padding:8px;border:0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-primary{background:#D55E00;color:#fff}
+.btn-primary:hover{background:#B84E00}
+.btn-secondary{background:#e8e8ea;color:#333}
+.btn-secondary:hover{background:#ddd}
+
+/* 右侧主区域 */
+.content{flex:1;display:flex;flex-direction:column;position:relative}
+
+/* 工具栏 */
+.toolbar{padding:10px 20px;display:flex;gap:8px;align-items:center;background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.06)}
+.toolbar button{padding:6px 14px;background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:6px;font-size:11px;cursor:pointer;transition:all .15s}
+.toolbar button:hover{background:#f0f0f4}
+.toolbar button.active{background:#1d1d1f;color:#fff;border-color:#1d1d1f}
+.toolbar .spacer{flex:1}
+.toolbar .info{font-size:11px;color:#86868b}
+
+/* 3D 容器 */
+#canvas-container{flex:1;position:relative;overflow:hidden;min-height:400px}
+#canvas-container canvas{display:block;position:absolute;top:0;left:0;width:100%!important;height:100%!important}
+
+/* 加载动画 */
+#loading{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(244,244,246,0.92);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:50}
+#loading.show{display:flex}
+.spinner{width:48px;height:48px;border:3px solid #e8e8ea;border-top-color:#D55E00;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading h2{font-size:16px;font-weight:600;margin-top:16px;color:#1d1d1f}
+#loading p{font-size:12px;color:#86868b;margin-top:6px}
+#loading .progress-bar{width:240px;height:4px;background:#e8e8ea;border-radius:2px;margin-top:16px;overflow:hidden}
+#loading .progress-fill{height:100%;background:#D55E00;border-radius:2px;width:0%;transition:width 0.3s;animation:progress-pulse 1.5s ease-in-out infinite}
+@keyframes progress-pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+
+/* 搜索结果面板 */
+#search-results{position:absolute;top:60px;left:20px;right:20px;max-height:300px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.12);border:0.5px solid rgba(0,0,0,0.06);overflow-y:auto;display:none;z-index:40;padding:8px}
+#search-results.show{display:block}
+.search-result-item{padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px}
+.search-result-item:hover{background:#f0f0f4}
+.search-result-item .sr-conf{font-size:11px;font-weight:700;min-width:36px}
+
+/* 网络列表 */
+.network-list{max-height:200px;overflow-y:auto}
+.network-item{padding:8px 12px;border-radius:6px;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.network-item:hover{background:#f0f0f4}
+.network-item .ni-name{font-weight:600}
+.network-item .ni-meta{font-size:10px;color:#86868b}
+
+/* 右键菜单 */
+.context-menu{position:absolute;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.12);border:0.5px solid rgba(0,0,0,0.06);padding:4px;z-index:60;display:none;min-width:160px}
+.context-menu.show{display:block}
+.context-menu button{display:block;width:100%;padding:8px 12px;border:0;background:none;text-align:left;font-size:12px;cursor:pointer;border-radius:6px}
+.context-menu button:hover{background:#f0f0f4}
+
+/* 提示 */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:10px 20px;border-radius:10px;font-size:12px;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🧠 <span>ChronoVisor</span> 因果分析控制台</h1>
+  <div class="status" id="status-text">就绪</div>
+</div>
+
+<div class="main">
+  <!-- 左侧面板 -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <h3>🔍 搜索因果</h3>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="搜索事件或因果关系..." oninput="onSearch(this.value)">
+        <button onclick="onSearch(document.getElementById('search-input').value)">搜</button>
+      </div>
+    </div>
+
+    <div class="sidebar-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;padding-bottom:0">
+      <h3>📋 因果事件 <span id="event-count" style="float:right;font-weight:400;color:#bbb">0</span></h3>
+      <div class="event-list" id="event-list"></div>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>💾 已保存网络</h3>
+      <div class="network-list" id="network-list"></div>
+    </div>
+
+    <div class="task-area">
+      <h3 style="font-size:12px;font-weight:600;color:#86868b;margin-bottom:8px">🤖 AI 因果研究</h3>
+      <textarea id="ai-task-input" placeholder="描述你想了解的问题，AI 自动研究因果。例：&#10;我想了解米哈游的历史，成功原因是什么"></textarea>
+      <div class="task-actions">
+        <button class="btn-primary" onclick="startAITask()">🚀 AI 研究</button>
+      </div>
+      <div style="margin-top:10px;border-top:0.5px solid rgba(0,0,0,0.06);padding-top:10px">
+        <h3 style="font-size:12px;font-weight:600;color:#86868b;margin-bottom:8px">📝 手动添加事件</h3>
+        <textarea id="task-input" placeholder="逗号分隔的事件。例：&#10;美联储加息,Terra崩盘,FTX破产" style="height:40px"></textarea>
+        <div class="task-actions">
+          <button class="btn-secondary" onclick="addEventsFromText()">添加</button>
+          <button class="btn-secondary" onclick="startMining()">挖掘因果</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧主区域 -->
+  <div class="content">
+    <div class="toolbar">
+      <button onclick="resetCamera()" title="重置视角">重置</button>
+      <button onclick="toggleEdges()" id="btn-edges" title="显示/隐藏连线">连线</button>
+      <button onclick="highlightRoot()" title="高亮根因链">根因</button>
+      <button onclick="autoSpin()" id="btn-spin" title="自动旋转">旋转</button>
+      <button onclick="renderEventsAsNetwork()" title="显示事件网络">📊 事件</button>
+      <button onclick="saveNetwork()" title="保存当前网络">💾 保存</button>
+      <div class="spacer"></div>
+      <div class="info" id="network-info">等待挖掘...</div>
+    </div>
+
+    <div id="canvas-container">
+      <div id="loading">
+        <div class="spinner"></div>
+        <h2>正在挖掘因果关系</h2>
+        <p id="loading-text">准备中...</p>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+    </div>
+
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="context-menu" id="context-menu"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ═══ 状态 ═══
+let events = [];
+let currentNetwork = null;
+let miningTaskId = null;
+
+// Three.js
+let scene, camera, renderer, ctrl;
+let nGroup, eGroup, nMeshes=[], eLines=[];
+let nMap={};
+const BG=0xf4f4f6;
+
+// ═══ 初始化 ═══
+async function init() {
+  initThree();
+  await loadEvents();
+  await loadNetworks();
+  animate();
+}
+
+function initThree() {
+  const container = document.getElementById('canvas-container');
+  const w = container.clientWidth || window.innerWidth - 320;
+  const h = container.clientHeight || window.innerHeight - 100;
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(BG);
+  scene.fog = new THREE.Fog(BG, 90, 160);
+  camera = new THREE.PerspectiveCamera(48, w/h, 0.1, 500);
+  camera.position.set(40, 20, 40);
+  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+  ctrl = new THREE.OrbitControls(camera, renderer.domElement);
+  ctrl.enableDamping = true;
+  ctrl.dampingFactor = 0.06;
+  ctrl.target.set(0, 10, 5);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.5);
+  dl.position.set(30, 50, 30);
+  scene.add(dl);
+  nGroup = new THREE.Group();
+  eGroup = new THREE.Group();
+  scene.add(nGroup);
+  scene.add(eGroup);
+  // 网格地面
+  const gridG = new THREE.Group();
+  for(let i=-20;i<=20;i++){
+    const c=i%5===0?0xc5c5c8:0xe0e0e3;
+    const o=i%5===0?0.5:0.25;
+    const m=new THREE.LineBasicMaterial({color:c,transparent:true,opacity:o});
+    const g1=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-40,0,i*2),new THREE.Vector3(40,0,i*2)]);
+    gridG.add(new THREE.Line(g1,m));
+    const g2=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i*2,0,-40),new THREE.Vector3(i*2,0,40)]);
+    gridG.add(new THREE.Line(g2,m));
+  }
+  gridG.position.y=-1.5;
+  scene.add(gridG);
+
+  // 坐标轴标签
+  function lbl(text,pos,color,scale,bold){
+    const c=document.createElement('canvas'),x=c.getContext('2d');
+    c.width=1024;c.height=128;
+    x.font=(bold?'700 ':'500 ')+'56px -apple-system,PingFang SC,Microsoft YaHei,sans-serif';
+    x.fillStyle=color;x.textAlign='center';
+    x.shadowColor='rgba(244,244,246,0.9)';x.shadowBlur=6;
+    x.fillText(text,512,82);
+    const t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true}));
+    s.position.set(...pos);s.scale.set(scale||8,(scale||8)*0.15,1);scene.add(s);
+  }
+  function axisLine(a,b){const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a),new THREE.Vector3(...b)]);scene.add(new THREE.Line(g,new THREE.LineBasicMaterial({color:0xb0b0b4})));}
+  // X 轴 — 时间
+  axisLine([-22,-1.2,0],[22,-1.2,0]);
+  for(let i=0;i<=4;i++){
+    const x=-20+i*10;
+    axisLine([x,-1.5,0],[x,-0.9,0]);
+    const year=2022+Math.floor(i*1.2);
+    const month=1+(i*3)%12;
+    lbl(year+'.'+month,[x,-3.5,0],'#666',5.5);
+  }
+  lbl('时间 →',[0,-5.5,0],'#444',8,true);
+  // Y 轴 — 因果深度
+  axisLine([-22,-1.2,0],[-22,28,0]);
+  ['根因','第1层','第2层','第3层','第4层'].forEach((t,i)=>{
+    const y=i*6;
+    axisLine([-22.5,y,0],[-21.8,y,0]);
+    lbl(t,[-29,y,0],'#666',5.5);
+  });
+  lbl('因果深度 ↑',[-29,30,0],'#444',8,true);
+  // Z 轴 — 连接强度
+  axisLine([-22,-1.2,0],[-22,-1.2,18]);
+  for(let i=0;i<=3;i++){
+    axisLine([-22.5,-1.2,i*6],[-21.8,-1.2,i*6]);
+  }
+  lbl('连接度',[-22,-3.5,9],'#444',6,true);
+  window.addEventListener('resize', ()=>{
+    const w = container.clientWidth || window.innerWidth - 320;
+    const h = container.clientHeight || window.innerHeight - 100;
+    camera.aspect=w/h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
+
+  // 点击节点 → 因果挖掘
+  const ray=new THREE.Raycaster();
+  const mouse=new THREE.Vector2();
+  renderer.domElement.addEventListener('click',(e)=>{
+    const rect=renderer.domElement.getBoundingClientRect();
+    mouse.x=((e.clientX-rect.left)/rect.width)*2-1;
+    mouse.y=-((e.clientY-rect.top)/rect.height)*2+1;
+    ray.setFromCamera(mouse,camera);
+    const hits=ray.intersectObjects(nMeshes);
+    if(hits.length>0){
+      const nd=hits[0].object.userData;
+      highlightNodeById(nd.id);
+      // 弹出挖掘选项
+      showNodeMenu(nd, e.clientX, e.clientY);
+    }
+  });
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  ctrl.update();
+  renderer.render(scene, camera);
+}
+
+// ═══ API ═══
+async function api(path, method='GET', body=null) {
+  const opts = {method, headers:{'Content-Type':'application/json'}};
+  if(body) opts.body = JSON.stringify(body);
+  const res = await fetch(path, opts);
+  return res.json();
+}
+
+// ═══ 事件管理 ═══
+async function loadEvents() {
+  events = await api('/api/events');
+  renderEventList();
+  // 如果有事件但没有网络，自动渲染
+  if(events.length && !currentNetwork) {
+    renderEventsAsNetwork();
+  }
+}
+
+function renderEventList() {
+  const list = document.getElementById('event-list');
+  document.getElementById('event-count').textContent = events.length;
+  list.innerHTML = events.map((e, i) => {
+    const color = '#D55E00';
+    const tags = (e.tags||[]).slice(0,3).map(t=>`<span class="event-tag">${t}</span>`).join('');
+    return `<div class="event-item" onclick="selectEvent(${i})" title="${e.summary}">
+      <div class="event-dot" style="background:${color}"></div>
+      <div class="event-info">
+        <div class="event-name">${e.summary}</div>
+        <div class="event-meta">${e.timestamp}</div>
+        <div class="event-tags">${tags}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectEvent(idx) {
+  document.querySelectorAll('.event-item').forEach((el,i) => {
+    el.classList.toggle('selected', i===idx);
+  });
+  // 点击事件 → 高亮该事件的因果关系
+  if(currentNetwork) {
+    const evt = events[idx];
+    const node = currentNetwork.nodes.find(n => n.name === evt.summary);
+    if(node) highlightNodeById(node.id);
+  }
+}
+
+// 把当前事件列表渲染为网络（无需挖掘）
+function renderEventsAsNetwork() {
+  if(!events.length) return;
+  const nodes = events.map((e,i) => ({
+    id: 'e'+i, name: e.summary, timestamp: e.timestamp,
+    tags: e.tags||[], isRoot: i===0, isLeaf: i===events.length-1,
+  }));
+  const edges = [];
+  for(let i=0;i<nodes.length-1;i++) {
+    edges.push({source:nodes[i].id, target:nodes[i+1].id, confidence:0.3});
+  }
+  currentNetwork = {nodes, edges, stats:{node_count:nodes.length, edge_count:edges.length, root_count:1, leaf_count:1}};
+  renderNetwork(currentNetwork);
+  updateNetworkInfo();
+  toast('已显示 '+nodes.length+' 个事件');
+}
+
+async function addEventsFromText() {
+  const text = document.getElementById('task-input').value.trim();
+  if(!text) return;
+  const items = text.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  const newEvents = items.map((summary, i) => ({
+    timestamp: new Date(Date.now() - (items.length - i) * 30*24*3600*1000).toISOString().split('T')[0],
+    summary,
+    tags: [],
+  }));
+  await api('/api/events', 'POST', {events: newEvents});
+  await loadEvents();
+  renderEventsAsNetwork();
+  toast(`已添加 ${newEvents.length} 个事件`);
+}
+
+// ═══ 搜索 ═══
+function onSearch(query) {
+  const panel = document.getElementById('search-results');
+  if(!query.trim()) { panel.classList.remove('show'); return; }
+  const q = query.toLowerCase();
+  const results = [];
+  // 搜事件
+  events.forEach(e => {
+    if(e.summary.toLowerCase().includes(q) || (e.tags||[]).some(t=>t.toLowerCase().includes(q))) {
+      results.push({type:'event', name:e.summary, conf:'', data:e});
+    }
+  });
+  // 搜因果链
+  if(currentNetwork) {
+    currentNetwork.edges.forEach(edge => {
+      const src = currentNetwork.nodes.find(n=>n.id===edge.source);
+      const tgt = currentNetwork.nodes.find(n=>n.id===edge.target);
+      if(src && tgt) {
+        const text = (src.name + tgt.name + (edge.description||'')).toLowerCase();
+        if(text.includes(q)) {
+          results.push({type:'edge', name:`${src.name} → ${tgt.name}`, conf:Math.round(edge.confidence*100)+'%', data:edge});
+        }
+      }
+    });
+  }
+  panel.innerHTML = results.slice(0,10).map(r => {
+    const color = r.type==='edge' ? (parseInt(r.conf)>=50?'#D55E00':'#E69F00') : '#86868b';
+    return `<div class="search-result-item" onclick="onSearchClick('${r.type}', '${r.name}')">
+      <span class="sr-conf" style="color:${color}">${r.conf||r.type}</span>
+      <span>${r.name}</span>
+    </div>`;
+  }).join('');
+  panel.classList.add('show');
+}
+
+function onSearchClick(type, name) {
+  document.getElementById('search-results').classList.remove('show');
+  if(type==='edge' && currentNetwork) {
+    const parts = name.split(' → ');
+    highlightNodeByName(parts[0]);
+  }
+}
+
+// ═══ 因果挖掘 ═══
+async function startMining() {
+  const text = document.getElementById('task-input').value.trim();
+  let mineEvents = events;
+  if(text) {
+    const items = text.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+    mineEvents = items.map((summary, i) => ({
+      timestamp: new Date(Date.now() - (items.length - i) * 30*24*3600*1000).toISOString().split('T')[0],
+      summary,
+      tags: [],
+    }));
+  }
+  if(!mineEvents.length) { toast('请先添加事件'); return; }
+
+  // 显示加载
+  showLoading();
+  updateLoadingText(`正在分析 ${mineEvents.length} 个事件...`);
+
+  try {
+    const res = await api('/api/mine', 'POST', {events: mineEvents});
+    miningTaskId = res.task_id;
+    pollTask();
+  } catch(e) {
+    hideLoading();
+    toast('请求失败: ' + e.message);
+  }
+}
+
+async function pollTask() {
+  if(!miningTaskId) return;
+  try {
+    const task = await api(`/api/task/${miningTaskId}`);
+    updateLoadingText(task.progress || '处理中...');
+
+    if(task.status === 'done') {
+      hideLoading();
+      currentNetwork = task.result;
+      renderNetwork(currentNetwork);
+      updateNetworkInfo();
+      document.getElementById('network-info').textContent = `${task.result.stats.node_count} 节点 · ${task.result.stats.edge_count} 条因果链 · mimo挖掘`
+      toast(`挖掘完成：${task.result.stats.node_count} 节点 / ${task.result.stats.edge_count} 条链`);
+      // 自动保存
+      const name = 'mining_' + new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+      await api('/api/save', 'POST', {name, data: currentNetwork});
+      await loadNetworks();
+    } else if(task.status === 'error') {
+      hideLoading();
+      toast('挖掘失败: ' + task.progress);
+    } else {
+      // 继续轮询
+      const elapsed = task.elapsed || 0;
+      const pct = Math.min(90, elapsed / 60 * 100);
+      document.getElementById('progress-fill').style.width = pct + '%';
+      setTimeout(pollTask, 2000);
+    }
+  } catch(e) {
+    setTimeout(pollTask, 3000);
+  }
+}
+
+// ═══ 加载动画 ═══
+function showLoading() {
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('progress-fill').style.width = '0%';
+}
+function hideLoading() {
+  document.getElementById('loading').classList.remove('show');
+}
+function updateLoadingText(text) {
+  document.getElementById('loading-text').textContent = text;
+}
+
+// ═══ 网络渲染 ═══
+function renderNetwork(data) {
+  while(nGroup.children.length) nGroup.remove(nGroup.children[0]);
+  while(eGroup.children.length) eGroup.remove(eGroup.children[0]);
+  nMeshes=[]; eLines=[]; nMap={};
+
+  if(!data || !data.nodes || !data.nodes.length) return;
+
+  const toon = new THREE.DataTexture(new Uint8Array([120,120,120,190,190,190,255,255,255]),3,1,THREE.RGBFormat);
+  toon.needsUpdate = true;
+
+  // 连接数
+  const cc={};
+  data.nodes.forEach(nd=>cc[nd.id]=0);
+  data.edges.forEach(e=>{cc[e.source]=(cc[e.source]||0)+1;cc[e.target]=(cc[e.target]||0)+1;});
+
+  // ═══ 力导向布局 ═══
+  // 先按时间排序，计算初始位置
+  const sorted = [...data.nodes].sort((a,b)=>a.timestamp.localeCompare(b.timestamp));
+  const tMin = new Date(sorted[0].timestamp).getTime();
+  const tMax = new Date(sorted[sorted.length-1].timestamp).getTime();
+  const tRange = tMax-tMin || 1;
+
+  // BFS 深度（从根节点开始）
+  const rootIds = data.nodes.filter(n=>n.isRoot).map(n=>n.id);
+  if(!rootIds.length) rootIds.push(sorted[0].id);
+  const bfsDepth = {};
+  const queue = [...rootIds];
+  rootIds.forEach(id=>bfsDepth[id]=0);
+  const adj = {};
+  data.edges.forEach(e=>{
+    if(!adj[e.source]) adj[e.source]=[];
+    adj[e.source].push(e.target);
+  });
+  while(queue.length){
+    const cur=queue.shift();
+    for(const nxt of (adj[cur]||[])){
+      if(!(nxt in bfsDepth)){
+        bfsDepth[nxt]=bfsDepth[cur]+1;
+        queue.push(nxt);
+      }
+    }
+  }
+
+  // 初始位置：X=时间, Y=BFS深度, Z=连接数分散
+  const maxDepth = Math.max(...Object.values(bfsDepth),1);
+  const maxCc = Math.max(...Object.values(cc),1);
+
+  data.nodes.forEach(nd => {
+    const ts = new Date(nd.timestamp).getTime();
+    const x = ((ts-tMin)/tRange)*40-20;
+    const depth = bfsDepth[nd.id]||0;
+    const y = (depth/maxDepth)*25;
+    // Z 用连接数 + hash 分散，避免重叠
+    const hash = nd.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+    const z = ((cc[nd.id]||0)/maxCc)*12 + (hash%7)*2 - 7;
+    nMap[nd.id] = {...nd, x, y, z, bfsDepth:depth};
+  });
+
+  // 力导向迭代（简单版：排斥+弹簧）
+  const ids = data.nodes.map(n=>n.id);
+  for(let iter=0;iter<60;iter++){
+    const forces={};
+    ids.forEach(id=>forces[id]={x:0,y:0,z:0});
+    // 节点间排斥
+    for(let i=0;i<ids.length;i++){
+      for(let j=i+1;j<ids.length;j++){
+        const a=nMap[ids[i]],b=nMap[ids[j]];
+        const dx=a.x-b.x,dy=a.y-b.y,dz=a.z-b.z;
+        const dist=Math.sqrt(dx*dx+dy*dy+dz*dz)||0.1;
+        const force=80/(dist*dist);
+        const fx=dx/dist*force,fy=dy/dist*force,fz=dz/dist*force;
+        forces[ids[i]].x+=fx;forces[ids[i]].y+=fy;forces[ids[i]].z+=fz;
+        forces[ids[j]].x-=fx;forces[ids[j]].y-=fy;forces[ids[j]].z-=fz;
+      }
+    }
+    // 边的弹簧力
+    data.edges.forEach(e=>{
+      const a=nMap[e.source],b=nMap[e.target];
+      if(!a||!b)return;
+      const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z;
+      const dist=Math.sqrt(dx*dx+dy*dy+dz*dz)||0.1;
+      const ideal=6+Math.abs(a.bfsDepth-b.bfsDepth)*3;
+      const force=(dist-ideal)*0.02;
+      const fx=dx/dist*force,fy=dy/dist*force,fz=dz/dist*force;
+      forces[e.source].x+=fx;forces[e.source].y+=fy;forces[e.source].z+=fz;
+      forces[e.target].x-=fx;forces[e.target].y-=fy;forces[e.target].z-=fz;
+    });
+    // 时间锚定力（X 方向拉回时间位置）
+    ids.forEach(id=>{
+      const nd=nMap[id];
+      const ts=new Date(nd.timestamp).getTime();
+      const targetX=((ts-tMin)/tRange)*40-20;
+      forces[id].x+=(targetX-nd.x)*0.1;
+    });
+    // 应用力
+    const damp=0.6*(1-iter/80);
+    ids.forEach(id=>{
+      nMap[id].x+=forces[id].x*damp;
+      nMap[id].y+=forces[id].y*damp;
+      nMap[id].z+=forces[id].z*damp;
+      nMap[id].y=Math.max(-2,nMap[id].y);
+    });
+  }
+
+  // 渲染节点
+  data.nodes.forEach(nd => {
+    const {x,y,z} = nMap[nd.id];
+    const r = nd.isRoot?1.4:0.4+cc[nd.id]*0.08;
+    const col = nd.isRoot?0xD55E00:0xE69F00;
+    const geo = new THREE.SphereGeometry(r,24,24);
+    const mat = new THREE.MeshToonMaterial({color:col, gradientMap:toon});
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(x,y,z);
+    mesh.userData = nd;
+    nGroup.add(mesh);
+    nMeshes.push(mesh);
+
+    const oGeo = new THREE.SphereGeometry(r*1.08,24,24);
+    const oMat = new THREE.MeshBasicMaterial({color:0x333333,side:THREE.BackSide});
+    const oMesh = new THREE.Mesh(oGeo,oMat);
+    oMesh.position.copy(mesh.position);
+    nGroup.add(oMesh);
+
+    const c=document.createElement('canvas'),ctx=c.getContext('2d');
+    c.width=1024;c.height=128;
+    ctx.font='600 48px -apple-system,PingFang SC,sans-serif';
+    ctx.fillStyle='#1d1d1f';ctx.textAlign='center';
+    ctx.shadowColor='rgba(244,244,246,0.95)';ctx.shadowBlur=8;
+    ctx.fillText(nd.name.length>13?nd.name.slice(0,13)+'…':nd.name,512,82);
+    const tex=new THREE.CanvasTexture(c);tex.minFilter=THREE.LinearFilter;
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
+    sp.position.set(x,y-r-1.2,z);sp.scale.set(6,1,1);nGroup.add(sp);
+  });
+
+  // 连线
+  data.edges.forEach(e => {
+    const s=nMap[e.source],t=nMap[e.target];
+    if(!s||!t)return;
+    const pts=[];
+    for(let i=0;i<=20;i++){
+      const p=i/20;
+      pts.push(new THREE.Vector3(
+        s.x+(t.x-s.x)*p,
+        s.y+(t.y-s.y)*p+Math.sin(p*Math.PI)*2,
+        s.z+(t.z-s.z)*p
+      ));
+    }
+    const curve=new THREE.CatmullRomCurve3(pts);
+    const thick=e.confidence>=0.5?0.12:e.confidence>=0.3?0.07:0.03;
+    const col=e.confidence>=0.5?0xD55E00:e.confidence>=0.3?0xE69F00:0xcccccc;
+    const opa=e.confidence>=0.3?0.8:0.3;
+    const geo=new THREE.TubeGeometry(curve,20,thick,8,false);
+    const mat=new THREE.MeshToonMaterial({color:col,gradientMap:toon,transparent:true,opacity:opa});
+    const tube=new THREE.Mesh(geo,mat);
+    tube.userData=e;
+    eGroup.add(tube);
+    eLines.push(tube);
+  });
+}
+
+// ═══ 控制 ═══
+function resetCamera() {
+  camera.position.set(40,20,40);ctrl.target.set(0,10,5);
+  nMeshes.forEach(m=>{m.material.opacity=1;});
+  eLines.forEach(l=>{l.material.opacity=l.userData.confidence>=0.3?0.8:0.3;});
+}
+let edgesOn=true;
+function toggleEdges(){edgesOn=!edgesOn;eGroup.visible=edgesOn;}
+function highlightRoot(){
+  if(!currentNetwork)return;
+  const roots=currentNetwork.nodes.filter(n=>n.isRoot).map(n=>n.id);
+  const connected=new Set(roots);
+  currentNetwork.edges.forEach(e=>{if(roots.includes(e.source))connected.add(e.target);});
+  nMeshes.forEach(m=>{m.material.opacity=connected.has(m.userData.id)?1:0.08;});
+  eLines.forEach(l=>{l.material.opacity=roots.includes(l.userData.source)?0.9:0.04;});
+}
+function highlightNodeById(id){
+  if(!currentNetwork)return;
+  const connected=new Set([id]);
+  currentNetwork.edges.forEach(e=>{if(e.source===id)connected.add(e.target);if(e.target===id)connected.add(e.source);});
+  nMeshes.forEach(m=>{m.material.opacity=connected.has(m.userData.id)?1:0.06;});
+  eLines.forEach(l=>{l.material.opacity=(l.userData.source===id||l.userData.target===id)?0.9:0.03;});
+}
+
+function highlightNodeByName(name){
+  const nd=currentNetwork.nodes.find(n=>n.name.includes(name));
+  if(!nd)return;
+  const connected=new Set([nd.id]);
+  currentNetwork.edges.forEach(e=>{if(e.source===nd.id)connected.add(e.target);if(e.target===nd.id)connected.add(e.source);});
+  nMeshes.forEach(m=>{m.material.opacity=connected.has(m.userData.id)?1:0.06;});
+  eLines.forEach(l=>{l.material.opacity=(l.userData.source===nd.id||l.userData.target===nd.id)?0.9:0.03;});
+}
+function autoSpin(){ctrl.autoRotate=!ctrl.autoRotate;ctrl.autoRotateSpeed=1;}
+
+// ═══ 网络管理 ═══
+async function loadNetworks() {
+  const networks = await api('/api/networks');
+  const list = document.getElementById('network-list');
+  list.innerHTML = networks.map(n => {
+    return `<div class="network-item" onclick="loadSavedNetwork('${n.name}')">
+      <span class="ni-name">${n.name}</span>
+      <span class="ni-meta">${Math.round(n.size/1024)}KB</span>
+    </div>`;
+  }).join('') || '<div style="font-size:11px;color:#bbb;padding:8px">暂无保存的网络</div>';
+}
+
+async function loadSavedNetwork(name) {
+  const data = await api(`/api/network/${name}`);
+  if(data && data.nodes) {
+    currentNetwork = data;
+    renderNetwork(data);
+    updateNetworkInfo();
+    toast(`已加载: ${name}`);
+  }
+}
+
+async function saveNetwork() {
+  if(!currentNetwork) { toast('没有可保存的网络'); return; }
+  const name = prompt('网络名称:', '因果网络_' + new Date().toLocaleDateString());
+  if(!name) return;
+  await api('/api/save', 'POST', {name, data: currentNetwork});
+  await loadNetworks();
+  toast(`已保存: ${name}`);
+}
+
+function updateNetworkInfo() {
+  if(!currentNetwork) return;
+  const s = currentNetwork.stats;
+  document.getElementById('network-info').textContent = `${s.node_count} 节点 · ${s.edge_count} 条链 · ${s.root_count} 根因`;
+}
+
+// ═══ 节点菜单 ═══
+function showNodeMenu(nd, x, y) {
+  const menu = document.getElementById('context-menu');
+  menu.style.left = x + 'px';
+  menu.style.top = y + 'px';
+  menu.innerHTML = `
+    <button onclick="mineFromNode('${nd.id}')">🔍 挖掘「${nd.name.slice(0,12)}」的因果</button>
+    <button onclick="expandNode('${nd.id}')">📊 展开关联事件</button>
+    <button onclick="hideMenu()">取消</button>
+  `;
+  menu.classList.add('show');
+  setTimeout(()=>document.addEventListener('click', hideMenu, {once:true}), 100);
+}
+function hideMenu(){document.getElementById('context-menu').classList.remove('show');}
+
+async function mineFromNode(nodeId) {
+  hideMenu();
+  if(!currentNetwork) return;
+  const node = currentNetwork.nodes.find(n=>n.id===nodeId);
+  if(!node) return;
+  showLoading();
+  updateLoadingText(`正在挖掘「${node.name}」的因果关系...`);
+  try {
+    const res = await api('/api/mine', 'POST', {
+      events: events,
+      focus_node: node.name,
+    });
+    miningTaskId = res.task_id;
+    pollTask();
+  } catch(e) {
+    hideLoading();
+    toast('挖掘失败');
+  }
+}
+
+function expandNode(nodeId) {
+  hideMenu();
+  if(!currentNetwork) return;
+  highlightNodeById(nodeId);
+}
+
+// ═══ AI 任务 ═══
+async function startAITask() {
+  const input = document.getElementById('ai-task-input');
+  const query = input.value.trim();
+  if(!query) { toast('请描述你想了解的问题'); return; }
+  showLoading();
+  updateLoadingText('AI 正在研究：' + query.slice(0,30) + '...');
+  document.getElementById('progress-fill').style.width = '10%';
+  try {
+    const res = await api('/api/ai-task', 'POST', { query });
+    miningTaskId = res.task_id;
+    pollTask();
+  } catch(e) {
+    hideLoading();
+    toast('AI 任务失败: ' + e.message);
+  }
+}
+
+// ═══ 工具 ═══
+function toast(text) {
+  const el = document.getElementById('toast');
+  el.textContent = text;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 3000);
+}
+
+// ═══ 启动 ═══
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1238 @@
+{
+  "nodes": [
+    {
+      "id": "2dd710ba",
+      "name": "米哈游由上海交通大学学生蔡浩宇、刘伟、罗宇皓三人创立，初期仅有3人团队",
+      "timestamp": "2011-01-01",
+      "tags": [
+        "创业",
+        "团队组建",
+        "起源"
+      ],
+      "isRoot": true,
+      "isLeaf": false
+    },
+    {
+      "id": "e92fcfbc",
+      "name": "推出首款游戏《FlyMe2theMoon》，初步展现团队美术和技术风格",
+      "timestamp": "2011-09-28",
+      "tags": [
+        "产品发布",
+        "游戏开发",
+        "早期尝试"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "c33845ed",
+      "name": "获得斯凯网络投资的100万元天使轮融资，公司初期资金问题缓解",
+      "timestamp": "2012-01-01",
+      "tags": [
+        "资本",
+        "融资",
+        "初创期"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "2651e50d",
+      "name": "《崩坏学园》上线，首次尝试“崩坏”IP，采用横版射击玩法",
+      "timestamp": "2012-11-01",
+      "tags": [
+        "产品发布",
+        "崩坏系列",
+        "IP建立"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "16c66bb2",
+      "name": "《崩坏学园2》发布，采用免费模式并加入扭蛋机制，商业化成功",
+      "timestamp": "2014-01-01",
+      "tags": [
+        "商业模式",
+        "产品迭代",
+        "收入增长"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "6dc5e336",
+      "name": "公司正式更名为“米哈游”（miHoYo），明确以技术宅拯救世界为愿景",
+      "timestamp": "2014-06-01",
+      "tags": [
+        "品牌战略",
+        "公司发展",
+        "文化确立"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "c1824493",
+      "name": "《崩坏3》发布，采用全3D卡通渲染技术，技术实力显著提升",
+      "timestamp": "2016-10-14",
+      "tags": [
+        "技术突破",
+        "产品发布",
+        "3D化"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "29d2c673",
+      "name": "开始研发《原神》，投入大量资源尝试开放世界玩法",
+      "timestamp": "2017-01-01",
+      "tags": [
+        "研发",
+        "原神项目",
+        "战略布局"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "e120a38f",
+      "name": "《原神》在E3游戏展正式公布，引发全球关注",
+      "timestamp": "2019-06-08",
+      "tags": [
+        "市场预热",
+        "原神",
+        "国际亮相"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "e1d7db25",
+      "name": "《原神》全球同步上线，首日收入即突破千万美元",
+      "timestamp": "2020-09-28",
+      "tags": [
+        "产品发布",
+        "原神",
+        "全球化发行",
+        "商业成功"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "f7532e2a",
+      "name": "《原神》登陆PlayStation平台，主机市场取得突破",
+      "timestamp": "2021-04-01",
+      "tags": [
+        "平台扩展",
+        "原神",
+        "主机市场"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "e2c50125",
+      "name": "启动“米哈游·iG未来科技探索计划”，加大技术研发投入",
+      "timestamp": "2021-07-01",
+      "tags": [
+        "技术研发",
+        "战略布局",
+        "未来投资"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "7f45dc70",
+      "name": "《原神》持续更新，全球累计收入超过40亿美元",
+      "timestamp": "2022-01-01",
+      "tags": [
+        "产品运营",
+        "原神",
+        "收入里程碑"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "79f6338b",
+      "name": "宣布成立米哈游·音乐团队，深化IP内容开发",
+      "timestamp": "2022-02-01",
+      "tags": [
+        "IP开发",
+        "内容拓展",
+        "音乐"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "43eb2f9b",
+      "name": "《原神》两周年，玩家数突破6000万，全球化影响力确立",
+      "timestamp": "2022-09-28",
+      "tags": [
+        "用户增长",
+        "原神",
+        "市场地位"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "4c6bb235",
+      "name": "推出《崩坏：星穹铁道》，延续IP影响力并开拓新赛道",
+      "timestamp": "2023-04-01",
+      "tags": [
+        "产品发布",
+        "IP延续",
+        "新品类"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "d70768e3",
+      "name": "米哈游与Epic Games合作，加强引擎技术合作",
+      "timestamp": "2023-08-01",
+      "tags": [
+        "技术合作",
+        "产业链",
+        "引擎"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "c5e4296d",
+      "name": "投资人工智能和脑机接口领域，探索游戏技术边界",
+      "timestamp": "2024-01-01",
+      "tags": [
+        "战略投资",
+        "前沿技术",
+        "多元化"
+      ],
+      "isRoot": false,
+      "isLeaf": false
+    },
+    {
+      "id": "40eca1d8",
+      "name": "米哈游总部新大楼奠基，建设上海漕河泾开发区新基地",
+      "timestamp": "2024-06-01",
+      "tags": [
+        "公司扩张",
+        "基础设施",
+        "长期发展"
+      ],
+      "isRoot": false,
+      "isLeaf": true
+    }
+  ],
+  "edges": [
+    {
+      "source": "2dd710ba",
+      "target": "e92fcfbc",
+      "confidence": 0.95,
+      "description": "公司创立为团队开发和发布首款游戏提供了必要基础"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "c33845ed",
+      "confidence": 0.8,
+      "description": "公司创立作为初创企业吸引天使投资，缓解初期资金问题"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "2651e50d",
+      "confidence": 0.95,
+      "description": "公司创立使得团队能够持续开发并推出后续游戏"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "16c66bb2",
+      "confidence": 0.95,
+      "description": "公司创立后的运营和迭代导致产品商业化成功"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "6dc5e336",
+      "confidence": 0.95,
+      "description": "公司创立后的成长和战略调整直接促成更名和愿景确立"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "c1824493",
+      "confidence": 0.85,
+      "description": "公司创立后的持续研发积累导致技术突破和产品发布"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "29d2c673",
+      "confidence": 0.85,
+      "description": "公司创立后的经验和资源使得能够启动大型研发项目"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "e120a38f",
+      "confidence": 0.85,
+      "description": "公司创立后的研发努力导致产品的公开亮相和市场预热"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "e1d7db25",
+      "confidence": 0.85,
+      "description": "公司创立是《原神》全球上线和商业成功的长期基础"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "f7532e2a",
+      "confidence": 0.8,
+      "description": "公司创立后的产品成功推动平台扩展和主机市场突破"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "e2c50125",
+      "confidence": 0.8,
+      "description": "公司创立后的成功使得有能力加大技术研发投入"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "7f45dc70",
+      "confidence": 0.8,
+      "description": "公司创立是《原神》持续运营和收入增长的前提"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "79f6338b",
+      "confidence": 0.8,
+      "description": "公司创立后的IP发展导致内容拓展和音乐团队成立"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "43eb2f9b",
+      "confidence": 0.8,
+      "description": "公司创立是《原神》用户增长和全球化影响力的基础"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "4c6bb235",
+      "confidence": 0.85,
+      "description": "公司创立后的持续开发导致新产品发布和IP延续"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "d70768e3",
+      "confidence": 0.6,
+      "description": "公司创立是长期发展的起点，通过技术积累和业务扩张最终促成技术合作"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "c5e4296d",
+      "confidence": 0.6,
+      "description": "创立奠定基础，通过成功运营和资本积累驱动前沿技术投资"
+    },
+    {
+      "source": "2dd710ba",
+      "target": "40eca1d8",
+      "confidence": 0.6,
+      "description": "创业初始条件通过业务增长和规模扩张间接导致基础设施扩展"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "c33845ed",
+      "confidence": 0.8,
+      "description": "首款游戏发布展示了团队能力和产品潜力，直接吸引天使投资"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "2651e50d",
+      "confidence": 0.7,
+      "description": "早期游戏开发经验为后续IP建立和技术迭代提供了直接基础"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "16c66bb2",
+      "confidence": 0.5,
+      "description": "首款游戏作为起点，通过系列迭代和商业模式优化间接促成商业化成功"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "6dc5e336",
+      "confidence": 0.6,
+      "description": "初期产品尝试帮助明确公司愿景，驱动品牌和文化调整"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "c1824493",
+      "confidence": 0.6,
+      "description": "技术经验积累通过产品研发链条逐步提升至3D技术突破"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "29d2c673",
+      "confidence": 0.6,
+      "description": "早期开发实践为资源投入和战略转向开放世界研发奠定基础"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "e120a38f",
+      "confidence": 0.5,
+      "description": "从首款游戏到《原神》公布，通过长期研发和市场准备间接关联"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "e1d7db25",
+      "confidence": 0.5,
+      "description": "首款游戏开启开发路径，经多年迭代间接促成《原神》全球成功"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "f7532e2a",
+      "confidence": 0.5,
+      "description": "技术积累和产品成熟度通过发展过程间接支持平台扩展"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "e2c50125",
+      "confidence": 0.6,
+      "description": "早期技术基础促使公司加大研发投入，推动未来科技计划"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "7f45dc70",
+      "confidence": 0.5,
+      "description": "从首款游戏到《原神》持续运营，通过长期发展链条间接产生收入"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "79f6338b",
+      "confidence": 0.6,
+      "description": "游戏IP开发从早期作品起步，逐步衍生内容拓展如音乐团队"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "43eb2f9b",
+      "confidence": 0.6,
+      "description": "首款游戏为团队积累了美术和技术经验，间接支撑了后续《原神》的成功和全球化扩张"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "4c6bb235",
+      "confidence": 0.6,
+      "description": "早期游戏开发经验促进了技术迭代和IP发展，为《崩坏：星穹铁道》的推出奠定基础"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "d70768e3",
+      "confidence": 0.4,
+      "description": "首款游戏展示的技术潜力可能影响公司技术战略，但合作更多基于整体实力，因果链较弱"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "c5e4296d",
+      "confidence": 0.3,
+      "description": "早期游戏涉及的技术探索与AI和脑机接口领域有弱关联，投资决策更依赖公司战略而非直接因果"
+    },
+    {
+      "source": "e92fcfbc",
+      "target": "40eca1d8",
+      "confidence": 0.5,
+      "description": "首款游戏为公司发展奠基，但新大楼建设源于长期成功和扩张需求，间接因果"
+    },
+    {
+      "source": "c33845ed",
+      "target": "2651e50d",
+      "confidence": 0.9,
+      "description": "天使轮融资直接提供了资金，支持了《崩坏学园》的开发和上线"
+    },
+    {
+      "source": "c33845ed",
+      "target": "16c66bb2",
+      "confidence": 0.7,
+      "description": "融资缓解了初期资金压力，为《崩坏学园2》的产品迭代和商业化提供资源"
+    },
+    {
+      "source": "c33845ed",
+      "target": "6dc5e336",
+      "confidence": 0.6,
+      "description": "融资使公司稳定运营，促进了品牌战略的明确和公司更名"
+    },
+    {
+      "source": "c33845ed",
+      "target": "c1824493",
+      "confidence": 0.7,
+      "description": "融资为技术投入提供资金，支持了《崩坏3》的3D技术突破"
+    },
+    {
+      "source": "c33845ed",
+      "target": "29d2c673",
+      "confidence": 0.6,
+      "description": "早期融资积累了资源，为《原神》的大型研发项目提供了启动基础"
+    },
+    {
+      "source": "c33845ed",
+      "target": "e120a38f",
+      "confidence": 0.6,
+      "description": "融资支持了公司长期发展，使《原神》得以在E3公布并引发关注"
+    },
+    {
+      "source": "c33845ed",
+      "target": "e1d7db25",
+      "confidence": 0.7,
+      "description": "融资为公司运营和全球发行提供资金，间接促成《原神》的商业成功"
+    },
+    {
+      "source": "c33845ed",
+      "target": "f7532e2a",
+      "confidence": 0.6,
+      "description": "融资支持了产品开发和平台扩展，使《原神》能登陆PlayStation"
+    },
+    {
+      "source": "c33845ed",
+      "target": "e2c50125",
+      "confidence": 0.5,
+      "description": "融资为技术研发投入提供资金，间接推动了科技探索计划的启动"
+    },
+    {
+      "source": "c33845ed",
+      "target": "7f45dc70",
+      "confidence": 0.7,
+      "description": "融资支持了公司持续运营和产品更新，间接导致《原神》收入里程碑"
+    },
+    {
+      "source": "c33845ed",
+      "target": "43eb2f9b",
+      "confidence": 0.7,
+      "description": "天使轮融资是公司得以存续和早期发展的关键起点，为《崩坏》系列及后续产品（包括《原神》）的研发积累了经验和资源，是实现长期用户增长的必要基础。"
+    },
+    {
+      "source": "c33845ed",
+      "target": "4c6bb235",
+      "confidence": 0.7,
+      "description": "早期融资保障了公司存续和初期产品开发，通过“崩坏”系列的成功积累了资金、技术与IP运营能力，为后续推出《崩坏：星穹铁道》这类新作奠定了基础。"
+    },
+    {
+      "source": "c33845ed",
+      "target": "d70768e3",
+      "confidence": 0.3,
+      "description": "早期融资支持了公司生存，使其有能力发展至需要与Epic合作的阶段，但技术合作是公司成长到一定规模后的主动选择，因果关系较弱。"
+    },
+    {
+      "source": "c33845ed",
+      "target": "c5e4296d",
+      "confidence": 0.4,
+      "description": "早期资本注入是公司长期发展的基石，但投资前沿科技是公司基于当前盈利能力和战略视野做出的决策，两者时间跨度大，直接因果链不明确。"
+    },
+    {
+      "source": "c33845ed",
+      "target": "40eca1d8",
+      "confidence": 0.6,
+      "description": "初始融资解决了生存问题，使公司能够持续发展并积累足够资源进行基础设施投资，因果链条较长但逻辑合理。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "16c66bb2",
+      "confidence": 0.95,
+      "description": "《崩坏学园》的成功验证了IP和玩法，其经验、用户反馈和收入直接催生了《崩坏学园2》的迭代与商业模式优化。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "6dc5e336",
+      "confidence": 0.8,
+      "description": "首款《崩坏》产品的初步成功，增强了团队信心，并围绕“崩坏”IP形成了初步的公司认同与文化，促成了正式更名和愿景确立。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "c1824493",
+      "confidence": 0.85,
+      "description": "《崩坏学园》系列的成功为公司提供了持续的研发资金和技术积累需求，推动了团队在《崩坏3》中进行全3D卡通渲染的技术突破。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "29d2c673",
+      "confidence": 0.9,
+      "description": "《崩坏》系列（从《崩坏学园》开始）的成功，不仅提供了研发《原神》所需的资金，更重要的是积累了IP开发、游戏引擎和团队管理的核心能力。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "e120a38f",
+      "confidence": 0.8,
+      "description": "“崩坏”IP系列的成功，使米哈游获得了国际关注度和信誉，为其在E3公布《原神》并引发全球期待创造了品牌条件。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "e1d7db25",
+      "confidence": 0.9,
+      "description": "《崩坏》系列的持续成功，为《原神》这一耗资巨大的项目提供了资金、技术、团队和发行渠道的保障，是《原神》能够全球上线并取得商业成功的底层基础。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "f7532e2a",
+      "confidence": 0.75,
+      "description": "《崩坏》系列在移动端的成功，使索尼等主机平台对米哈游的号召力和《原神》的品质有信心，促成了主机平台的登陆。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "e2c50125",
+      "confidence": 0.7,
+      "description": "《崩坏》IP带来的稳定收益和行业地位，是公司有能力启动长期、高风险科技探索计划的经济和战略基础。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "7f45dc70",
+      "confidence": 0.85,
+      "description": "从《崩坏学园》开始建立的IP体系、用户基础和运营经验，是《原神》能够持续更新并取得累计收入里程碑的关键支撑。"
+    },
+    {
+      "source": "2651e50d",
+      "target": "79f6338b",
+      "confidence": 0.6,
+      "description": "《崩坏学园》建立IP基础，间接支持后续内容开发如音乐团队"
+    },
+    {
+      "source": "2651e50d",
+      "target": "43eb2f9b",
+      "confidence": 0.7,
+      "description": "早期产品成功积累技术和资源，为《原神》全球成功奠定基础"
+    },
+    {
+      "source": "2651e50d",
+      "target": "4c6bb235",
+      "confidence": 0.9,
+      "description": "同一IP的直接延续，《崩坏学园》为《崩坏：星穹铁道》提供IP基础"
+    },
+    {
+      "source": "2651e50d",
+      "target": "d70768e3",
+      "confidence": 0.3,
+      "description": "技术合作由后续产品需求驱动，与早期产品关联较弱"
+    },
+    {
+      "source": "2651e50d",
+      "target": "c5e4296d",
+      "confidence": 0.5,
+      "description": "早期成功提供资金，支持公司多元化战略投资"
+    },
+    {
+      "source": "2651e50d",
+      "target": "40eca1d8",
+      "confidence": 0.6,
+      "description": "公司增长导致基础设施扩张需求，但非直接由首个产品引发"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "6dc5e336",
+      "confidence": 0.8,
+      "description": "商业成功增强公司信心，促使其明确品牌愿景并更名"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "c1824493",
+      "confidence": 0.9,
+      "description": "前代产品成功提供资源和技术基础，直接推动续作开发"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "29d2c673",
+      "confidence": 0.8,
+      "description": "商业成功提供资源，直接支持《原神》项目研发启动"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "e120a38f",
+      "confidence": 0.7,
+      "description": "资源积累支持研发过程，间接导致《原神》全球公布"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "e1d7db25",
+      "confidence": 0.7,
+      "description": "早期成功为《原神》开发提供基础，间接促成其全球上线"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "f7532e2a",
+      "confidence": 0.6,
+      "description": "公司发展支持《原神》成功，间接推动其平台扩展"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "e2c50125",
+      "confidence": 0.8,
+      "description": "商业收入直接提供资金，用于加大技术研发投资"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "7f45dc70",
+      "confidence": 0.7,
+      "description": "资源积累支持《原神》开发和运营，间接导致收入里程碑"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "79f6338b",
+      "confidence": 0.8,
+      "description": "商业成功提供资源，直接支持IP内容深化如音乐团队成立"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "43eb2f9b",
+      "confidence": 0.7,
+      "description": "《崩坏学园2》的商业化成功为米哈游积累了资金和运营经验，为后续开发《原神》奠定基础。"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "4c6bb235",
+      "confidence": 0.8,
+      "description": "《崩坏学园2》的成功确立了'崩坏'IP，直接催生了后续衍生作品如《崩坏：星穹铁道》。"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "d70768e3",
+      "confidence": 0.3,
+      "description": "商业化成功提供资源，但技术合作更多由《原神》等项目的引擎需求驱动，因果链较弱。"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "c5e4296d",
+      "confidence": 0.6,
+      "description": "商业化成功带来的资金积累使米哈游有能力进行多元化战略投资。"
+    },
+    {
+      "source": "16c66bb2",
+      "target": "40eca1d8",
+      "confidence": 0.7,
+      "description": "商业化成功导致公司规模扩张，需要建设新基础设施以支持长期发展。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "c1824493",
+      "confidence": 0.6,
+      "description": "更名和愿景确立激励了技术追求，推动了《崩坏3》的技术突破。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "29d2c673",
+      "confidence": 0.7,
+      "description": "愿景'技术宅拯救世界'直接促使米哈游投入资源研发开放世界游戏《原神》。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "e120a38f",
+      "confidence": 0.5,
+      "description": "更名后公司战略聚焦国际化，但《原神》在E3公布更多基于产品开发进度。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "e1d7db25",
+      "confidence": 0.5,
+      "description": "愿景驱动全球化战略，但收入成功受游戏质量和市场因素影响较大。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "f7532e2a",
+      "confidence": 0.5,
+      "description": "技术实力提升促使《原神》扩展到主机平台。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "e2c50125",
+      "confidence": 0.8,
+      "description": "愿景明确强调技术探索，直接导致'未来科技探索计划'的启动。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "7f45dc70",
+      "confidence": 0.5,
+      "description": "长期愿景支持持续运营和更新，但收入里程碑更多取决于市场表现。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "79f6338b",
+      "confidence": 0.6,
+      "description": "愿景驱动IP深度开发，成立音乐团队以丰富IP内容。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "43eb2f9b",
+      "confidence": 0.5,
+      "description": "公司战略和愿景支持《原神》的全球化推广和用户增长。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "4c6bb235",
+      "confidence": 0.6,
+      "description": "IP战略延续和公司愿景促成了《崩坏：星穹铁道》的开发。"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "d70768e3",
+      "confidence": 0.6,
+      "description": "公司愿景确立技术导向，促成长期技术合作"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "c5e4296d",
+      "confidence": 0.6,
+      "description": "技术宅愿景驱动对前沿技术的投资"
+    },
+    {
+      "source": "6dc5e336",
+      "target": "40eca1d8",
+      "confidence": 0.6,
+      "description": "公司愿景促进长期发展，导致基础设施扩张"
+    },
+    {
+      "source": "c1824493",
+      "target": "29d2c673",
+      "confidence": 0.9,
+      "description": "《崩坏3》的技术成功直接鼓励了《原神》的研发"
+    },
+    {
+      "source": "c1824493",
+      "target": "e120a38f",
+      "confidence": 0.7,
+      "description": "技术突破为《原神》开发奠定基础，导致后续公布"
+    },
+    {
+      "source": "c1824493",
+      "target": "e1d7db25",
+      "confidence": 0.8,
+      "description": "技术实力提升使《原神》成为可能，带来商业成功"
+    },
+    {
+      "source": "c1824493",
+      "target": "f7532e2a",
+      "confidence": 0.5,
+      "description": "技术成功和产品成功推动平台扩展"
+    },
+    {
+      "source": "c1824493",
+      "target": "e2c50125",
+      "confidence": 0.6,
+      "description": "技术突破激励公司加大技术研发投入"
+    },
+    {
+      "source": "c1824493",
+      "target": "7f45dc70",
+      "confidence": 0.8,
+      "description": "技术基础和《原神》持续更新带来高收入"
+    },
+    {
+      "source": "c1824493",
+      "target": "79f6338b",
+      "confidence": 0.4,
+      "description": "技术成功可能驱动IP内容深化，但关联较弱"
+    },
+    {
+      "source": "c1824493",
+      "target": "43eb2f9b",
+      "confidence": 0.8,
+      "description": "技术突破导致产品成功，确立市场地位"
+    },
+    {
+      "source": "c1824493",
+      "target": "4c6bb235",
+      "confidence": 0.7,
+      "description": "技术实力提升延续到新游戏开发"
+    },
+    {
+      "source": "c1824493",
+      "target": "d70768e3",
+      "confidence": 0.5,
+      "description": "技术成功增强合作伙伴信心，促成合作"
+    },
+    {
+      "source": "c1824493",
+      "target": "c5e4296d",
+      "confidence": 0.5,
+      "description": "技术突破驱动对前沿技术的投资"
+    },
+    {
+      "source": "c1824493",
+      "target": "40eca1d8",
+      "confidence": 0.5,
+      "description": "技术成功带来公司增长，需要基础设施扩张"
+    },
+    {
+      "source": "29d2c673",
+      "target": "e120a38f",
+      "confidence": 0.95,
+      "description": "投入资源进行研发是《原神》能在展会上公布并引发关注的直接前提和基础。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "e1d7db25",
+      "confidence": 0.9,
+      "description": "前期研发投入是产品能够成功开发并实现全球同步上线的必要条件。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "f7532e2a",
+      "confidence": 0.85,
+      "description": "研发并成功推出《原神》，才使其具备登陆新平台（如PlayStation）的可能性。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "e2c50125",
+      "confidence": 0.7,
+      "description": "《原神》研发成功带来的收入和行业地位，为公司启动更前瞻性的技术探索计划提供了资源和信心。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "7f45dc70",
+      "confidence": 0.95,
+      "description": "持续的研发和内容更新是游戏能够长期吸引玩家并积累巨额收入的核心驱动力。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "79f6338b",
+      "confidence": 0.6,
+      "description": "《原神》的巨大成功促使米哈游为深化其IP价值，成立了专门的音乐团队。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "43eb2f9b",
+      "confidence": 0.9,
+      "description": "游戏的研发质量和内容是吸引并留住玩家、最终形成庞大玩家基数的直接原因。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "4c6bb235",
+      "confidence": 0.8,
+      "description": "《原神》研发和运营成功积累的团队、技术、资金和IP影响力，是公司能推出另一款旗舰新作的关键。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "d70768e3",
+      "confidence": 0.7,
+      "description": "《原神》开发过程中对引擎技术的深度应用和需求，促成了与Epic Games在引擎层面的深化合作。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "c5e4296d",
+      "confidence": 0.65,
+      "description": "《原神》带来的丰厚利润和稳固的现金流，为公司进行高风险、前沿领域的战略投资提供了财务基础。"
+    },
+    {
+      "source": "29d2c673",
+      "target": "40eca1d8",
+      "confidence": 0.75,
+      "description": "《原神》的成功导致公司规模和业务扩张，从而产生了建设更大新基地的物理需求。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "e1d7db25",
+      "confidence": 0.9,
+      "description": "在重要展会上的公布是上线前的关键市场预热步骤，直接提升了游戏知名度并为全球发行铺平道路。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "f7532e2a",
+      "confidence": 0.8,
+      "description": "在E3等展会上的成功公布和展示，可能加速了与主机平台方（如索尼）的合作洽谈，促成登陆。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "e2c50125",
+      "confidence": 0.5,
+      "description": "公布的空前成功可能增强了管理层信心，但启动技术探索计划的直接动因更可能源于公司长期战略，关联较弱。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "7f45dc70",
+      "confidence": 0.7,
+      "description": "成功的公布是游戏获得巨大初始关注度并开启长期盈利之路的重要一环，是长期成功的间接原因之一。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "79f6338b",
+      "confidence": 0.8,
+      "description": "E3全球亮相为《原神》IP积累了早期声量，其后续商业成功为深入开发IP（如音乐）提供了资金和资源基础。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "43eb2f9b",
+      "confidence": 0.9,
+      "description": "E3的公布是《原神》全球化营销的关键起点，为游戏上线后的用户爆发式增长奠定了基础。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "4c6bb235",
+      "confidence": 0.8,
+      "description": "《原神》在E3的成功亮相及后续商业成就，为米哈游提供了信心和资源，去开拓新游戏赛道。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "d70768e3",
+      "confidence": 0.3,
+      "description": "E3展示与引擎技术合作无直接因果链，合作更可能源于米哈游基于自身技术需求的产业布局。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "c5e4296d",
+      "confidence": 0.7,
+      "description": "《原神》早期预热及成功带来的巨额收入，使公司有实力进行前沿技术领域的战略投资。"
+    },
+    {
+      "source": "e120a38f",
+      "target": "40eca1d8",
+      "confidence": 0.8,
+      "description": "《原神》早期引爆关注并最终取得巨大商业成功，是推动米哈游公司规模扩张和建设新基地的核心驱动力。"
+    },
+    {
+      "source": "e1d7db25",
+      "target": "f7532e2a",
+      "confidence": 0.9,
+      "description": "《原神》上线首日的商业成功验证了市场，为后续进入PlayStation等主机平台提供了谈判筹码和战略信心。"
+    },
+    {
+      "source": "e1d7db25",
+      "target": "e2c50125",
+      "confidence": 0.8,
+      "description": "上线初期的商业成功带来了充沛现金流，使米哈游有能力启动面向未来的技术探索计划。"
+    },
+    {
+      "source": "e1d7db25",
+      "target": "7f45dc70",
+      "confidence": 0.7,
+      "description": "上线首日的成功是一个良好开端，但收入里程碑的达成主要依赖于后续长期的内容更新和运营。"
+    },
+    {
+      "source": "e1d7db25",
+      "target": "79f6338b",
+      "confidence": 0.8,
+      "description": "《原神》上线后取得的商业成功和用户基础，是公司成立专门团队以深化该IP内容开发（如音乐）的直接基础。"
+    },
+    {
+      "source": "e1d7db25",
+      "target": "43eb2f9b",
+      "confidence": 0.7,
+      "description": "上线时的全球同步发行是玩家基数增长的关键起点，但玩家数的具体突破是长期运营的结果。"
+    },
+    {
+      "source": "e1d7db25",
+      "target": "4c6bb235",
+      "confidence": 0.8,
+      "description": "《原神》上线后的巨大成功，为米哈游开发并自信地推出《崩坏：星穹铁道》这类旗舰级新品提供了充足的资源和市场信心。"
+    },
+    {
+      "source": "e1d7db25",
+      "target": "d70768e3",
+      "confidence": 0.3,
+      "description": "与Epic Games的引擎合作更可能源于技术发展的行业常态与需求，而非某款游戏上线这一单一商业事件。"
+    },
+    {
+      "source": "e1d7db25",
+      "target": "c5e4296d",
+      "confidence": 0.7,
+      "description": "《原神》上线带来的巨额商业利润，为米哈游进行AI和脑机接口等前沿领域的风险投资提供了资本支持。"
+    },
+    {
+      "source": "e1d7db25",
+      "target": "40eca1d8",
+      "confidence": 0.8,
+      "description": "《原神》上线后的持续巨大成功，是推动米哈游公司进行大规模基础设施投资（如建新总部）的核心财务和信心基础。"
+    },
+    {
+      "source": "f7532e2a",
+      "target": "e2c50125",
+      "confidence": 0.85,
+      "description": "《原神》在主机市场的成功验证了公司跨平台能力并带来额外收入，为加大技术研发投入提供了资金和信心基础。"
+    },
+    {
+      "source": "f7532e2a",
+      "target": "7f45dc70",
+      "confidence": 0.9,
+      "description": "登陆PlayStation平台直接扩大了《原神》的用户覆盖范围和销售渠道，是其收入突破40亿美元的关键驱动因素之一。"
+    },
+    {
+      "source": "f7532e2a",
+      "target": "79f6338b",
+      "confidence": 0.75,
+      "description": "主机市场的成功提升了《原神》IP价值，促使公司从更多维度（如音乐）深化IP内容开发，以巩固和扩大影响力。"
+    },
+    {
+      "source": "f7532e2a",
+      "target": "43eb2f9b",
+      "confidence": 0.9,
+      "description": "平台扩展（尤其是进入主机市场）是《原神》玩家数量在两年内实现跨越式增长、确立全球化影响力的直接原因。"
+    },
+    {
+      "source": "f7532e2a",
+      "target": "4c6bb235",
+      "confidence": 0.8,
+      "description": "《原神》的成功为公司积累了充足的资金、技术经验和品牌势能，从而有能力并有动力去开拓新赛道（《崩坏：星穹铁道》）。"
+    },
+    {
+      "source": "f7532e2a",
+      "target": "d70768e3",
+      "confidence": 0.65,
+      "description": "在主机市场的技术实践和需求，可能促使米哈游寻求与Epic Games在引擎层面进行更深度的合作。"
+    },
+    {
+      "source": "f7532e2a",
+      "target": "c5e4296d",
+      "confidence": 0.7,
+      "description": "《原神》带来的巨额利润和行业地位，使公司有资源且有必要探索AI、脑机接口等前沿技术，以布局未来。"
+    },
+    {
+      "source": "f7532e2a",
+      "target": "40eca1d8",
+      "confidence": 0.75,
+      "description": "公司业务规模的快速扩张（由《原神》的成功驱动）对办公和研发基础设施提出了新需求。"
+    },
+    {
+      "source": "e2c50125",
+      "target": "7f45dc70",
+      "confidence": 0.4,
+      "description": "技术研发投入可能通过提升游戏品质间接促进收入增长，但收入里程碑更直接受市场、运营和内容更新驱动，关联较弱。"
+    },
+    {
+      "source": "e2c50125",
+      "target": "79f6338b",
+      "confidence": 0.3,
+      "description": "技术研发计划与成立音乐团队属于公司不同维度的战略（技术 vs. 内容），两者并行，但无明确因果传导路径。"
+    },
+    {
+      "source": "e2c50125",
+      "target": "43eb2f9b",
+      "confidence": 0.5,
+      "description": "技术投入可能通过优化游戏体验促进用户增长，但玩家数突破主要取决于内容更新、营销和市场环境等多重因素。"
+    },
+    {
+      "source": "e2c50125",
+      "target": "4c6bb235",
+      "confidence": 0.8,
+      "description": "“iG计划”聚焦未来科技，其成果（如技术积累）为开发新游戏《崩坏：星穹铁道》提供了必要的技术储备和研发能力。"
+    },
+    {
+      "source": "e2c50125",
+      "target": "d70768e3",
+      "confidence": 0.85,
+      "description": "加大技术研发投入的战略，自然导向在关键技术（如引擎）上寻求与顶级厂商（Epic Games）合作，以加速目标达成。"
+    },
+    {
+      "source": "e2c50125",
+      "target": "c5e4296d",
+      "confidence": 0.9,
+      "description": "“iG未来科技探索计划”的核心就是投资前沿技术，因此直接导向了对人工智能和脑机接口等领域的战略投资。"
+    },
+    {
+      "source": "e2c50125",
+      "target": "40eca1d8",
+      "confidence": 0.8,
+      "description": "技术研发投入的加大和公司长期发展的需要，对物理研发空间和设施提出了更高要求，推动了新基地建设。"
+    },
+    {
+      "source": "7f45dc70",
+      "target": "79f6338b",
+      "confidence": 0.8,
+      "description": "收入里程碑提供资金和资源，支持成立音乐团队深化IP"
+    },
+    {
+      "source": "7f45dc70",
+      "target": "43eb2f9b",
+      "confidence": 0.7,
+      "description": "收入高反映游戏热度，持续更新吸引更多玩家"
+    },
+    {
+      "source": "7f45dc70",
+      "target": "4c6bb235",
+      "confidence": 0.8,
+      "description": "收入成功为开发新游戏提供资金和信心"
+    },
+    {
+      "source": "7f45dc70",
+      "target": "d70768e3",
+      "confidence": 0.6,
+      "description": "财务成功支持技术合作以提升游戏引擎"
+    },
+    {
+      "source": "7f45dc70",
+      "target": "c5e4296d",
+      "confidence": 0.7,
+      "description": "充足收入允许多元化投资前沿技术"
+    },
+    {
+      "source": "7f45dc70",
+      "target": "40eca1d8",
+      "confidence": 0.8,
+      "description": "收入增长驱动公司扩张和基础设施投资"
+    },
+    {
+      "source": "79f6338b",
+      "target": "43eb2f9b",
+      "confidence": 0.3,
+      "description": "音乐团队可能增强内容，但玩家增长主要由游戏本身驱动"
+    },
+    {
+      "source": "43eb2f9b",
+      "target": "4c6bb235",
+      "confidence": 0.8,
+      "description": "玩家增长和影响力确立促使推出新游戏维持势头"
+    },
+    {
+      "source": "43eb2f9b",
+      "target": "d70768e3",
+      "confidence": 0.6,
+      "description": "影响力增强技术合作需求和能力"
+    },
+    {
+      "source": "43eb2f9b",
+      "target": "c5e4296d",
+      "confidence": 0.7,
+      "description": "成功提供资源投资新技术领域"
+    },
+    {
+      "source": "43eb2f9b",
+      "target": "40eca1d8",
+      "confidence": 0.8,
+      "description": "影响力和用户增长推动基础设施扩张"
+    },
+    {
+      "source": "4c6bb235",
+      "target": "d70768e3",
+      "confidence": 0.65,
+      "description": "新游成功带来更大市场影响力和收入，为获取更优技术合作条件提供了谈判资本和实际需求。"
+    },
+    {
+      "source": "4c6bb235",
+      "target": "c5e4296d",
+      "confidence": 0.4,
+      "description": "游戏业务的成功和现金流为公司提供了投资前沿技术的资金支持，但该投资更源于公司长期战略，非直接由单一游戏引发。"
+    },
+    {
+      "source": "4c6bb235",
+      "target": "40eca1d8",
+      "confidence": 0.85,
+      "description": "爆款产品带来的收入增长和团队扩张，直接催生了对更大、更现代化办公基础设施的需求。"
+    },
+    {
+      "source": "d70768e3",
+      "target": "c5e4296d",
+      "confidence": 0.5,
+      "description": "深化引擎技术合作可能拓宽公司技术视野，但投资AI/脑机接口主要基于长期战略，两者领域关联但传导路径较弱。"
+    },
+    {
+      "source": "d70768e3",
+      "target": "40eca1d8",
+      "confidence": 0.3,
+      "description": "技术合作助力业务发展，可能间接推动人员规模和业务复杂度增长，从而对物理空间产生长期需求，但非直接、主要驱动因素。"
+    },
+    {
+      "source": "c5e4296d",
+      "target": "40eca1d8",
+      "confidence": 0.6,
+      "description": "在前沿技术领域的战略布局和投入，预示着公司业务范围和研发规模的扩大，从而增加了对综合性新基地的长期需求。"
+    }
+  ],
+  "stats": {
+    "node_count": 19,
+    "edge_count": 166,
+    "root_count": 1,
+    "leaf_count": 1
+  },
+  "query": "我想了解米哈游的历史，然后想知道成功的原因是什么，这个公司成立到现在有哪些事件，其中的因果关系是什么"
+}

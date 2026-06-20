@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>因果网络 3D</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f4f4f6;font-family:-apple-system,'SF Pro Display','PingFang SC','Microsoft YaHei',sans-serif;overflow:hidden}
+#ui{position:fixed;top:0;left:0;right:0;z-index:10;pointer-events:none;padding:20px 28px;display:flex;justify-content:space-between;align-items:flex-start}
+#title h1{font-size:18px;font-weight:700;color:#1d1d1f;letter-spacing:-0.3px}
+#title p{font-size:11px;color:#86868b;margin-top:3px}
+#btns{display:flex;gap:5px;pointer-events:all}
+#btns button{background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#1d1d1f;border:0.5px solid rgba(0,0,0,0.08);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:500;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+#btns button:hover{background:rgba(29,29,31,0.9);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+#legend{position:fixed;bottom:24px;right:24px;z-index:10;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:14px 18px;border-radius:12px;border:0.5px solid rgba(0,0,0,0.06);box-shadow:0 2px 12px rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:6px}
+.li{display:flex;align-items:center;gap:8px;font-size:11px;color:#1d1d1f;font-weight:500}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+#tip{position:fixed;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:0.5px solid rgba(0,0,0,0.08);border-radius:12px;padding:16px 20px;display:none;pointer-events:none;max-width:340px;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
+#tip h3{font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:8px}
+#tip .r{font-size:11px;color:#86868b;margin:3px 0}
+#tip .r b{color:#1d1d1f;font-weight:600}
+#tip .bar{height:3px;border-radius:2px;background:#e5e5e7;margin-top:8px;overflow:hidden}
+#tip .bar span{display:block;height:100%;border-radius:2px;transition:width .3s}
+#edge-tip{position:fixed;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border:0.5px solid rgba(0,0,0,0.08);border-radius:10px;padding:12px 16px;display:none;pointer-events:none;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+#edge-tip .et-title{font-size:12px;font-weight:600;color:#1d1d1f;margin-bottom:4px}
+#edge-tip .et-conf{font-size:20px;font-weight:700;margin-bottom:2px}
+#edge-tip .et-desc{font-size:10px;color:#86868b}
+#mining-panel{position:fixed;top:50%;right:24px;transform:translateY(-50%);z-index:20;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border:0.5px solid rgba(0,0,0,0.08);border-radius:14px;padding:20px;display:none;width:300px;max-height:70vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.1)}
+#mining-panel h2{font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px}
+#mining-panel .sub{font-size:10px;color:#86868b;margin-bottom:14px}
+#mining-panel .path{background:#f8f8fa;border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+#mining-panel .path:hover{background:#f0f0f4;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+#mining-panel .path .p-conf{font-size:18px;font-weight:700;margin-bottom:4px}
+#mining-panel .path .p-steps{font-size:10px;color:#555;line-height:1.6}
+#mining-panel .path .p-steps .step{display:flex;align-items:flex-start;gap:6px;margin:2px 0}
+#mining-panel .path .p-steps .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px}
+#mining-panel .path .p-steps .arrow{color:#ccc;font-size:9px;margin:2px 0 2px 2px}
+#mining-panel .close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:16px;color:#999;cursor:pointer}
+#mining-hint{position:fixed;bottom:50%;left:50%;transform:translate(-50%,50%);z-index:20;background:rgba(29,29,31,0.88);color:#fff;padding:10px 20px;border-radius:20px;font-size:12px;display:none;pointer-events:none}
+canvas{display:block}
+</style>
+</head>
+<body>
+<div id="ui">
+  <div id="title">
+    <h1>2022 美联储加息 · 因果网络</h1>
+    <p>23 个事件 · 58 条因果链 · 含 FTX 真实因果传导链</p>
+  </div>
+  <div id="btns">
+    <button onclick="resetView()">重置</button>
+    <button onclick="toggleEdges()">连线</button>
+    <button onclick="highlightRoot()">根因</button>
+    <button onclick="spin()">旋转</button>
+    <button id="mine-btn" onclick="toggleMining()">因果挖掘</button>
+  </div>
+</div>
+<div id="legend">
+  <div class="li"><div class="ld" style="background:#D55E00"></div>货币政策</div>
+  <div class="li"><div class="ld" style="background:#E69F00"></div>加密货币</div>
+  <div class="li"><div class="ld" style="background:#009E73"></div>房地产</div>
+  <div class="li"><div class="ld" style="background:#56B4E9"></div>汇率</div>
+  <div class="li"><div class="ld" style="background:#0072B2"></div>半导体</div>
+  <div class="li"><div class="ld" style="background:#CC79A7"></div>通胀</div>
+  <div class="li"><div class="ld" style="background:#8B5CF6"></div>银行业</div>
+</div>
+<div id="tip">
+  <h3 id="tn"></h3>
+  <div class="r">时间 <b id="tt"></b></div>
+  <div class="r">领域 <b id="td"></b></div>
+  <div class="r">因果深度 <b id="tp"></b></div>
+  <div class="r">关联 <b id="tc"></b></div>
+  <div class="bar"><span id="tbar"></span></div>
+</div>
+<div id="edge-tip">
+  <div class="et-title" id="et-title"></div>
+  <div class="et-conf" id="et-conf"></div>
+  <div class="et-desc" id="et-desc"></div>
+</div>
+<div id="mining-hint">点击节点，挖掘其多层间接因果链</div>
+<div id="mining-panel">
+  <button class="close" onclick="closeMining()">×</button>
+  <h2 id="mp-title">因果挖掘</h2>
+  <div class="sub" id="mp-sub"></div>
+  <div id="mp-paths"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const D={"nodes": [{"id": "1690c596", "name": "美联储宣布加息25基点", "timestamp": "2022-03-16", "domain": 0, "domainName": "货币政策", "depth": 0, "color": "#D55E00", "isRoot": true, "isLeaf": false}, {"id": "68408d7f", "name": "美联储再加息50基点", "timestamp": "2022-05-04", "domain": 0, "domainName": "货币政策", "depth": 1, "color": "#D55E00", "isRoot": false, "isLeaf": false}, {"id": "terr", "name": "Terra/Luna崩盘", "timestamp": "2022-05-10", "domain": 1, "domainName": "加密货币", "depth": 1, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "6267e0a8", "name": "美联储暴力加息75基点", "timestamp": "2022-06-15", "domain": 0, "domainName": "货币政策", "depth": 1, "color": "#D55E00", "isRoot": false, "isLeaf": false}, {"id": "3ac", "name": "三箭资本破产", "timestamp": "2022-06-15", "domain": 1, "domainName": "加密货币", "depth": 2, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "dedac63e", "name": "比特币暴跌至2万美元", "timestamp": "2022-06-18", "domain": 1, "domainName": "加密货币", "depth": 1, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "celsius", "name": "Celsius破产", "timestamp": "2022-07-13", "domain": 1, "domainName": "加密货币", "depth": 2, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "bece58a6", "name": "美国房地产市场降温", "timestamp": "2022-07-01", "domain": 2, "domainName": "房地产", "depth": 2, "color": "#009E73", "isRoot": false, "isLeaf": false}, {"id": "be3e0a60", "name": "美元指数飙升至108", "timestamp": "2022-08-01", "domain": 3, "domainName": "汇率", "depth": 1, "color": "#56B4E9", "isRoot": false, "isLeaf": false}, {"id": "54581c43", "name": "英国养老金危机英镑暴跌", "timestamp": "2022-09-26", "domain": 3, "domainName": "汇率", "depth": 1, "color": "#56B4E9", "isRoot": false, "isLeaf": false}, {"id": "40200e9b", "name": "半导体周期下行芯片暴跌", "timestamp": "2022-10-01", "domain": 4, "domainName": "半导体", "depth": 1, "color": "#0072B2", "isRoot": false, "isLeaf": false}, {"id": "alameda", "name": "Alameda巨额亏损", "timestamp": "2022-11-02", "domain": 1, "domainName": "加密货币", "depth": 3, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "coindesk", "name": "CoinDesk曝光Alameda", "timestamp": "2022-11-02", "domain": 1, "domainName": "加密货币", "depth": 3, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "binance", "name": "币安宣布抛售FTT", "timestamp": "2022-11-06", "domain": 1, "domainName": "加密货币", "depth": 3, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "978caec3", "name": "CPI通胀开始回落", "timestamp": "2022-11-10", "domain": 5, "domainName": "通胀", "depth": 2, "color": "#CC79A7", "isRoot": false, "isLeaf": false}, {"id": "bankrun", "name": "挤兑潮60亿美元出逃", "timestamp": "2022-11-08", "domain": 1, "domainName": "加密货币", "depth": 4, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "ftx", "name": "FTX破产320亿蒸发", "timestamp": "2022-11-11", "domain": 1, "domainName": "加密货币", "depth": 4, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "btc15k", "name": "BTC跌至15500美元", "timestamp": "2022-11-22", "domain": 1, "domainName": "加密货币", "depth": 5, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "blockfi", "name": "BlockFi破产", "timestamp": "2022-11-28", "domain": 1, "domainName": "加密货币", "depth": 5, "color": "#E69F00", "isRoot": false, "isLeaf": false}, {"id": "3203a13e", "name": "美联储放缓加息至50基点", "timestamp": "2022-12-01", "domain": 0, "domainName": "货币政策", "depth": 1, "color": "#D55E00", "isRoot": false, "isLeaf": false}, {"id": "263e1bc5", "name": "美联储暗示加息接近尾声", "timestamp": "2023-03-22", "domain": 0, "domainName": "货币政策", "depth": 1, "color": "#D55E00", "isRoot": false, "isLeaf": false}, {"id": "1be556eb", "name": "硅谷银行倒闭", "timestamp": "2023-03-10", "domain": 6, "domainName": "银行业", "depth": 2, "color": "#8B5CF6", "isRoot": false, "isLeaf": false}, {"id": "845b3cd0", "name": "最后一次加息 5.25%", "timestamp": "2023-07-26", "domain": 0, "domainName": "货币政策", "depth": 1, "color": "#D55E00", "isRoot": false, "isLeaf": true}], "edges": [{"source": "978caec3", "target": "3203a13e", "confidence": 0.65}, {"source": "978caec3", "target": "263e1bc5", "confidence": 0.5}, {"source": "978caec3", "target": "845b3cd0", "confidence": 0.45}, {"source": "6267e0a8", "target": "dedac63e", "confidence": 0.6}, {"source": "6267e0a8", "target": "be3e0a60", "confidence": 0.15}, {"source": "6267e0a8", "target": "54581c43", "confidence": 0.4}, {"source": "6267e0a8", "target": "40200e9b", "confidence": 0.4}, {"source": "6267e0a8", "target": "3203a13e", "confidence": 0.28}, {"source": "6267e0a8", "target": "bece58a6", "confidence": 0.25}, {"source": "6267e0a8", "target": "263e1bc5", "confidence": 0.23}, {"source": "6267e0a8", "target": "845b3cd0", "confidence": 0.18}, {"source": "68408d7f", "target": "dedac63e", "confidence": 0.45}, {"source": "68408d7f", "target": "6267e0a8", "confidence": 0.41}, {"source": "68408d7f", "target": "be3e0a60", "confidence": 0.15}, {"source": "68408d7f", "target": "54581c43", "confidence": 0.4}, {"source": "68408d7f", "target": "40200e9b", "confidence": 0.4}, {"source": "68408d7f", "target": "3203a13e", "confidence": 0.23}, {"source": "68408d7f", "target": "263e1bc5", "confidence": 0.23}, {"source": "68408d7f", "target": "845b3cd0", "confidence": 0.18}, {"source": "68408d7f", "target": "bece58a6", "confidence": 0.15}, {"source": "1690c596", "target": "68408d7f", "confidence": 0.41}, {"source": "1690c596", "target": "be3e0a60", "confidence": 0.4}, {"source": "1690c596", "target": "dedac63e", "confidence": 0.4}, {"source": "1690c596", "target": "6267e0a8", "confidence": 0.36}, {"source": "1690c596", "target": "54581c43", "confidence": 0.35}, {"source": "1690c596", "target": "40200e9b", "confidence": 0.35}, {"source": "1690c596", "target": "3203a13e", "confidence": 0.23}, {"source": "1690c596", "target": "263e1bc5", "confidence": 0.18}, {"source": "1690c596", "target": "845b3cd0", "confidence": 0.18}, {"source": "dedac63e", "target": "bece58a6", "confidence": 0.3}, {"source": "dedac63e", "target": "be3e0a60", "confidence": 0.25}, {"source": "54581c43", "target": "40200e9b", "confidence": 0.3}, {"source": "3203a13e", "target": "263e1bc5", "confidence": 0.28}, {"source": "3203a13e", "target": "845b3cd0", "confidence": 0.23}, {"source": "263e1bc5", "target": "845b3cd0", "confidence": 0.28}, {"source": "1be556eb", "target": "263e1bc5", "confidence": 0.25}, {"source": "bece58a6", "target": "be3e0a60", "confidence": 0.2}, {"source": "bece58a6", "target": "40200e9b", "confidence": 0.18}, {"source": "bece58a6", "target": "54581c43", "confidence": 0.15}, {"source": "be3e0a60", "target": "54581c43", "confidence": 0.15}, {"source": "be3e0a60", "target": "40200e9b", "confidence": 0.15}, {"source": "1690c596", "target": "terr", "confidence": 0.55}, {"source": "terr", "target": "dedac63e", "confidence": 0.85}, {"source": "terr", "target": "3ac", "confidence": 0.9}, {"source": "terr", "target": "celsius", "confidence": 0.85}, {"source": "3ac", "target": "dedac63e", "confidence": 0.75}, {"source": "celsius", "target": "dedac63e", "confidence": 0.7}, {"source": "terr", "target": "alameda", "confidence": 0.8}, {"source": "3ac", "target": "alameda", "confidence": 0.7}, {"source": "celsius", "target": "alameda", "confidence": 0.65}, {"source": "alameda", "target": "coindesk", "confidence": 0.95}, {"source": "coindesk", "target": "binance", "confidence": 0.9}, {"source": "binance", "target": "bankrun", "confidence": 0.95}, {"source": "bankrun", "target": "ftx", "confidence": 0.98}, {"source": "ftx", "target": "btc15k", "confidence": 0.9}, {"source": "ftx", "target": "blockfi", "confidence": 0.85}, {"source": "dedac63e", "target": "alameda", "confidence": 0.7}, {"source": "ftx", "target": "3203a13e", "confidence": 0.35}]};
+
+// ═══ 场景 ═══
+const BG=0xf4f4f6;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(BG);
+scene.fog=new THREE.Fog(BG,90,160);
+
+const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,0.1,500);
+camera.position.set(45,30,55);
+
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.1;
+document.body.appendChild(renderer.domElement);
+
+const ctrl=new THREE.OrbitControls(camera,renderer.domElement);
+ctrl.enableDamping=true;
+ctrl.dampingFactor=0.06;
+ctrl.target.set(0,14,15);
+ctrl.minDistance=15;
+ctrl.maxDistance=120;
+
+// ═══ 光照 ═══
+scene.add(new THREE.AmbientLight(0xffffff,0.6));
+const key=new THREE.DirectionalLight(0xffffff,0.6);key.position.set(30,50,30);scene.add(key);
+const fill=new THREE.DirectionalLight(0xe8e8ff,0.3);fill.position.set(-20,20,-10);scene.add(fill);
+const rim=new THREE.DirectionalLight(0xfff0e0,0.2);rim.position.set(0,10,-40);scene.add(rim);
+
+// ═══ 网格地面 ═══
+const gridG=new THREE.Group();
+const S=80,DIV=40,step=S/DIV,half=S/2;
+for(let i=0;i<=DIV;i++){
+  const p=-half+i*step,major=i%5===0;
+  const c=major?0xc5c5c8:0xe0e0e3,o=major?0.6:0.3;
+  const g1=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-half,0,p),new THREE.Vector3(half,0,p)]);
+  gridG.add(new THREE.Line(g1,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:o})));
+  const g2=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(p,0,-half),new THREE.Vector3(p,0,half)]);
+  gridG.add(new THREE.Line(g2,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:o})));
+}
+gridG.position.y=-1.5;
+scene.add(gridG);
+
+// ═══ 坐标轴标签 ═══
+function lbl(text,pos,color,scale,bold){
+  const c=document.createElement('canvas'),x=c.getContext('2d');
+  c.width=1024;c.height=128;
+  x.font=(bold?'700 ':'500 ')+'60px -apple-system,PingFang SC,Microsoft YaHei,sans-serif';
+  x.fillStyle=color;x.textAlign='center';
+  x.shadowColor='rgba(244,244,246,0.9)';x.shadowBlur=6;
+  x.fillText(text,512,82);
+  const t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearFilter;
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true}));
+  s.position.set(...pos);s.scale.set(scale||8,(scale||8)*0.15,1);scene.add(s);
+}
+function axisLine(a,b){const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a),new THREE.Vector3(...b)]);scene.add(new THREE.Line(g,new THREE.LineBasicMaterial({color:0xb0b0b4})));}
+
+// X
+axisLine([-22,-1.2,0],[22,-1.2,0]);
+['2022.3','2022.6','2022.10','2023.3','2023.7'].forEach((t,i)=>{
+  const x=-20+i*10;
+  axisLine([x,-1.5,0],[x,-0.9,0]);
+  lbl(t,[x,-3.5,0],'#666',6);
+});
+lbl('时间',[0,-5.5,0],'#444',8,true);
+
+// Y
+axisLine([-22,-1.2,0],[-22,40,0]);
+['货币政策','加密货币','房地产','汇率','半导体','通胀','银行业'].forEach((n,i)=>{
+  axisLine([-22.5,i*5.5,0],[-21.8,i*5.5,0]);
+  lbl(n,[-30,i*5.5,0],'#666',6);
+});
+lbl('领域',[-30,42,0],'#444',8,true);
+
+// Z
+axisLine([-22,-1.2,0],[-22,-1.2,35]);
+for(let i=0;i<=3;i++) axisLine([-22.5,-1.2,i*10],[-21.8,-1.2,i*10]);
+lbl('深度',[-22,-3.5,18],'#444',7,true);
+
+// ═══ 卡通 Toon ═══
+const toon=new THREE.DataTexture(new Uint8Array([120,120,120,190,190,190,255,255,255]),3,1,THREE.RGBFormat);
+toon.needsUpdate=true;
+
+// ═══ 节点 ═══
+const domY=[0,5.5,11,16.5,22,27.5,33];
+const tsExt=[new Date('2022-03-01').getTime(),new Date('2023-08-01').getTime()];
+const tsR=tsExt[1]-tsExt[0];
+const nMap={},nMeshes=[],eLines=[];
+const nGroup=new THREE.Group(),eGroup=new THREE.Group();
+const cc={};D.nodes.forEach(n=>cc[n.id]=0);D.edges.forEach(e=>{cc[e.source]++;cc[e.target]++;});
+
+D.nodes.forEach(n=>{
+  const ts=new Date(n.timestamp).getTime();
+  const x=((ts-tsExt[0])/tsR)*40-20;
+  const y=domY[n.domain]+n.depth*2.2;
+  const z=n.depth*10+(Math.random()-0.5)*5;
+  nMap[n.id]={...n,x,y,z};
+
+  const r=n.isRoot?1.6:0.45+cc[n.id]*0.1;
+  const geo=new THREE.SphereGeometry(r,32,32);
+  const mat=new THREE.MeshToonMaterial({color:new THREE.Color(n.color),gradientMap:toon});
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.position.set(x,y,z);mesh.userData=n;
+  nGroup.add(mesh);nMeshes.push(mesh);
+
+  // 描边
+  const oGeo=new THREE.SphereGeometry(r*1.08,32,32);
+  const oMat=new THREE.MeshBasicMaterial({color:0x222222,side:THREE.BackSide});
+  const oMesh=new THREE.Mesh(oGeo,oMat);oMesh.position.copy(mesh.position);nGroup.add(oMesh);
+
+  if(n.isRoot){
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(2.3,0.1,8,48),new THREE.MeshToonMaterial({color:0xD55E00,gradientMap:toon}));
+    ring.position.copy(mesh.position);ring.rotation.x=Math.PI/2;nGroup.add(ring);
+  }
+
+  // 标签
+  const c=document.createElement('canvas'),ctx=c.getContext('2d');
+  c.width=1024;c.height=128;
+  ctx.font='600 52px -apple-system,PingFang SC,Microsoft YaHei,sans-serif';
+  ctx.fillStyle='#1d1d1f';ctx.textAlign='center';
+  ctx.shadowColor='rgba(244,244,246,0.95)';ctx.shadowBlur=8;
+  ctx.fillText(n.name.length>13?n.name.slice(0,13)+'…':n.name,512,82);
+  const tex=new THREE.CanvasTexture(c);tex.minFilter=THREE.LinearFilter;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
+  sp.position.set(x,y-r-1.5,z);sp.scale.set(7,1.1,1);nGroup.add(sp);
+});
+scene.add(nGroup);
+
+// ═══ 连线 ═══
+D.edges.forEach(e=>{
+  const s=nMap[e.source],t=nMap[e.target];
+  if(!s||!t)return;
+  const pts=[];
+  for(let i=0;i<=24;i++){
+    const p=i/24;
+    pts.push(new THREE.Vector3(
+      s.x+(t.x-s.x)*p,
+      s.y+(t.y-s.y)*p+Math.sin(p*Math.PI)*2.5,
+      s.z+(t.z-s.z)*p
+    ));
+  }
+  const curve=new THREE.CatmullRomCurve3(pts);
+  // 粗细按置信度
+  const thick=e.confidence>=0.4?0.14:e.confidence>=0.3?0.09:e.confidence>=0.2?0.05:0.025;
+  const col=e.confidence>=0.4?0xD55E00:e.confidence>=0.3?0xE69F00:e.confidence>=0.2?0xaaaaaa:0xd0d0d0;
+  const opa=e.confidence>=0.3?0.85:e.confidence>=0.2?0.5:0.2;
+  const geo=new THREE.TubeGeometry(curve,24,thick,8,false);
+  const mat=new THREE.MeshToonMaterial({color:col,gradientMap:toon,transparent:true,opacity:opa});
+  const tube=new THREE.Mesh(geo,mat);
+  tube.userData={...e,srcName:s.name,tgtName:t.name,curve};
+  eGroup.add(tube);eLines.push(tube);
+
+  // 箭头
+  if(e.confidence>=0.15){
+    const ep=curve.getPoint(0.9),tp=curve.getPoint(1);
+    const dir=new THREE.Vector3().subVectors(tp,ep).normalize();
+    const aS=e.confidence>=0.35?0.35:0.2;
+    const aGeo=new THREE.ConeGeometry(aS,aS*2,8);
+    const aMat=new THREE.MeshToonMaterial({color:col,gradientMap:toon,transparent:true,opacity:opa});
+    const arrow=new THREE.Mesh(aGeo,aMat);
+    arrow.position.copy(tp);arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir);
+    eGroup.add(arrow);
+  }
+});
+scene.add(eGroup);
+
+// ═══ 交互 ═══
+const ray=new THREE.Raycaster();
+const mouse=new THREE.Vector2();
+let selectedEdge=null;
+
+renderer.domElement.addEventListener('mousemove',e=>{
+  mouse.x=(e.clientX/innerWidth)*2-1;
+  mouse.y=-(e.clientY/innerHeight)*2+1;
+  ray.setFromCamera(mouse,camera);
+
+  // 先检查节点
+  const nHits=ray.intersectObjects(nMeshes);
+  const tip=document.getElementById('tip');
+  const eTip=document.getElementById('edge-tip');
+  if(nHits.length>0){
+    eTip.style.display='none';
+    const n=nHits[0].object.userData;
+    document.getElementById('tn').textContent=n.name;
+    document.getElementById('tt').textContent=n.timestamp;
+    document.getElementById('td').textContent=n.domainName;
+    document.getElementById('tp').textContent='第'+n.depth+'轮'+(n.isRoot?' · 根因':n.isLeaf?' · 叶事件':'');
+    document.getElementById('tc').textContent=cc[n.id]+' 条因果链';
+    const pct=Math.round(cc[n.id]/D.edges.length*100);
+    document.getElementById('tbar').style.width=pct+'%';
+    document.getElementById('tbar').style.background=n.color;
+    tip.style.display='block';
+    tip.style.left=(e.clientX+16)+'px';tip.style.top=(e.clientY-10)+'px';
+    return;
+  }
+  tip.style.display='none';
+
+  // 再检查连线
+  const eHits=ray.intersectObjects(eLines);
+  if(eHits.length>0){
+    const d=eHits[0].object.userData;
+    document.getElementById('et-title').textContent=d.srcName+' → '+d.tgtName;
+    document.getElementById('et-conf').textContent=Math.round(d.confidence*100)+'%';
+    document.getElementById('et-conf').style.color=d.confidence>=0.4?'#D55E00':d.confidence>=0.3?'#E69F00':'#86868b';
+    document.getElementById('et-desc').textContent='因果置信度';
+    eTip.style.display='block';
+    eTip.style.left=(e.clientX+12)+'px';eTip.style.top=(e.clientY-10)+'px';
+  }else{
+    eTip.style.display='none';
+  }
+});
+
+renderer.domElement.addEventListener('click',()=>{
+  ray.setFromCamera(mouse,camera);
+  const nHits=ray.intersectObjects(nMeshes);
+  if(nHits.length>0){
+    if(miningMode){startMining(nHits[0].object.userData.id);return;}
+    highlightNode(nHits[0].object.userData.id);return;
+  }
+  const eHits=ray.intersectObjects(eLines);
+  if(eHits.length>0){
+    if(miningMode){
+      // 点击连线 → 挖掘源节点
+      startMining(eHits[0].object.userData.source);return;
+    }
+    highlightEdge(eHits[0].object);return;
+  }
+});
+
+function highlightNode(id){
+  const conn=new Set([id]);
+  D.edges.forEach(e=>{if(e.source===id)conn.add(e.target);if(e.target===id)conn.add(e.source);});
+  nMeshes.forEach(m=>{m.material.opacity=conn.has(m.userData.id)?1:0.06;});
+  eLines.forEach(l=>{l.material.opacity=(l.userData.source===id||l.userData.target===id)?0.9:0.03;});
+}
+function highlightEdge(edge){
+  const s=edge.userData.source,t=edge.userData.target;
+  const conn=new Set([s,t]);
+  nMeshes.forEach(m=>{m.material.opacity=conn.has(m.userData.id)?1:0.06;});
+  eLines.forEach(l=>{const ok=(l.userData.source===s&&l.userData.target===t);l.material.opacity=ok?1:0.03;});
+}
+
+function resetView(){
+  camera.position.set(45,30,55);ctrl.target.set(0,14,15);
+  nMeshes.forEach(m=>{m.material.opacity=1;});
+  eLines.forEach(l=>{l.material.opacity=l.userData.confidence>=0.3?0.85:l.userData.confidence>=0.2?0.5:0.2;});
+}
+let edgesOn=true;
+function toggleEdges(){edgesOn=!edgesOn;eGroup.visible=edgesOn;}
+function highlightRoot(){
+  const t=new Set(D.edges.filter(e=>e.source==='1690c596').map(e=>e.target));t.add('1690c596');
+  nMeshes.forEach(m=>{m.material.opacity=t.has(m.userData.id)?1:0.05;});
+  eLines.forEach(l=>{l.material.opacity=l.userData.source==='1690c596'?0.9:0.02;});
+}
+function spin(){ctrl.autoRotate=!ctrl.autoRotate;ctrl.autoRotateSpeed=1;}
+
+// ═══ 因果挖掘 ═══
+let miningMode=false;
+let miningSource=null;
+const miningMeshes=[],miningLines=[];
+const mGroup=new THREE.Group();scene.add(mGroup);
+
+function toggleMining(){
+  miningMode=!miningMode;
+  const btn=document.getElementById('mine-btn');
+  btn.style.background=miningMode?'rgba(29,29,31,0.9)':'';
+  btn.style.color=miningMode?'#fff':'';
+  document.getElementById('mining-hint').style.display=miningMode?'block':'none';
+  if(!miningMode){closeMining();}
+}
+
+function closeMining(){
+  document.getElementById('mining-panel').style.display='none';
+  // 清除挖掘可视化
+  while(mGroup.children.length) mGroup.remove(mGroup.children[0]);
+  miningMeshes.length=0;miningLines.length=0;
+  // 恢复原始透明度
+  nMeshes.forEach(m=>{m.material.opacity=1;});
+  eLines.forEach(l=>{l.material.opacity=l.userData.confidence>=0.3?0.85:l.userData.confidence>=0.2?0.5:0.2;});
+  miningSource=null;
+}
+
+function findIndirectPaths(sourceId, maxDepth=4) {
+  // BFS 找所有从 sourceId 出发的间接因果路径
+  const paths = [];
+  const queue = [[sourceId]];
+  const visited = new Set();
+
+  while (queue.length > 0) {
+    const path = queue.shift();
+    const current = path[path.length - 1];
+
+    if (path.length > 1) {
+      // 计算路径总置信度（各段乘积的几何平均）
+      let product = 1;
+      let minConf = 1;
+      for (let i = 0; i < path.length - 1; i++) {
+        const edge = D.edges.find(e => e.source === path[i] && e.target === path[i+1]);
+        if (edge) {
+          product *= edge.confidence;
+          minConf = Math.min(minConf, edge.confidence);
+        }
+      }
+      const geoMean = Math.pow(product, 1 / (path.length - 1));
+      // 只保留包含弱连接（<0.3）或多跳（>=3）的路径
+      const hasWeak = path.length >= 3 || minConf < 0.3;
+      if (hasWeak && path.length >= 2) {
+        paths.push({ nodes: [...path], confidence: geoMean, minConf, hops: path.length - 1 });
+      }
+    }
+
+    if (path.length >= maxDepth + 1) continue;
+
+    // 找下游
+    D.edges.forEach(e => {
+      if (e.source === current && !path.includes(e.target)) {
+        const key = current + '->' + e.target;
+        if (!visited.has(key)) {
+          visited.add(key);
+          queue.push([...path, e.target]);
+        }
+      }
+    });
+  }
+
+  // 按置信度排序，去重
+  paths.sort((a, b) => b.confidence - a.confidence);
+  return paths.slice(0, 15);
+}
+
+function startMining(nodeId) {
+  miningSource = nodeId;
+  const node = nMap[nodeId];
+  const paths = findIndirectPaths(nodeId);
+
+  // 高亮源节点，淡化其他
+  nMeshes.forEach(m => { m.material.opacity = m.userData.id === nodeId ? 1 : 0.08; });
+  eLines.forEach(l => { l.material.opacity = 0.03; });
+
+  // 面板
+  document.getElementById('mp-title').textContent = '🔍 ' + node.name;
+  document.getElementById('mp-sub').textContent = '发现 ' + paths.length + ' 条间接因果路径';
+
+  const container = document.getElementById('mp-paths');
+  container.innerHTML = '';
+
+  paths.forEach((p, idx) => {
+    const div = document.createElement('div');
+    div.className = 'path';
+
+    const confColor = p.confidence >= 0.3 ? '#D55E00' : p.confidence >= 0.2 ? '#E69F00' : '#86868b';
+    const confText = Math.round(p.confidence * 100) + '%';
+
+    let stepsHtml = '';
+    p.nodes.forEach((nid, i) => {
+      const n = nMap[nid];
+      if (!n) return;
+      const dotColor = n.color;
+      const isWeak = i < p.nodes.length - 1 && (() => {
+        const edge = D.edges.find(e => e.source === nid && e.target === p.nodes[i+1]);
+        return edge && edge.confidence < 0.3;
+      })();
+      stepsHtml += '<div class="step"><div class="dot" style="background:' + dotColor + (isWeak ? ';border:2px solid #D55E00' : '') + '"></div><span>' + n.name + (isWeak ? ' ⚠️' : '') + '</span></div>';
+      if (i < p.nodes.length - 1) {
+        const edge = D.edges.find(e => e.source === nid && e.target === p.nodes[i+1]);
+        const edgeConf = edge ? Math.round(edge.confidence * 100) + '%' : '?';
+        stepsHtml += '<div class="arrow">  ↓ ' + edgeConf + '</div>';
+      }
+    });
+
+    div.innerHTML = '<div class="p-conf" style="color:' + confColor + '">综合 ' + confText + '</div><div class="p-steps">' + stepsHtml + '</div>';
+
+    div.addEventListener('click', () => highlightPath(p));
+    div.addEventListener('mouseenter', () => highlightPath(p));
+    container.appendChild(div);
+  });
+
+  document.getElementById('mining-panel').style.display = 'block';
+}
+
+function highlightPath(path) {
+  // 清除之前的挖掘高亮
+  while(mGroup.children.length) mGroup.remove(mGroup.children[0]);
+
+  const pathNodeIds = new Set(path.nodes);
+  const pathEdgeKeys = new Set();
+  for (let i = 0; i < path.nodes.length - 1; i++) {
+    pathEdgeKeys.add(path.nodes[i] + '->' + path.nodes[i+1]);
+  }
+
+  // 淡化非路径元素
+  nMeshes.forEach(m => {
+    m.material.opacity = pathNodeIds.has(m.userData.id) ? 1 : 0.04;
+  });
+  eLines.forEach(l => {
+    const key = l.userData.source + '->' + l.userData.target;
+    l.material.opacity = pathEdgeKeys.has(key) ? 0.9 : 0.02;
+  });
+
+  // 绘制挖掘路径高亮线
+  for (let i = 0; i < path.nodes.length - 1; i++) {
+    const src = nMap[path.nodes[i]];
+    const tgt = nMap[path.nodes[i+1]];
+    if (!src || !tgt) continue;
+    const edge = D.edges.find(e => e.source === path.nodes[i] && e.target === path.nodes[i+1]);
+    const conf = edge ? edge.confidence : 0.2;
+
+    const pts = [];
+    for (let t = 0; t <= 20; t++) {
+      const p = t / 20;
+      pts.push(new THREE.Vector3(
+        src.x + (tgt.x - src.x) * p,
+        src.y + (tgt.y - src.y) * p + Math.sin(p * Math.PI) * 3,
+        src.z + (tgt.z - src.z) * p
+      ));
+    }
+    const curve = new THREE.CatmullRomCurve3(pts);
+    const thick = conf >= 0.3 ? 0.18 : 0.1;
+    const col = conf >= 0.3 ? 0xD55E00 : 0xE69F00;
+    const geo = new THREE.TubeGeometry(curve, 20, thick, 8, false);
+    const mat = new THREE.MeshToonMaterial({
+      color: col, gradientMap: toon, transparent: true, opacity: 0.9,
+      emissive: col, emissiveIntensity: 0.3
+    });
+    mGroup.add(new THREE.Mesh(geo, mat));
+
+    // 箭头
+    const ep = curve.getPoint(0.9), tp = curve.getPoint(1);
+    const dir = new THREE.Vector3().subVectors(tp, ep).normalize();
+    const aGeo = new THREE.ConeGeometry(0.4, 0.8, 8);
+    const aMat = new THREE.MeshToonMaterial({ color: col, gradientMap: toon });
+    const arrow = new THREE.Mesh(aGeo, aMat);
+    arrow.position.copy(tp);
+    arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+    mGroup.add(arrow);
+
+    // 置信度标签
+    if (conf >= 0.15) {
+      const mid = curve.getPoint(0.5);
+      const c = document.createElement('canvas');
+      const cx = c.getContext('2d');
+      c.width = 256; c.height = 64;
+      cx.font = 'bold 40px -apple-system, sans-serif';
+      cx.fillStyle = conf >= 0.3 ? '#D55E00' : '#E69F00';
+      cx.textAlign = 'center';
+      cx.shadowColor = 'rgba(244,244,246,0.95)'; cx.shadowBlur = 8;
+      cx.fillText(Math.round(conf * 100) + '%', 128, 46);
+      const ct = new THREE.CanvasTexture(c); ct.minFilter = THREE.LinearFilter;
+      const cs = new THREE.Sprite(new THREE.SpriteMaterial({ map: ct, transparent: true, depthTest: false }));
+      cs.position.set(mid.x, mid.y + 1, mid.z);
+      cs.scale.set(3.5, 0.9, 1);
+      mGroup.add(cs);
+    }
+  }
+}
+
+function animate(){
+  requestAnimationFrame(animate);ctrl.update();
+  const p=Math.sin(Date.now()*0.003)*0.1+0.9;
+  nMeshes.forEach(m=>{if(m.userData.isRoot)m.scale.setScalar(p);});
+  renderer.render(scene,camera);
+}
+animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+</script>
+</body>
+</html>

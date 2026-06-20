@@ -1,0 +1,28 @@
+# ChronoVisor 配置
+# 语义分类模式: heuristic | ollama | api | auto
+# - heuristic: 纯关键词+短语映射（零依赖，最快）
+# - ollama: 本地 Ollama 模型（离线，隐私好）
+# - api: OpenAI 兼容 API（质量最高，花钱）
+# - auto: 自动检测，Ollama 可用则用，否则回退 heuristic
+
+semantic:
+  mode: api  # 默认走 API（mimo v2.5），精度高
+
+  # Ollama 本地模型配置
+  ollama:
+    model: qwen3:1.7b
+    url: http://localhost:11434
+
+  api:
+    url: https://token-plan-cn.xiaomimimo.com/v1
+    key: YOUR_API_KEY        # 替换为你的 API key
+    model: mimo-v2.5
+
+# 因果链引擎
+causal_chain:
+  min_confidence: 0.3
+  max_chains: 50
+
+# 报告生成
+report:
+  auto_detect_topic: true  # 自动检测研究主题类型

@@ -1,0 +1,34 @@
+{
+  "nodes": [
+    {
+      "id": "d76b24e3",
+      "name": "米哈游成立到2026年6/21号这一段时间成功的原因",
+      "timestamp": "2026-04-21",
+      "tags": [],
+      "isRoot": true,
+      "isLeaf": false
+    },
+    {
+      "id": "c18a8e0b",
+      "name": "主要原因又是什么",
+      "timestamp": "2026-05-21",
+      "tags": [],
+      "isRoot": false,
+      "isLeaf": true
+    }
+  ],
+  "edges": [
+    {
+      "source": "d76b24e3",
+      "target": "c18a8e0b",
+      "confidence": 0.6,
+      "description": "米哈游成功的原因通过市场关注和媒体分析间接引发了对其主要成功因素的探讨"
+    }
+  ],
+  "stats": {
+    "node_count": 2,
+    "edge_count": 1,
+    "root_count": 1,
+    "leaf_count": 1
+  }
+}

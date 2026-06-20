@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2022美联储加息 · 因果网络图</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a1a; color: #fff; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+#header { text-align: center; padding: 20px; }
+#header h1 { font-size: 24px; color: #fff; margin-bottom: 8px; }
+#header p { font-size: 13px; color: #666; }
+#chart { width: 100%; height: calc(100vh - 160px); }
+#legend { display: flex; justify-content: center; gap: 20px; padding: 10px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #aaa; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+#controls { text-align: center; padding: 8px; }
+#controls button { background: #1e1e3a; color: #aaa; border: 1px solid #333; padding: 6px 16px; margin: 0 4px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+#controls button:hover { background: #2a2a4a; color: #fff; }
+#tooltip { position: fixed; background: rgba(15,15,35,0.95); border: 1px solid #444; border-radius: 8px; padding: 12px 16px; display: none; pointer-events: none; max-width: 350px; z-index: 100; }
+#tooltip h3 { font-size: 14px; margin-bottom: 6px; }
+#tooltip .meta { font-size: 11px; color: #888; margin-bottom: 4px; }
+#tooltip .desc { font-size: 12px; color: #ccc; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>2022美联储加息 · 因果网络图</h1>
+  <p>一个根因扇出 13 条因果链 | 鼠标拖拽旋转 · 滚轮缩放 · 点击节点查看详情</p>
+</div>
+<div id="controls">
+  <button onclick="resetView()">重置视角</button>
+  <button onclick="toggleLabels()">显示/隐藏标签</button>
+  <button onclick="highlightRoot()">高亮根因链</button>
+  <button onclick="exportImage()">导出图片</button>
+</div>
+<div id="chart"></div>
+<div id="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#FF6B6B"></div>货币政策</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#F7931A"></div>加密货币</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4ECDC4"></div>房地产</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#45B7D1"></div>汇率</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#96CEB4"></div>半导体</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FFEAA7"></div>通胀</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#DDA0DD"></div>银行业</div>
+</div>
+<div id="tooltip">
+  <h3 id="tip-title"></h3>
+  <div class="meta" id="tip-meta"></div>
+  <div class="desc" id="tip-desc"></div>
+</div>
+
+<script>
+const rawData = {"nodes":[{"id":"978caec3","name":"CPI通胀开始回落","timestamp":"2022-11-10","domain":5,"domainName":"通胀","depth":2,"color":"#FFEAA7","isRoot":false,"isLeaf":false},{"id":"3203a13e","name":"美联储放缓加息至50基点","timestamp":"2022-12-01","domain":0,"domainName":"货币政策","depth":1,"color":"#FF6B6B","isRoot":false,"isLeaf":false},{"id":"6267e0a8","name":"美联储暴力加息75基点","timestamp":"2022-06-15","domain":0,"domainName":"货币政策","depth":1,"color":"#FF6B6B","isRoot":false,"isLeaf":false},{"id":"dedac63e","name":"比特币暴跌至2万美元，加密市场崩盘","timestamp":"2022-06-18","domain":1,"domainName":"加密货币","depth":1,"color":"#F7931A","isRoot":false,"isLeaf":false},{"id":"263e1bc5","name":"美联储暗示加息接近尾声","timestamp":"2023-03-22","domain":0,"domainName":"货币政策","depth":1,"color":"#FF6B6B","isRoot":false,"isLeaf":false},{"id":"845b3cd0","name":"美联储最后一次加息，利率达5.25%","timestamp":"2023-07-26","domain":0,"domainName":"货币政策","depth":1,"color":"#FF6B6B","isRoot":false,"isLeaf":true},{"id":"68408d7f","name":"美联储再加息50基点，加息提速","timestamp":"2022-05-04","domain":0,"domainName":"货币政策","depth":1,"color":"#FF6B6B","isRoot":false,"isLeaf":false},{"id":"1690c596","name":"美联储宣布加息25基点，开启加息周期","timestamp":"2022-03-16","domain":0,"domainName":"货币政策","depth":0,"color":"#FF6B6B","isRoot":true,"isLeaf":false},{"id":"be3e0a60","name":"美元指数飙升至108，新兴市场承压","timestamp":"2022-08-01","domain":3,"domainName":"汇率","depth":1,"color":"#45B7D1","isRoot":false,"isLeaf":false},{"id":"54581c43","name":"英国养老金危机，英镑暴跌","timestamp":"2022-09-26","domain":3,"domainName":"汇率","depth":1,"color":"#45B7D1","isRoot":false,"isLeaf":false},{"id":"40200e9b","name":"半导体周期下行，芯片股暴跌","timestamp":"2022-10-01","domain":4,"domainName":"半导体","depth":1,"color":"#96CEB4","isRoot":false,"isLeaf":false},{"id":"bece58a6","name":"美国房地产市场降温，房价开始下跌","timestamp":"2022-07-01","domain":2,"domainName":"房地产","depth":2,"color":"#4ECDC4","isRoot":false,"isLeaf":false},{"id":"2b34aea1","name":"FTX交易所破产，加密信任危机","timestamp":"2022-11-01","domain":6,"domainName":"银行业","depth":2,"color":"#DDA0DD","isRoot":false,"isLeaf":false},{"id":"1be556eb","name":"硅谷银行倒闭，银行业危机爆发","timestamp":"2023-03-10","domain":6,"domainName":"银行业","depth":2,"color":"#DDA0DD","isRoot":false,"isLeaf":false}],"edges":[{"source":"978caec3","target":"3203a13e","confidence":0.65,"description":"CPI通胀开始回落 导致 美联储放缓加息至50基点"},{"source":"978caec3","target":"263e1bc5","confidence":0.5,"description":"CPI通胀开始回落 导致 美联储暗示加息接近尾声"},{"source":"978caec3","target":"845b3cd0","confidence":0.45,"description":"CPI通胀开始回落 导致 美联储最后一次加息，利率达5.25%"},{"source":"6267e0a8","target":"dedac63e","confidence":0.6,"description":"美联储暴力加息75基点 → 比特币暴跌至2万美元，加密市场崩盘"},{"source":"6267e0a8","target":"be3e0a60","confidence":0.15,"description":"美联储暴力加息75基点 → 美元指数飙升至108，新兴市场承压"},{"source":"6267e0a8","target":"54581c43","confidence":0.4,"description":"美联储暴力加息75基点 → 英国养老金危机，英镑暴跌"},{"source":"6267e0a8","target":"40200e9b","confidence":0.4,"description":"美联储暴力加息75基点 → 半导体周期下行，芯片股暴跌"},{"source":"6267e0a8","target":"3203a13e","confidence":0.28,"description":"美联储暴力加息75基点 → 美联储放缓加息至50基点"},{"source":"6267e0a8","target":"bece58a6","confidence":0.25,"description":"美联储暴力加息75基点 → 美国房地产市场降温，房价开始下跌"},{"source":"6267e0a8","target":"263e1bc5","confidence":0.23,"description":"美联储暴力加息75基点 → 美联储暗示加息接近尾声"},{"source":"6267e0a8","target":"845b3cd0","confidence":0.18,"description":"美联储暴力加息75基点 导致 美联储最后一次加息，利率达5.25%"},{"source":"68408d7f","target":"dedac63e","confidence":0.45,"description":"美联储再加息50基点，加息提速 → 比特币暴跌至2万美元，加密市场崩盘"},{"source":"68408d7f","target":"6267e0a8","confidence":0.41,"description":"美联储再加息50基点，加息提速 → 美联储暴力加息75基点"},{"source":"68408d7f","target":"be3e0a60","confidence":0.15,"description":"美联储再加息50基点，加息提速 → 美元指数飙升至108，新兴市场承压"},{"source":"68408d7f","target":"54581c43","confidence":0.4,"description":"美联储再加息50基点，加息提速 → 英国养老金危机，英镑暴跌"},{"source":"68408d7f","target":"40200e9b","confidence":0.4,"description":"美联储再加息50基点，加息提速 → 半导体周期下行，芯片股暴跌"},{"source":"68408d7f","target":"3203a13e","confidence":0.23,"description":"美联储再加息50基点，加息提速 → 美联储放缓加息至50基点"},{"source":"68408d7f","target":"263e1bc5","confidence":0.23,"description":"美联储再加息50基点，加息提速 → 美联储暗示加息接近尾声"},{"source":"68408d7f","target":"845b3cd0","confidence":0.18,"description":"美联储再加息50基点，加息提速 导致 美联储最后一次加息，利率达5.25%"},{"source":"68408d7f","target":"bece58a6","confidence":0.15,"description":"美联储再加息50基点，加息提速 → 美国房地产市场降温，房价开始下跌"},{"source":"1690c596","target":"68408d7f","confidence":0.41,"description":"美联储宣布加息25基点，开启加息周期 → 美联储再加息50基点，加息提速"},{"source":"1690c596","target":"be3e0a60","confidence":0.4,"description":"美联储宣布加息25基点，开启加息周期 → 美元指数飙升至108，新兴市场承压 [间接因果]"},{"source":"1690c596","target":"dedac63e","confidence":0.4,"description":"美联储宣布加息25基点，开启加息周期 → 比特币暴跌至2万美元，加密市场崩盘"},{"source":"1690c596","target":"6267e0a8","confidence":0.36,"description":"美联储宣布加息25基点，开启加息周期 → 美联储暴力加息75基点"},{"source":"1690c596","target":"54581c43","confidence":0.35,"description":"美联储宣布加息25基点，开启加息周期 → 英国养老金危机，英镑暴跌"},{"source":"1690c596","target":"40200e9b","confidence":0.35,"description":"美联储宣布加息25基点，开启加息周期 → 半导体周期下行，芯片股暴跌"},{"source":"1690c596","target":"3203a13e","confidence":0.23,"description":"美联储宣布加息25基点，开启加息周期 → 美联储放缓加息至50基点"},{"source":"1690c596","target":"263e1bc5","confidence":0.18,"description":"美联储宣布加息25基点，开启加息周期 → 美联储暗示加息接近尾声"},{"source":"1690c596","target":"845b3cd0","confidence":0.18,"description":"美联储宣布加息25基点，开启加息周期 导致 美联储最后一次加息，利率达5.25%"},{"source":"dedac63e","target":"bece58a6","confidence":0.3,"description":"比特币暴跌至2万美元，加密市场崩盘 → 美国房地产市场降温，房价开始下跌"},{"source":"dedac63e","target":"be3e0a60","confidence":0.25,"description":"比特币暴跌至2万美元，加密市场崩盘 → 美元指数飙升至108，新兴市场承压"},{"source":"54581c43","target":"40200e9b","confidence":0.3,"description":"英国养老金危机，英镑暴跌 → 半导体周期下行，芯片股暴跌"},{"source":"54581c43","target":"2b34aea1","confidence":0.2,"description":"英国养老金危机，英镑暴跌 → FTX交易所破产，加密信任危机"},{"source":"54581c43","target":"978caec3","confidence":0.15,"description":"英国养老金危机，英镑暴跌 → CPI通胀开始回落"},{"source":"54581c43","target":"3203a13e","confidence":0.15,"description":"英国养老金危机，英镑暴跌 → 美联储放缓加息至50基点"},{"source":"54581c43","target":"1be556eb","confidence":0.15,"description":"英国养老金危机，英镑暴跌 → 硅谷银行倒闭，银行业危机爆发"},{"source":"3203a13e","target":"263e1bc5","confidence":0.28,"description":"美联储放缓加息至50基点 → 美联储暗示加息接近尾声"},{"source":"3203a13e","target":"845b3cd0","confidence":0.23,"description":"美联储放缓加息至50基点 导致 美联储最后一次加息，利率达5.25%"},{"source":"263e1bc5","target":"845b3cd0","confidence":0.28,"description":"美联储暗示加息接近尾声 导致 美联储最后一次加息，利率达5.25%"},{"source":"2b34aea1","target":"978caec3","confidence":0.25,"description":"FTX交易所破产，加密信任危机 → CPI通胀开始回落"},{"source":"2b34aea1","target":"3203a13e","confidence":0.25,"description":"FTX交易所破产，加密信任危机 → 美联储放缓加息至50基点"},{"source":"2b34aea1","target":"1be556eb","confidence":0.23,"description":"FTX交易所破产，加密信任危机 → 硅谷银行倒闭，银行业危机爆发"},{"source":"1be556eb","target":"263e1bc5","confidence":0.25,"description":"硅谷银行倒闭，银行业危机爆发 → 美联储暗示加息接近尾声"},{"source":"bece58a6","target":"be3e0a60","confidence":0.2,"description":"美国房地产市场降温，房价开始下跌 → 美元指数飙升至108，新兴市场承压"},{"source":"bece58a6","target":"40200e9b","confidence":0.18,"description":"美国房地产市场降温，房价开始下跌 → 半导体周期下行，芯片股暴跌"},{"source":"bece58a6","target":"54581c43","confidence":0.15,"description":"美国房地产市场降温，房价开始下跌 → 英国养老金危机，英镑暴跌"},{"source":"be3e0a60","target":"54581c43","confidence":0.15,"description":"美元指数飙升至108，新兴市场承压 → 英国养老金危机，英镑暴跌"},{"source":"be3e0a60","target":"40200e9b","confidence":0.15,"description":"美元指数飙升至108，新兴市场承压 → 半导体周期下行，芯片股暴跌"},{"source":"40200e9b","target":"2b34aea1","confidence":0.15,"description":"半导体周期下行，芯片股暴跌 → FTX交易所破产，加密信任危机"},{"source":"40200e9b","target":"978caec3","confidence":0.15,"description":"半导体周期下行，芯片股暴跌 → CPI通胀开始回落"},{"source":"40200e9b","target":"3203a13e","confidence":0.15,"description":"半导体周期下行，芯片股暴跌 → 美联储放缓加息至50基点"}]};
+
+// 坐标计算
+const timeExtent = [new Date('2022-03-01'), new Date('2023-08-01')];
+const tsRange = timeExtent[1] - timeExtent[0];
+
+const categories = [
+  {name:'货币政策', itemStyle:{color:'#FF6B6B'}},
+  {name:'加密货币', itemStyle:{color:'#F7931A'}},
+  {name:'房地产',   itemStyle:{color:'#4ECDC4'}},
+  {name:'汇率',     itemStyle:{color:'#45B7D1'}},
+  {name:'半导体',   itemStyle:{color:'#96CEB4'}},
+  {name:'通胀',     itemStyle:{color:'#FFEAA7'}},
+  {name:'银行业',   itemStyle:{color:'#DDA0DD'}}
+];
+
+const nodes = rawData.nodes.map(n => {
+  const ts = new Date(n.timestamp).getTime();
+  const x = ((ts - timeExtent[0].getTime()) / tsRange) * 100;
+  const y = n.domain * 15 + n.depth * 5;
+  const symbolSize = n.isRoot ? 55 : n.isLeaf ? 35 : 25 + (rawData.edges.filter(e => e.source === n.id || e.target === n.id).length) * 3;
+  return {
+    id: n.id,
+    name: n.name,
+    x: x,
+    y: y,
+    symbolSize: symbolSize,
+    category: n.domain,
+    itemStyle: { color: n.color, borderColor: '#fff', borderWidth: n.isRoot ? 3 : 1 },
+    label: { show: true, position: 'bottom', fontSize: 10, color: '#ddd', formatter: n.name.length > 14 ? n.name.slice(0,14)+'…' : n.name },
+    tooltip: { formatter: function() {
+      return `<b>${n.name}</b><br/>时间: ${n.timestamp}<br/>领域: ${n.domainName}<br/>深度: 第${n.depth}轮${n.isRoot ? ' (根因)' : ''}${n.isLeaf ? ' (叶事件)' : ''}`;
+    }},
+    _raw: n
+  };
+});
+
+const links = rawData.edges.map(e => ({
+  source: e.source,
+  target: e.target,
+  value: e.confidence,
+  lineStyle: {
+    color: e.confidence >= 0.35 ? '#FF6B6B' : e.confidence >= 0.25 ? '#FFA500' : '#333',
+    width: e.confidence >= 0.35 ? 3 : e.confidence >= 0.25 ? 1.5 : 0.5,
+    opacity: e.confidence >= 0.25 ? 0.8 : 0.3,
+    curveness: 0.2
+  },
+  label: { show: e.confidence >= 0.35, formatter: Math.round(e.confidence*100)+'%', fontSize: 9, color: '#FFD700' },
+  _raw: e
+}));
+
+// 初始化图表
+const chart = echarts.init(document.getElementById('chart'), 'dark');
+
+const option = {
+  backgroundColor: '#0a0a1a',
+  tooltip: { 
+    trigger: 'item',
+    backgroundColor: 'rgba(15,15,35,0.95)',
+    borderColor: '#444',
+    textStyle: { color: '#fff', fontSize: 12 }
+  },
+  series: [{
+    type: 'graph',
+    layout: 'none',
+    roam: true,
+    data: nodes,
+    links: links,
+    categories: categories,
+    edgeSymbol: ['none', 'arrow'],
+    edgeSymbolSize: [0, 10],
+    emphasis: {
+      focus: 'adjacency',
+      lineStyle: { width: 4 },
+      itemStyle: { shadowBlur: 20, shadowColor: 'rgba(255,255,255,0.3)' }
+    },
+    lineStyle: { curveness: 0.2 },
+    animationDuration: 1500,
+    animationEasingUpdate: 'quinticInOut'
+  }]
+};
+
+chart.setOption(option);
+window.addEventListener('resize', () => chart.resize());
+
+// 控制函数
+let labelsVisible = true;
+function toggleLabels() {
+  labelsVisible = !labelsVisible;
+  chart.setOption({ series: [{ data: nodes.map(n => ({...n, label: {...n.label, show: labelsVisible}})) }] });
+}
+
+function resetView() {
+  chart.setOption(option, true);
+}
+
+function highlightRoot() {
+  const rootEdges = rawData.edges.filter(e => e.source === '1690c596');
+  const rootTargets = new Set(rootEdges.map(e => e.target));
+  rootTargets.add('1690c596');
+  
+  chart.setOption({
+    series: [{
+      data: nodes.map(n => ({
+        ...n,
+        itemStyle: {
+          ...n.itemStyle,
+          opacity: rootTargets.has(n.id) ? 1 : 0.15
+        }
+      })),
+      links: links.map(l => ({
+        ...l,
+        lineStyle: {
+          ...l.lineStyle,
+          opacity: l._raw.source === '1690c596' ? 1 : 0.05
+        }
+      }))
+    }]
+  });
+}
+
+function exportImage() {
+  const url = chart.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#0a0a1a' });
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'causal_network.png';
+  a.click();
+}
+</script>
+</body>
+</html>
