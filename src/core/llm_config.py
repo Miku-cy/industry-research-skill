@@ -42,7 +42,7 @@ DEFAULT_PROFILES = {
         "mode": "auto",          # heuristic / ollama / api / auto
         "api_url": "",
         "api_key": "",
-        "api_model": "gpt-4o-mini",
+        "api_model": "mimo-v2-pro",
         "ollama_url": "http://localhost:11434",
         "ollama_model": "qwen3:1.7b",
         "temperature": 0.1,
@@ -99,47 +99,48 @@ class LLMConfig:
             self.profiles[name] = dict(profile)
 
         # 2. 从配置文件覆盖
-        if not self._config_path or not os.path.exists(self._config_path):
-            return
+        if self._config_path and os.path.exists(self._config_path):
+            try:
+                import yaml
+                with open(self._config_path, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f) or {}
+            except ImportError:
+                data = self._parse_yaml_simple(self._config_path)
+            except Exception:
+                data = {}
 
-        try:
-            import yaml
-            with open(self._config_path, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f) or {}
-        except ImportError:
-            data = self._parse_yaml_simple(self._config_path)
-        except Exception:
-            return
+            # 读取 llm 配置段
+            llm_section = data.get("llm", {})
+            for name, overrides in llm_section.items():
+                if name in self.profiles and isinstance(overrides, dict):
+                    for key, value in overrides.items():
+                        if value:
+                            self.profiles[name][key] = value
 
-        # 读取 llm 配置段
-        llm_section = data.get("llm", {})
+            # 兼容旧格式：semantic.api 段
+            semantic = data.get("semantic", {})
+            if semantic:
+                api = semantic.get("api", {})
+                if api and "semantic" in self.profiles:
+                    self.profiles["semantic"]["api_url"] = api.get("url", "") or self.profiles["semantic"]["api_url"]
+                    self.profiles["semantic"]["api_key"] = api.get("key", "") or self.profiles["semantic"]["api_key"]
+                    self.profiles["semantic"]["api_model"] = api.get("model", "") or self.profiles["semantic"]["api_model"]
+                ollama = semantic.get("ollama", {})
+                if ollama and "semantic" in self.profiles:
+                    self.profiles["semantic"]["ollama_url"] = ollama.get("url", "") or self.profiles["semantic"]["ollama_url"]
+                    self.profiles["semantic"]["ollama_model"] = ollama.get("model", "") or self.profiles["semantic"]["ollama_model"]
+                mode = semantic.get("mode", "")
+                if mode and "semantic" in self.profiles:
+                    self.profiles["semantic"]["mode"] = mode
 
-        for name, overrides in llm_section.items():
-            if name in self.profiles and isinstance(overrides, dict):
-                for key, value in overrides.items():
-                    if value:  # 只覆盖非空值
-                        self.profiles[name][key] = value
-
-        # 兼容旧格式：semantic.api 段
-        semantic = data.get("semantic", {})
-        if semantic:
-            api = semantic.get("api", {})
-            if api and "semantic" in self.profiles:
-                self.profiles["semantic"]["api_url"] = api.get("url", "") or self.profiles["semantic"]["api_url"]
-                self.profiles["semantic"]["api_key"] = api.get("key", "") or self.profiles["semantic"]["api_key"]
-                self.profiles["semantic"]["api_model"] = api.get("model", "") or self.profiles["semantic"]["api_model"]
-            ollama = semantic.get("ollama", {})
-            if ollama and "semantic" in self.profiles:
-                self.profiles["semantic"]["ollama_url"] = ollama.get("url", "") or self.profiles["semantic"]["ollama_url"]
-                self.profiles["semantic"]["ollama_model"] = ollama.get("model", "") or self.profiles["semantic"]["ollama_model"]
-            mode = semantic.get("mode", "")
-            if mode and "semantic" in self.profiles:
-                self.profiles["semantic"]["mode"] = mode
-
-        # 从 openclaw.json 读取通用 API key（回退）
+        # 3. 从 openclaw.json 读取通用 API key/url（最终回退）
+        oc_key = self._get_openclaw_key()
+        oc_url = self._get_openclaw_url()
         for name in self.profiles:
-            if not self.profiles[name].get("api_key"):
-                self.profiles[name]["api_key"] = self._get_openclaw_key()
+            if not self.profiles[name].get("api_key") and oc_key:
+                self.profiles[name]["api_key"] = oc_key
+            if not self.profiles[name].get("api_url") and oc_url:
+                self.profiles[name]["api_url"] = oc_url
 
     def _get_openclaw_key(self) -> str:
         """从 openclaw.json 读取 API key（通用回退）"""
@@ -153,6 +154,22 @@ class LLMConfig:
             for name, prov in providers.items():
                 if prov.get("apiKey"):
                     return prov["apiKey"]
+        except Exception:
+            pass
+        return ""
+
+    def _get_openclaw_url(self) -> str:
+        """从 openclaw.json 读取 API URL"""
+        oc_path = os.path.expanduser("~/.openclaw/openclaw.json")
+        if not os.path.exists(oc_path):
+            return ""
+        try:
+            with open(oc_path) as f:
+                oc = json.load(f)
+            providers = oc.get("models", {}).get("providers", {})
+            for name, prov in providers.items():
+                if prov.get("baseUrl"):
+                    return prov["baseUrl"]
         except Exception:
             pass
         return ""
@@ -260,6 +277,15 @@ class LLMConfig:
                 msg = data["choices"][0]["message"]
                 content = msg.get("content") or ""
                 reasoning = msg.get("reasoning_content") or ""
+                # MiMo 推理模型：content 可能为空，答案在 reasoning_content 里
+                if not content and reasoning:
+                    # 尝试从 reasoning 中提取 JSON
+                    import re
+                    json_match = re.search(r'\[[\s\S]*\]', reasoning)
+                    if json_match:
+                        content = json_match.group(0)
+                    else:
+                        content = reasoning
                 return {"content": content, "reasoning_content": reasoning}
         except Exception as e:
             return {"content": "", "error": str(e)}
