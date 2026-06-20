@@ -113,6 +113,21 @@ class CausalMiningEngine:
             chain.confidence = calibrated
 
             if calibrated >= min_confidence:
+                # 预测传导时间，附在描述上
+                pred = self.lag_model.predict_lag(
+                    cause.tags, cause.summary,
+                    effect.tags, effect.summary,
+                )
+                ci = pred["ci_90"]
+                prob7 = pred["prob_within"].get("7天", 0)
+                prob30 = pred["prob_within"].get("30天", 0)
+                chain.description += (
+                    f" [领域:{pred['domain']}"
+                    f" 预计传导:{pred['peak_days']}天"
+                    f" 90%CI:[{ci[0]},{ci[1]}]天"
+                    f" 7天概率:{prob7:.0%}"
+                    f" 30天概率:{prob30:.0%}]"
+                )
                 network.add_chain(chain)
 
         return network
