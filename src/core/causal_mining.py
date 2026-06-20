@@ -91,10 +91,12 @@ class CausalMiningEngine:
 
         # 批量分析
         all_chains = []
+        all_similar_cases: Dict[str, List[Dict]] = {}
         for batch_start in range(0, len(pairs), batch_size):
             batch = pairs[batch_start:batch_start + batch_size]
-            chains = self._analyze_batch(batch)
+            chains, similar_cases_map = self._analyze_batch(batch)
             all_chains.extend(chains)
+            all_similar_cases.update(similar_cases_map)
 
         # LLM 结果后处理：用滞后模型校准置信度
         network = CausalNetwork(title="因果挖掘结果")
@@ -113,16 +115,26 @@ class CausalMiningEngine:
             chain.confidence = calibrated
 
             if calibrated >= min_confidence:
-                # 预测传导时间，附在描述上
-                pred = self.lag_model.predict_lag(
-                    cause.tags, cause.summary,
-                    effect.tags, effect.summary,
-                )
+                # 贝叶斯预测：用 LLM 提供的类似案例更新先验
+                chain_key = f"{cause.id}->{effect.id}"
+                llm_cases = all_similar_cases.get(chain_key, [])
+                if llm_cases:
+                    pred = self.lag_model.predict_with_evidence(
+                        cause.tags, cause.summary, llm_cases,
+                    )
+                else:
+                    pred = self.lag_model.predict_lag(
+                        cause.tags, cause.summary,
+                        effect.tags, effect.summary,
+                    )
+
                 ci = pred["ci_90"]
                 prob7 = pred["prob_within"].get("7天", 0)
                 prob30 = pred["prob_within"].get("30天", 0)
+                method = pred.get("method", "prior")
+                label = "贝叶斯" if method == "bayesian_with_evidence" else "先验"
                 chain.description += (
-                    f" [领域:{pred['domain']}"
+                    f" [{label}预测:{pred['domain']}"
                     f" 预计传导:{pred['peak_days']}天"
                     f" 90%CI:[{ci[0]},{ci[1]}]天"
                     f" 7天概率:{prob7:.0%}"
@@ -185,7 +197,7 @@ class CausalMiningEngine:
 
     def _analyze_batch(
         self, pairs: List[Tuple[TimelineEvent, TimelineEvent]]
-    ) -> List[CausalChain]:
+    ) -> Tuple[List[CausalChain], Dict[str, List[Dict]]]:
         """批量分析事件对的因果关系"""
         prompt = self._build_batch_prompt(pairs)
         result = self._call_api(prompt)
@@ -209,15 +221,18 @@ class CausalMiningEngine:
 - confidence: 0.0-1.0 的因果置信度
 - reason: 因果逻辑（一句话）
 - type: "direct"(直接因果) / "indirect"(间接因果) / "correlation"(相关非因果) / "none"(无关)
+- mechanism: 传导机制链，用箭头连接，如 "流动性收紧→风险资产抛售→加密市场暴跌"
+- similar_cases: 你记忆中的类似历史因果案例，每个含 event(事件名)、gap_days(传导天数)、confidence(置信度)
 
 考虑：
 1. 时间顺序（因在前，果在后）
 2. 传导机制（有没有合理的因果路径）
 3. 领域关联（同领域或跨领域传导）
 4. 间接因果（通过中间事件传导，如加息→加密崩盘→交易所破产）
+5. 类似历史案例（如 2018 年加息周期中发生过什么）
 
 只返回JSON数组，不要其他文字：
-[{{"idx": 1, "confidence": 0.8, "reason": "加息导致流动性收紧，加密市场暴跌", "type": "indirect"}}, ...]"""
+[{{"idx": 1, "confidence": 0.8, "reason": "加息导致流动性收紧，加密市场暴跌", "type": "indirect", "mechanism": "加息→流动性收紧→风险资产抛售→加密暴跌", "similar_cases": [{{"event": "2018年美联储加息周期", "gap_days": 30, "confidence": 0.7}}, {{"event": "2022年加息", "gap_days": 5, "confidence": 0.8}}]}}, ...]"""
 
     def _call_api(self, prompt: str) -> Dict:
         """调用 mimo API"""
@@ -264,11 +279,17 @@ class CausalMiningEngine:
 
     def _parse_batch_result(
         self, result: Any, pairs: List[Tuple[TimelineEvent, TimelineEvent]]
-    ) -> List[CausalChain]:
-        """解析 mimo 返回的因果分析结果"""
+    ) -> Tuple[List[CausalChain], Dict[str, List[Dict]]]:
+        """解析 mimo 返回的因果分析结果
+
+        Returns:
+            (chains, similar_cases_map)
+            similar_cases_map: {chain_key: [{event, gap_days, confidence}, ...]}
+        """
         chains = []
+        similar_cases_map: Dict[str, List[Dict]] = {}
         if not isinstance(result, list):
-            return chains
+            return chains, similar_cases_map
 
         for item in result:
             idx = item.get("idx", 0) - 1
@@ -278,6 +299,8 @@ class CausalMiningEngine:
             confidence = item.get("confidence", 0)
             reason = item.get("reason", "")
             ctype = item.get("type", "none")
+            mechanism = item.get("mechanism", "")
+            similar_cases = item.get("similar_cases", [])
 
             if ctype == "none" or confidence < 0.1:
                 continue
@@ -290,9 +313,16 @@ class CausalMiningEngine:
                 confidence=confidence,
                 description=reason or f"{cause.summary} → {effect.summary}",
             )
+            if mechanism:
+                chain.description += f" [机制:{mechanism}]"
+
+            chain_key = f"{cause.id}->{effect.id}"
+            if similar_cases:
+                similar_cases_map[chain_key] = similar_cases
+
             chains.append(chain)
 
-        return chains
+        return chains, similar_cases_map
 
     def mine_and_merge(
         self,
