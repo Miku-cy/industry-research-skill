@@ -167,22 +167,10 @@ def generate_html(network, timeline, output_path, title="因果网络 3D"):
     return output_path
 
 
-def main():
-    parser = argparse.ArgumentParser(description="ChronoVisor 因果挖掘 CLI")
-    parser.add_argument("input", nargs="?", help="输入文件 (CSV/JSON)")
-    parser.add_argument("-o", "--output", default="causal_network.html", help="输出 HTML 文件")
-    parser.add_argument("-t", "--title", default="因果网络 3D", help="标题")
-    parser.add_argument("--text", help="逗号分隔的事件文本")
-    parser.add_argument("--model", default="", help="LLM 模型名")
-    parser.add_argument("--min-conf", type=float, default=0.3, help="最小置信度")
-    parser.add_argument("--batch-size", type=int, default=15, help="批处理大小")
-    parser.add_argument("--config", default="", help="配置文件路径")
-    args = parser.parse_args()
-
-    # 加载配置
+def cmd_mine(args):
+    """挖掘因果关系"""
     config = load_config()
 
-    # 加载事件
     if args.text:
         events_data = load_events_text(args.text)
     elif args.input:
@@ -191,14 +179,13 @@ def main():
         else:
             events_data = load_events_csv(args.input)
     else:
-        parser.print_help()
+        print("❌ 请指定输入文件或 --text")
         sys.exit(1)
 
     if not events_data:
         print("❌ 没有加载到事件数据")
         sys.exit(1)
 
-    # 构建时间轴
     tb = TimelineBase(title=args.title)
     for ed in events_data:
         tb.add_event(
@@ -210,7 +197,6 @@ def main():
 
     print(f"📊 加载 {tb.timeline.get_event_count()} 个事件")
 
-    # 初始化挖掘引擎
     model = args.model or config.get("api_model", "mimo-v2.5")
     miner = CausalMiningEngine(
         api_url=config.get("api_url", ""),
@@ -230,7 +216,6 @@ def main():
 
     print(f"\n✅ 挖掘完成：{network.event_count} 节点 / {network.chain_count} 条因果链")
 
-    # 展示 Top 10
     chains = []
     for cause_id, effects in network._downstream.items():
         for effect_id, chain in effects.items():
@@ -241,10 +226,73 @@ def main():
     for i, c in enumerate(chains[:10], 1):
         print(f"  {i}. [{c.confidence:.0%}] {c.cause_event.summary[:30]} → {c.effect_event.summary[:30]}")
 
-    # 生成 HTML
     output_path = generate_html(network, tb, args.output, args.title)
     print(f"\n🌐 3D 可视化已生成：{output_path}")
     print(f"   浏览器打开即可查看")
+
+
+def cmd_predict(args):
+    """预测因果传导时间"""
+    config = load_config()
+    miner = CausalMiningEngine(
+        api_url=config.get("api_url", ""),
+        api_key=config.get("api_key", ""),
+        api_model=args.model or config.get("api_model", "mimo-v2.5"),
+        config_path=args.config,
+    )
+
+    tags = [t.strip() for t in args.tags.split(",")] if args.tags else []
+    pred = miner.predict(args.summary, tags)
+
+    ci90 = pred["ci_90"]
+    ci50 = pred["ci_50"]
+    print(f"\n🔮 预测结果：{args.summary}")
+    print(f"   领域：{pred['domain']}")
+    print(f"   预计传导：{pred['peak_days']} 天")
+    print(f"   90% 置信区间：[{ci90[0]}, {ci90[1]}] 天")
+    print(f"   50% 置信区间：[{ci50[0]}, {ci50[1]}] 天")
+    print(f"   预测置信度：{pred['confidence']:.0%}")
+    print(f"\n   各时间段内发生概率：")
+    for label, prob in pred["prob_within"].items():
+        bar = "█" * int(prob * 20)
+        print(f"     {label:>5s}  {bar} {prob:.0%}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="ChronoVisor 因果挖掘 CLI")
+    subparsers = parser.add_subparsers(dest="command")
+
+    # mine 子命令（默认）
+    mine_parser = subparsers.add_parser("mine", help="挖掘因果关系")
+    mine_parser.add_argument("input", nargs="?", help="输入文件 (CSV/JSON)")
+    mine_parser.add_argument("-o", "--output", default="causal_network.html", help="输出 HTML 文件")
+    mine_parser.add_argument("-t", "--title", default="因果网络 3D", help="标题")
+    mine_parser.add_argument("--text", help="逗号分隔的事件文本")
+    mine_parser.add_argument("--model", default="", help="LLM 模型名")
+    mine_parser.add_argument("--min-conf", type=float, default=0.3, help="最小置信度")
+    mine_parser.add_argument("--batch-size", type=int, default=15, help="批处理大小")
+    mine_parser.add_argument("--config", default="", help="配置文件路径")
+
+    # predict 子命令
+    pred_parser = subparsers.add_parser("predict", help="预测因果传导时间")
+    pred_parser.add_argument("summary", help="事件摘要，如 '美联储加息25基点'")
+    pred_parser.add_argument("--tags", default="", help="逗号分隔的标签，如 '加息,美联储'")
+    pred_parser.add_argument("--model", default="", help="LLM 模型名")
+    pred_parser.add_argument("--config", default="", help="配置文件路径")
+
+    args = parser.parse_args()
+
+    # 兼容：无子命令时当作 mine
+    if args.command == "predict":
+        cmd_predict(args)
+    else:
+        # 兼容旧用法：python mine.py events.csv -o ...
+        if args.command is None and args.input:
+            args.command = "mine"
+        elif args.command is None:
+            parser.print_help()
+            sys.exit(1)
+        cmd_mine(args)
 
 
 if __name__ == "__main__":

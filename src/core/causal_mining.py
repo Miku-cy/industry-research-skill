@@ -132,6 +132,25 @@ class CausalMiningEngine:
 
         return network
 
+    def predict(self, summary: str, tags: List[str] = None) -> Dict:
+        """给定一个事件描述，预测果事件的传导时间
+
+        Args:
+            summary: 事件摘要，如 "美联储加息25基点"
+            tags: 标签列表，如 ["加息", "美联储"]
+
+        Returns:
+            {
+                "domain": "金融市场",
+                "peak_days": 7,
+                "ci_90": [2, 18],
+                "ci_50": [4, 10],
+                "prob_within": {"7天": 0.6, "30天": 0.9, ...},
+                "confidence": 0.8,
+            }
+        """
+        return self.lag_model.predict_lag(tags or [], summary)
+
     def _analyze_batch(
         self, pairs: List[Tuple[TimelineEvent, TimelineEvent]]
     ) -> List[CausalChain]:
