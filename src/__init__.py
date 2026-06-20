@@ -7,6 +7,7 @@ from .core.causal_mining import CausalMiningEngine
 from .core.causal_lag import CausalLagModel
 from .core.report_generator import ReportGenerator
 from .core.semantic import SemanticClassifier, SemanticScores
+from .core.llm_config import llm_config, LLMConfig
 
 __all__ = [
     "Timeline",
