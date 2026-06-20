@@ -30,6 +30,7 @@ class CausalMiningEngine:
         self.api_url = api_url or config.get("api_url", "")
         self.api_key = api_key or config.get("api_key", "") or os.environ.get("OPENAI_API_KEY", "")
         self.api_model = api_model or config.get("api_model", "mimo-v2.5")
+        self.lag_model = CausalLagModel()
 
     @staticmethod
     def _load_config(config_path: str = "") -> Dict:
@@ -60,13 +61,33 @@ class CausalMiningEngine:
         batch_size: int = 10,
         min_confidence: float = 0.3,
     ) -> CausalNetwork:
-        """挖掘所有事件对的因果关系，构建网络"""
-        # 生成候选对（时间有序）
+        """挖掘所有事件对的因果关系，构建网络
+
+        四层漏斗过滤：
+        Layer 1: 时序过滤 — A.timestamp < B.timestamp
+        Layer 2: 时间窗口过滤 — 超出领域最大传导时间的淘汰
+        """
+        # Layer 1: 时序过滤 + Layer 2: 时间窗口过滤
         pairs = []
         for i in range(len(events)):
             for j in range(i + 1, len(events)):
-                if events[i].timestamp < events[j].timestamp:
-                    pairs.append((events[i], events[j]))
+                cause, effect = events[i], events[j]
+                if cause.timestamp >= effect.timestamp:
+                    continue  # Layer 1: 时序过滤
+
+                gap_days = (effect.timestamp - cause.timestamp).days
+
+                # Layer 2: 时间窗口过滤
+                all_tags = cause.tags + effect.tags
+                all_summary = cause.summary + " " + effect.summary
+                domain = self.lag_model.classify_domain(all_tags, all_summary)
+                profile = self.lag_model.get_profile(domain)
+
+                # 硬规则：超出领域最大传导时间 → 淘汰
+                if gap_days > profile.typical_max_days:
+                    continue
+
+                pairs.append((cause, effect))
 
         # 批量分析
         all_chains = []
