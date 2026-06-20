@@ -96,10 +96,23 @@ class CausalMiningEngine:
             chains = self._analyze_batch(batch)
             all_chains.extend(chains)
 
-        # 过滤+构建网络
+        # LLM 结果后处理：用滞后模型校准置信度
         network = CausalNetwork(title="因果挖掘结果")
         for chain in all_chains:
-            if chain.confidence >= min_confidence:
+            cause = chain.cause_event
+            effect = chain.effect_event
+            gap_days = (effect.timestamp - cause.timestamp).days
+
+            all_tags = cause.tags + effect.tags
+            all_summary = cause.summary + " " + effect.summary
+            domain = self.lag_model.classify_domain(all_tags, all_summary)
+            decay = self.lag_model.get_decay(gap_days, domain)
+
+            # 最终置信度 = LLM 置信度 × 滞后衰减因子
+            calibrated = chain.confidence * decay
+            chain.confidence = calibrated
+
+            if calibrated >= min_confidence:
                 network.add_chain(chain)
 
         return network
