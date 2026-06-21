@@ -18,6 +18,7 @@
 """
 import json
 import os
+import time
 import urllib.request
 from typing import Any, Dict, Optional
 
@@ -77,9 +78,16 @@ DEFAULT_PROFILES = {
 class LLMConfig:
     """LLM 统一配置中心"""
 
+    # 速率限制：每分钟最多 90 次请求（留 10 次余量）
+    MAX_RPM = 90
+    MIN_INTERVAL = 60.0 / MAX_RPM  # 每次请求最小间隔（秒）
+    MAX_RETRIES = 3
+    RETRY_BACKOFF = 2.0  # 指数退避倍数
+
     def __init__(self, config_path: str = ""):
         self.profiles: Dict[str, Dict] = {}
         self._config_path = config_path or self._find_config()
+        self._last_call_time = 0.0
         self._load()
 
     def _find_config(self) -> str:
@@ -247,7 +255,7 @@ class LLMConfig:
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
     ) -> Dict[str, Any]:
-        """调用 OpenAI 兼容 API"""
+        """调用 OpenAI 兼容 API（带速率限制和重试）"""
         base = (cfg.get("api_url") or "").rstrip("/")
         if not base:
             return {"content": "", "error": "未配置 api_url"}
@@ -261,34 +269,54 @@ class LLMConfig:
             "max_tokens": max_tokens or cfg.get("max_tokens", 4096),
         }).encode()
 
-        req = urllib.request.Request(
-            f"{base}/chat/completions",
-            data=payload,
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {cfg.get('api_key', '')}",
-            },
-            method="POST",
-        )
+        for attempt in range(self.MAX_RETRIES):
+            # 速率限制：确保请求间隔 >= MIN_INTERVAL
+            now = time.time()
+            elapsed = now - self._last_call_time
+            if elapsed < self.MIN_INTERVAL:
+                time.sleep(self.MIN_INTERVAL - elapsed)
+            self._last_call_time = time.time()
 
-        try:
-            with urllib.request.urlopen(req, timeout=120) as resp:
-                data = json.loads(resp.read())
-                msg = data["choices"][0]["message"]
-                content = msg.get("content") or ""
-                reasoning = msg.get("reasoning_content") or ""
-                # MiMo 推理模型：content 可能为空，答案在 reasoning_content 里
-                if not content and reasoning:
-                    # 尝试从 reasoning 中提取 JSON
-                    import re
-                    json_match = re.search(r'\[[\s\S]*\]', reasoning)
-                    if json_match:
-                        content = json_match.group(0)
-                    else:
-                        content = reasoning
-                return {"content": content, "reasoning_content": reasoning}
-        except Exception as e:
-            return {"content": "", "error": str(e)}
+            req = urllib.request.Request(
+                f"{base}/chat/completions",
+                data=payload,
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {cfg.get('api_key', '')}",
+                },
+                method="POST",
+            )
+
+            try:
+                with urllib.request.urlopen(req, timeout=120) as resp:
+                    data = json.loads(resp.read())
+                    msg = data["choices"][0]["message"]
+                    content = msg.get("content") or ""
+                    reasoning = msg.get("reasoning_content") or ""
+                    # MiMo 推理模型：content 可能为空，答案在 reasoning_content 里
+                    if not content and reasoning:
+                        import re
+                        json_match = re.search(r'\[[\s\S]*\]', reasoning)
+                        if json_match:
+                            content = json_match.group(0)
+                        else:
+                            content = reasoning
+                    return {"content": content, "reasoning_content": reasoning}
+            except urllib.error.HTTPError as e:
+                if e.code == 429:
+                    # 限流，指数退避重试
+                    wait = self.RETRY_BACKOFF ** (attempt + 1)
+                    print(f"  [llm_config] 429 限流，{wait:.1f}s 后重试 ({attempt+1}/{self.MAX_RETRIES})")
+                    time.sleep(wait)
+                    continue
+                return {"content": "", "error": f"HTTP Error {e.code}: {e.reason}"}
+            except Exception as e:
+                if attempt < self.MAX_RETRIES - 1:
+                    time.sleep(self.RETRY_BACKOFF ** (attempt + 1))
+                    continue
+                return {"content": "", "error": str(e)}
+
+        return {"content": "", "error": "超过最大重试次数"}
 
     def _check_ollama(self, cfg: Dict) -> bool:
         """检查 Ollama 是否可用"""
