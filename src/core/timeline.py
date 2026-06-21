@@ -302,6 +302,117 @@ class Timeline:
     def remove_chapter(self, chapter_id: str):
         self.chapters = [c for c in self.chapters if c.id != chapter_id]
 
+    def rename_chapter(self, chapter_id: str, new_title: str) -> bool:
+        """重命名章节"""
+        chapter = self.get_chapter(chapter_id)
+        if not chapter:
+            return False
+        chapter.title = new_title
+        return True
+
+    def split_chapter(self, chapter_id: str, split_time: datetime) -> Optional[Tuple["Chapter", "Chapter"]]:
+        """在指定时间点分割章节
+
+        Args:
+            chapter_id: 要分割的章节 ID
+            split_time: 分割时间点
+
+        Returns:
+            (前半章节, 后半章节) 或 None（分割失败）
+        """
+        chapter = self.get_chapter(chapter_id)
+        if not chapter:
+            return None
+        if split_time <= chapter.start_time or split_time >= chapter.end_time:
+            return None
+
+        # 按时间分割事件
+        front_events = [eid for eid in chapter.event_ids
+                        if self._events.get(eid) and self._events[eid].timestamp < split_time]
+        back_events = [eid for eid in chapter.event_ids
+                       if self._events.get(eid) and self._events[eid].timestamp >= split_time]
+
+        if not front_events or not back_events:
+            return None
+
+        # 删除原章节
+        self.remove_chapter(chapter_id)
+
+        # 创建前半章节
+        front = Chapter(
+            title=chapter.title + "（前）",
+            start_time=chapter.start_time,
+            end_time=split_time - timedelta(seconds=1),
+            summary=self._generate_chapter_summary(front_events),
+            tags=chapter.tags,
+            event_ids=front_events,
+        )
+
+        # 创建后半章节
+        back = Chapter(
+            title=chapter.title + "（后）",
+            start_time=split_time,
+            end_time=chapter.end_time,
+            summary=self._generate_chapter_summary(back_events),
+            tags=chapter.tags,
+            event_ids=back_events,
+        )
+
+        self.add_chapter(front)
+        self.add_chapter(back)
+        return front, back
+
+    def merge_chapters(self, chapter_id_1: str, chapter_id_2: str) -> Optional["Chapter"]:
+        """合并两个相邻章节
+
+        Args:
+            chapter_id_1: 第一个章节 ID
+            chapter_id_2: 第二个章节 ID
+
+        Returns:
+            合并后的新章节，或 None（合并失败）
+        """
+        ch1 = self.get_chapter(chapter_id_1)
+        ch2 = self.get_chapter(chapter_id_2)
+        if not ch1 or not ch2:
+            return None
+
+        # 确保 ch1 在 ch2 前面
+        if ch1.start_time > ch2.start_time:
+            ch1, ch2 = ch2, ch1
+
+        # 合并事件列表
+        merged_event_ids = list(dict.fromkeys(ch1.event_ids + ch2.event_ids))  # 保序去重
+        merged_event_ids.sort(key=lambda eid: self._events[eid].timestamp if self._events.get(eid) else datetime.min)
+
+        # 合并标签
+        merged_tags = list(dict.fromkeys(ch1.tags + ch2.tags))
+
+        # 创建合并章节
+        merged = Chapter(
+            title=ch1.title.rstrip("（前）（后）") + "（合并）",
+            start_time=ch1.start_time,
+            end_time=ch2.end_time,
+            summary=ch1.summary + "；" + ch2.summary if ch1.summary and ch2.summary else (ch1.summary or ch2.summary),
+            tags=merged_tags[:3],
+            event_ids=merged_event_ids,
+        )
+
+        # 删除原章节，添加新章节
+        self.remove_chapter(chapter_id_1)
+        self.remove_chapter(chapter_id_2)
+        self.add_chapter(merged)
+        return merged
+
+    def _generate_chapter_summary(self, event_ids: List[str]) -> str:
+        """根据事件 ID 列表生成摘要"""
+        summaries = []
+        for eid in event_ids:
+            event = self._events.get(eid)
+            if event and event.summary:
+                summaries.append(event.summary)
+        return "；".join(summaries[:3]) if summaries else f"包含 {len(event_ids)} 个事件"
+
     def get_chapter(self, chapter_id: str) -> Optional[Chapter]:
         for c in self.chapters:
             if c.id == chapter_id:
@@ -557,6 +668,20 @@ class TimelineBase:
         self.timeline = Timeline(title=title)
         self.navigator = TimelineNavigator(self.timeline)
         self._chapter_detector = ChapterDetector(self.timeline)
+
+    # ── 章节操作（代理到 Timeline）──
+
+    def rename_chapter(self, chapter_id: str, new_title: str) -> bool:
+        """重命名章节"""
+        return self.timeline.rename_chapter(chapter_id, new_title)
+
+    def split_chapter(self, chapter_id: str, split_time: datetime):
+        """在指定时间点分割章节"""
+        return self.timeline.split_chapter(chapter_id, split_time)
+
+    def merge_chapters(self, chapter_id_1: str, chapter_id_2: str):
+        """合并两个相邻章节"""
+        return self.timeline.merge_chapters(chapter_id_1, chapter_id_2)
 
     # ── 持久化 ─────────────────────────────────────────
 
