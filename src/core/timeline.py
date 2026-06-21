@@ -5,6 +5,7 @@ from enum import Enum
 import uuid
 import json
 import os
+import re
 import csv
 import io
 
@@ -1043,6 +1044,10 @@ class TimelineBase:
         """LLM 辅助章节检测"""
         return self._chapter_detector.detect_with_llm(min_events, max_chapters)
 
+    def auto_detect_chapters_texttiling(self, min_events: int = 3, max_chapters: int = 8) -> List[Chapter]:
+        """TextTiling 语义分段检测"""
+        return self._chapter_detector.detect_texttiling(min_events, max_chapters)
+
     def add_bookmark(self, timestamp: datetime, title: str, note: str = "", color: str = "#FFD700") -> str:
         bookmark = Bookmark(timestamp=timestamp, title=title, note=note, color=color)
         self.timeline.add_bookmark(bookmark)
@@ -1118,6 +1123,109 @@ class ChapterDetector:
 
         chapters = self._finalize_chapters(merged)
         return chapters
+
+    def detect_texttiling(self, min_events: int = 3, max_chapters: int = 8) -> List[Chapter]:
+        """TextTiling 变体：基于词汇重叠度的语义分段
+
+        原理：滑动窗口比较相邻文本块的词汇重叠度，重叠骤降处即为章节边界。
+        比纯时间间隔检测更能捕捉语义断裂点。
+        """
+        events = self.timeline.get_all_events()
+        if len(events) < 3:
+            return []
+
+        # 窗口大小：总事件数的 1/4，最少 2 个
+        window_size = max(2, len(events) // 4)
+
+        # 计算每个位置的词汇重叠度
+        scores = []
+        for i in range(window_size, len(events) - window_size):
+            # 左窗口
+            left_events = events[i - window_size:i]
+            left_words = set()
+            for e in left_events:
+                left_words.update(self._tokenize(e.summary + " " + " ".join(e.tags)))
+
+            # 及窗口
+            right_events = events[i:i + window_size]
+            right_words = set()
+            for e in right_events:
+                right_words.update(self._tokenize(e.summary + " " + " ".join(e.tags)))
+
+            # Jaccard 相似度
+            common = left_words & right_words
+            union = left_words | right_words
+            score = len(common) / len(union) if union else 0
+            scores.append((i, score))
+
+        if not scores:
+            return self.detect(min_events, max_chapters)
+
+        # 找深度谷值（相似度骤降处）
+        boundaries = self._find_valleys(scores, max_chapters)
+
+        # 构建章节
+        all_boundaries = sorted(set([0] + boundaries + [len(events)]))
+        chapters = []
+        for i in range(len(all_boundaries) - 1):
+            start_idx = all_boundaries[i]
+            end_idx = all_boundaries[i + 1]
+            chapter_events = events[start_idx:end_idx]
+            if len(chapter_events) >= min_events:
+                chapter = Chapter(
+                    title=self._generate_title(chapter_events, len(chapters)),
+                    start_time=chapter_events[0].timestamp,
+                    end_time=chapter_events[-1].timestamp,
+                    summary=self._generate_summary(chapter_events),
+                    tags=self._extract_tags(chapter_events),
+                    event_ids=[e.id for e in chapter_events],
+                )
+                self.timeline.add_chapter(chapter)
+                chapters.append(chapter)
+
+        # 不够则回退
+        if len(chapters) < 2:
+            return self.detect(min_events, max_chapters)
+
+        return chapters
+
+    def _find_valleys(self, scores: list, max_chapters: int) -> list:
+        """找深度谷值：相似度骤降处"""
+        if not scores:
+            return []
+
+        values = [s for _, s in scores]
+        indices = [i for i, _ in scores]
+
+        # 计算平均值和标准差
+        mean_val = sum(values) / len(values)
+        std_val = (sum((v - mean_val) ** 2 for v in values) / len(values)) ** 0.5
+
+        # 阈值：均值 - 0.5 * 标准差（低于此值视为断裂点）
+        threshold = mean_val - 0.5 * std_val
+
+        # 找低于阈值的位置
+        valleys = []
+        for idx, val in zip(indices, values):
+            if val < threshold:
+                valleys.append(idx)
+
+        # 去重：相邻谷值只保留最低的
+        if not valleys:
+            # 没有明显断裂，取最低的几个点
+            sorted_scores = sorted(scores, key=lambda x: x[1])
+            valleys = [sorted_scores[i][0] for i in range(min(max_chapters - 1, len(sorted_scores)))]
+
+        # 限制数量
+        valleys = valleys[:max_chapters - 1]
+        return valleys
+
+    @staticmethod
+    def _tokenize(text: str) -> set:
+        """中英文分词"""
+        cn = set(re.findall(r'[\u4e00-\u9fff]{2,}', text))
+        en = set(re.findall(r'[a-zA-Z]+', text.lower()))
+        return cn | en
 
     def detect_with_llm(self, min_events: int = 3, max_chapters: int = 8) -> List[Chapter]:
         """LLM 辅助章节检测：理解事件结构性意义，按研究规律划分阶段"""
