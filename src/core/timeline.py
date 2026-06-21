@@ -1039,6 +1039,10 @@ class TimelineBase:
     def auto_detect_chapters(self, min_events: int = 3, max_chapters: int = None) -> List[Chapter]:
         return self._chapter_detector.detect(min_events, max_chapters)
 
+    def auto_detect_chapters_with_llm(self, min_events: int = 3, max_chapters: int = 8) -> List[Chapter]:
+        """LLM 辅助章节检测"""
+        return self._chapter_detector.detect_with_llm(min_events, max_chapters)
+
     def add_bookmark(self, timestamp: datetime, title: str, note: str = "", color: str = "#FFD700") -> str:
         bookmark = Bookmark(timestamp=timestamp, title=title, note=note, color=color)
         self.timeline.add_bookmark(bookmark)
@@ -1092,6 +1096,7 @@ class ChapterDetector:
         self.timeline = timeline
 
     def detect(self, min_events: int = 3, max_chapters: int = None) -> List[Chapter]:
+        """算法自动检测章节（纯规则，无 LLM）"""
         if max_chapters is None:
             max_chapters = self.DEFAULT_MAX_CHAPTERS
         events = self.timeline.get_all_events()
@@ -1113,6 +1118,81 @@ class ChapterDetector:
 
         chapters = self._finalize_chapters(merged)
         return chapters
+
+    def detect_with_llm(self, min_events: int = 3, max_chapters: int = 8) -> List[Chapter]:
+        """LLM 辅助章节检测：理解事件结构性意义，按研究规律划分阶段"""
+        from .llm_config import llm_config
+
+        events = self.timeline.get_all_events()
+        if len(events) < 3:
+            return []
+
+        # 构建事件列表
+        events_text = ""
+        for i, e in enumerate(events, 1):
+            tags_str = ", ".join(e.tags) if e.tags else "无"
+            events_text += f"{i}. [{e.timestamp.strftime('%Y-%m-%d')}] {e.summary} (标签: {tags_str})\n"
+
+        prompt = f"""你是研究分析专家。以下是按时间排列的事件列表，请按因果关系和结构性变化划分阶段。
+
+事件列表：
+{events_text}
+
+要求：
+1. 每个阶段应有明确的结构性主题（如政策变化、危机爆发、趋势转折）
+2. 阶段之间应有因果或逻辑上的边界
+3. 最多划分 {max_chapters} 个阶段
+4. 每个阶段至少 {min_events} 个事件
+
+只返回JSON数组，格式：
+[{{"title": "阶段标题", "start_idx": 1, "end_idx": 5, "reason": "划分理由"}}]
+
+start_idx 和 end_idx 是事件序号（从1开始）。"""
+
+        try:
+            result = llm_config.call("mining", prompt, max_tokens=2048)
+            content = result.get("content", "")
+
+            match = re.search(r'\[[\s\S]*\]', content)
+            if not match:
+                return self.detect(min_events, max_chapters)
+
+            import json
+            stages = json.loads(match.group(0))
+
+            if not stages:
+                return self.detect(min_events, max_chapters)
+
+            # 构建章节
+            chapters = []
+            for stage in stages:
+                start_idx = stage.get("start_idx", 1) - 1
+                end_idx = stage.get("end_idx", len(events))
+                title = stage.get("title", "未命名阶段")
+                reason = stage.get("reason", "")
+
+                start_idx = max(0, min(start_idx, len(events) - 1))
+                end_idx = max(start_idx + 1, min(end_idx, len(events)))
+
+                stage_events = events[start_idx:end_idx]
+                if not stage_events:
+                    continue
+
+                chapter = Chapter(
+                    title=title,
+                    start_time=stage_events[0].timestamp,
+                    end_time=stage_events[-1].timestamp,
+                    summary=reason or "；".join(e.summary for e in stage_events[:3]),
+                    tags=self._extract_tags(stage_events),
+                    event_ids=[e.id for e in stage_events],
+                )
+                self.timeline.add_chapter(chapter)
+                chapters.append(chapter)
+
+            return chapters
+
+        except Exception:
+            return self.detect(min_events, max_chapters)
 
     def _find_time_gaps(self, events: List[TimelineEvent]) -> List[int]:
         boundaries = [0]
