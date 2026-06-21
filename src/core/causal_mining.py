@@ -140,6 +140,7 @@ class CausalMiningEngine:
             decay = self.lag_model.get_decay(gap_days, domain)
 
             # 最终置信度 = LLM 置信度 × 滞后衰减因子
+            # 注：decay 作为时间合理性权重，LLM 给基础置信度，decay 调整时间合理性
             calibrated = chain.confidence * decay
             chain.confidence = calibrated
 
@@ -178,8 +179,8 @@ class CausalMiningEngine:
                     gap_days, calibrated,
                 )
 
-        # 累积够 3 条观测 → 自动学习更新滞后参数
-        if len(self.lag_model.observations) >= 3:
+        # 累积够 10 条观测 → 自动学习更新滞后参数（避免小样本过拟合）
+        if len(self.lag_model.observations) >= 10:
             self.lag_model.learn()
             self.lag_model.save()
 
