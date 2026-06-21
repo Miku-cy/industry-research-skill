@@ -177,47 +177,52 @@ class CausalGraph:
     # ═══ 评分 ═══
 
     def score(self, cause: str, effect: str, tags: List[str] = None) -> GraphResult:
-        """因果关系评分
+        """因果关系评分（方向敏感）
 
-        Returns:
-            GraphResult:
-            - score > 0, known=True: 图谱认识，有因果
-            - score = 0, known=True: 图谱认识，无因果
-            - score = 0, known=False: 图谱不认识，需要 LLM 兜底
+        关键：触发词必须在因文本中，效果词必须在果文本中。
+        这样才能区分方向：加息→股市下跌 ✓，股市下跌→加息 ✗
         """
-        text = cause + " " + effect + " " + " ".join(tags or [])
-        text_lower = text.lower()
+        cause_text = (cause + " " + " ".join(tags or [])).lower()
+        effect_text = (effect + " " + " ".join(tags or [])).lower()
 
         best_score = 0.0
         best_match = ""
-        trigger_found = False  # 是否有触发词命中
+        trigger_found = False
 
         for pair in self.pairs:
-            # 检查触发词
-            trigger_hit = any(kw.lower() in text_lower for kw in pair.trigger)
+            # 触发词必须在因文本中
+            trigger_hit = any(kw.lower() in cause_text for kw in pair.trigger)
             if not trigger_hit:
                 continue
 
             trigger_found = True
 
-            # 检查效果词
-            effect_hit = any(kw.lower() in text_lower for kw in pair.effect)
+            # 效果词必须在果文本中
+            effect_hit = any(kw.lower() in effect_text for kw in pair.effect)
             if effect_hit:
                 if pair.weight > best_score:
                     best_score = pair.weight
-                    best_match = f"{pair.trigger & {kw for kw in pair.trigger if kw.lower() in text_lower}}→{pair.effect & {kw for kw in pair.effect if kw.lower() in text_lower}} [{pair.source}]"
+                    matched_triggers = {kw for kw in pair.trigger if kw.lower() in cause_text}
+                    matched_effects = {kw for kw in pair.effect if kw.lower() in effect_text}
+                    best_match = f"{matched_triggers}→{matched_effects} [{pair.source}]"
 
         if best_score > 0:
-            # 图谱认识，有因果
             return GraphResult(score=best_score, known=True,
                               source="builtin", match_info=best_match)
 
         if trigger_found:
-            # 有触发词但没匹配效果词 → 不确定
+            # 有触发词但没匹配效果词 → 可能是反向因果或无关
+            # 检查反向：效果词在因文本中，触发词在果文本中
+            for pair in self.pairs:
+                reverse_trigger = any(kw.lower() in effect_text for kw in pair.trigger)
+                reverse_effect = any(kw.lower() in cause_text for kw in pair.effect)
+                if reverse_trigger and reverse_effect:
+                    # 反向匹配 → 可能是反向因果，标记为已知但无因果
+                    return GraphResult(score=0, known=True,
+                                      source="reverse", match_info="反向匹配（因果方向可能相反）")
             return GraphResult(score=0, known=False,
                               source="partial", match_info="触发词命中但效果词未命中")
 
-        # 完全不认识
         return GraphResult(score=0, known=False,
                           source="unknown", match_info="图谱中无匹配")
 

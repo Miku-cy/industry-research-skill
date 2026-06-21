@@ -96,13 +96,13 @@ class CausalMiningEngine:
 
         # Layer 3: 动态路由
         fast_lane = []   # 图谱认识，直接进后处理
-        slow_lane = []   # 图谱不认识，送 LLM
+        slow_lane = []   # 图谱部分认识，送 LLM 确认
         for cause, effect in pairs:
             all_tags = cause.tags + effect.tags
             graph_result = self.graph.score(cause.summary, effect.summary, all_tags)
 
-            if graph_result.known:
-                # 快车道：图谱认识，直接生成 CausalChain
+            if graph_result.known and graph_result.score > 0:
+                # 图谱确认有因果（方向正确）→ 快车道
                 chain = CausalChain(
                     cause_event=cause,
                     effect_event=effect,
@@ -111,12 +111,22 @@ class CausalMiningEngine:
                     description=f"{cause.summary} → {effect.summary} [图谱:{graph_result.match_info}]",
                 )
                 fast_lane.append(chain)
+
+            elif graph_result.known and graph_result.source == "reverse":
+                # 图谱发现反向匹配 → 淘汰（因果方向可能相反）
+                pass
+
+            elif graph_result.source == "partial":
+                # 图谱部分认识（有触发词但效果词不匹配）→ 送 LLM 确认
+                slow_lane.append((cause, effect))
+
+            elif graph_result.source == "unknown":
+                # 图谱完全不认识 → 淘汰（没有已知因果机制）
+                pass
+
             else:
-                # 慢车道：图谱不认识，用 TF-IDF 粗筛
-                tfidf = self._tfidf_score(cause.summary, effect.summary, all_tags)
-                if tfidf >= 0.1:
-                    slow_lane.append((cause, effect))
-                # TF-IDF 也低分 → 淘汰（太无关）
+                # 其他情况 → 送 LLM
+                slow_lane.append((cause, effect))
 
         # Layer 4: LLM 精细分析（只分析慢车道）
         all_chains = list(fast_lane)  # 快车道直接加入

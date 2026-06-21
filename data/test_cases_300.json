@@ -1,0 +1,4202 @@
+[
+  {
+    "id": 23,
+    "cause": "降息50基点收紧",
+    "effect": "新能源承压",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7008388631095147
+  },
+  {
+    "id": 230,
+    "cause": "寒潮来袭",
+    "effect": "汇率变动波动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.0628639415286995
+  },
+  {
+    "id": 267,
+    "cause": "失业率上升",
+    "effect": "经济衰退",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 200,
+    "cause": "寒潮来袭",
+    "effect": "债市调整波动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11097243239079252
+  },
+  {
+    "id": 223,
+    "cause": "某电影上映发生在伦敦",
+    "effect": "PMI数据发布发生在悉尼",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11549507891007502
+  },
+  {
+    "id": 152,
+    "cause": "旅游收入增加",
+    "effect": "铜价价格变动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.01621567958787652
+  },
+  {
+    "id": 221,
+    "cause": "奥运会举办发生在东京",
+    "effect": "PMI数据发布发生在北京",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1372513460922231
+  },
+  {
+    "id": 16,
+    "cause": "大豆库存下降",
+    "effect": "铁矿石价格股价创新高",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6598718490077256
+  },
+  {
+    "id": 29,
+    "cause": "铜产量增加",
+    "effect": "小麦价格跌停",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6919868974046491
+  },
+  {
+    "id": 233,
+    "cause": "某明星结婚发生在北京",
+    "effect": "就业报告公布发生在东京",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.05404598701039332
+  },
+  {
+    "id": 218,
+    "cause": "旅游收入增加",
+    "effect": "铁矿石价格价格变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.03946379969466877
+  },
+  {
+    "id": 76,
+    "cause": "证监会加强金融",
+    "effect": "特斯拉合规成本股价创新高",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6793967723499164
+  },
+  {
+    "id": 292,
+    "cause": "油价上涨",
+    "effect": "机票涨价",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 241,
+    "cause": "暴雪天气",
+    "effect": "股市波动波动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.001369889936449975
+  },
+  {
+    "id": 67,
+    "cause": "中国发布加息25基点",
+    "effect": "医药股价大涨8%",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7521983089739359
+  },
+  {
+    "id": 259,
+    "cause": "房价下跌",
+    "effect": "央行降息",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 275,
+    "cause": "股价暴跌",
+    "effect": "公司裁员",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 8,
+    "cause": "原油库存下降",
+    "effect": "原油价格大涨8%",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6686825351433463
+  },
+  {
+    "id": 28,
+    "cause": "日本发布下调准备金率",
+    "effect": "新能源股价盘后下跌10%",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7465733540546362
+  },
+  {
+    "id": 192,
+    "cause": "特斯拉发布新手机",
+    "effect": "腾讯股价变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.12431230064788035
+  },
+  {
+    "id": 297,
+    "cause": "科技股下跌",
+    "effect": "纳斯达克下跌",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 33,
+    "cause": "特斯拉发布Q2财报",
+    "effect": "特斯拉股价跌停",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6674428350798072
+  },
+  {
+    "id": 154,
+    "cause": "英伟达发布新耳机",
+    "effect": "英伟达股价变动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.033354479096440334
+  },
+  {
+    "id": 46,
+    "cause": "区块链获得专利",
+    "effect": "房地产全线下跌",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6704400097293988
+  },
+  {
+    "id": 27,
+    "cause": "三星发布Q4财报",
+    "effect": "特斯拉股价跌停",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.683678474757741
+  },
+  {
+    "id": 224,
+    "cause": "高温预警",
+    "effect": "汇率变动波动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.14331685306850403
+  },
+  {
+    "id": 134,
+    "cause": "铁矿石供应中断",
+    "effect": "铁矿石价格盘后下跌10%",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7842319733333063
+  },
+  {
+    "id": 105,
+    "cause": "欧盟实施制裁",
+    "effect": "半导体概念股爆发",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7794131393382818
+  },
+  {
+    "id": 276,
+    "cause": "美元走强",
+    "effect": "黄金下跌",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 226,
+    "cause": "台风登陆",
+    "effect": "汇率变动波动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.02339933527142384
+  },
+  {
+    "id": 170,
+    "cause": "台积电发布新手机",
+    "effect": "特斯拉股价变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11687464418850715
+  },
+  {
+    "id": 85,
+    "cause": "5G量产突破",
+    "effect": "半导体跌入熊市",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8222672930065479
+  },
+  {
+    "id": 70,
+    "cause": "腾讯发布Q3财报",
+    "effect": "苹果股价跌停",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6886919848021027
+  },
+  {
+    "id": 123,
+    "cause": "降息50基点收紧",
+    "effect": "房地产承压",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.672324526681563
+  },
+  {
+    "id": 220,
+    "cause": "暴雪天气",
+    "effect": "债市调整波动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.14634688514185484
+  },
+  {
+    "id": 209,
+    "cause": "苹果发布新手机",
+    "effect": "台积电股价变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.13836703059826513
+  },
+  {
+    "id": 89,
+    "cause": "日本央行宣布下调准备金率",
+    "effect": "A股创历史新高",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7843876344431547
+  },
+  {
+    "id": 237,
+    "cause": "台积电发布新手机",
+    "effect": "台积电股价变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.003954737004936154
+  },
+  {
+    "id": 182,
+    "cause": "阿里巴巴发布新耳机",
+    "effect": "英伟达股价变动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.07205548835859402
+  },
+  {
+    "id": 161,
+    "cause": "寒潮来袭",
+    "effect": "债市调整波动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.05140992588863399
+  },
+  {
+    "id": 264,
+    "cause": "通胀上升",
+    "effect": "油价上涨",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 138,
+    "cause": "原油库存下降",
+    "effect": "大豆价格大涨8%",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8375527574999615
+  },
+  {
+    "id": 195,
+    "cause": "苹果发布会发生在伦敦",
+    "effect": "PMI数据发布发生在北京",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.004622872703508662
+  },
+  {
+    "id": 274,
+    "cause": "股价暴跌",
+    "effect": "公司裁员",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 43,
+    "cause": "美联储加息",
+    "effect": "欧股波动，房地产受波及",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8920808450483775
+  },
+  {
+    "id": 262,
+    "cause": "通胀上升",
+    "effect": "油价上涨",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 270,
+    "cause": "失业率上升",
+    "effect": "经济衰退",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 108,
+    "cause": "通胀上升",
+    "effect": "港股波动，房地产受波及",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8393056563094211
+  },
+  {
+    "id": 248,
+    "cause": "假期消费旺盛",
+    "effect": "铜价价格变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.03266823735826543
+  },
+  {
+    "id": 253,
+    "cause": "股市下跌",
+    "effect": "美联储加息",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 164,
+    "cause": "电商促销数据",
+    "effect": "铜价价格变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.10510895193051195
+  },
+  {
+    "id": 234,
+    "cause": "寒潮来袭",
+    "effect": "汇率变动波动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.10097892602210252
+  },
+  {
+    "id": 180,
+    "cause": "台积电发布新平板",
+    "effect": "阿里巴巴股价变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11435619843926889
+  },
+  {
+    "id": 49,
+    "cause": "日本央行宣布降息50基点",
+    "effect": "A股跌入熊市",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7344825642809653
+  },
+  {
+    "id": 284,
+    "cause": "利率上升",
+    "effect": "债券价格下跌",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 245,
+    "cause": "世界杯开幕发生在北京",
+    "effect": "央行利率决议发生在纽约",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.051286928080293934
+  },
+  {
+    "id": 65,
+    "cause": "央行加强医药",
+    "effect": "特斯拉合规成本跌停",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.608456263658445
+  },
+  {
+    "id": 193,
+    "cause": "假期消费旺盛",
+    "effect": "铜价价格变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.08624434413941873
+  },
+  {
+    "id": 175,
+    "cause": "某明星结婚发生在东京",
+    "effect": "央行利率决议发生在悉尼",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.06843118848318806
+  },
+  {
+    "id": 254,
+    "cause": "股市下跌",
+    "effect": "美联储加息",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 159,
+    "cause": "腾讯发布新手机",
+    "effect": "特斯拉股价变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.08006739042633873
+  },
+  {
+    "id": 136,
+    "cause": "AI芯片成本降低50%",
+    "effect": "汽车跌入熊市",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8805618096274634
+  },
+  {
+    "id": 69,
+    "cause": "中国发布降息50基点",
+    "effect": "医药股价盘后下跌10%",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6995774059144033
+  },
+  {
+    "id": 61,
+    "cause": "日本发布结束负利率",
+    "effect": "房地产股价跌停",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6424285141752953
+  },
+  {
+    "id": 58,
+    "cause": "区块链成本降低50%",
+    "effect": "医药大幅上涨",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7391859205539059
+  },
+  {
+    "id": 194,
+    "cause": "腾讯发布新软件",
+    "effect": "特斯拉股价变动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.09275240383659032
+  },
+  {
+    "id": 256,
+    "cause": "房价下跌",
+    "effect": "央行降息",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 44,
+    "cause": "中国发布降息50基点",
+    "effect": "房地产股价涨停",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8359538433091516
+  },
+  {
+    "id": 249,
+    "cause": "世界杯开幕发生在东京",
+    "effect": "PMI数据发布发生在北京",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11752128603765898
+  },
+  {
+    "id": 281,
+    "cause": "利率上升",
+    "effect": "债券价格下跌",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 162,
+    "cause": "电商促销数据",
+    "effect": "黄金价格价格变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.10666651351437759
+  },
+  {
+    "id": 109,
+    "cause": "苹果发布Q3财报",
+    "effect": "台积电股价股价创新高",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.799408166158964
+  },
+  {
+    "id": 295,
+    "cause": "油价上涨",
+    "effect": "机票涨价",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 247,
+    "cause": "高温预警",
+    "effect": "期货波动波动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1473173777108421
+  },
+  {
+    "id": 291,
+    "cause": "油价上涨",
+    "effect": "机票涨价",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 265,
+    "cause": "通胀上升",
+    "effect": "油价上涨",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 48,
+    "cause": "通胀上升",
+    "effect": "美股波动，半导体受波及",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.832310573341446
+  },
+  {
+    "id": 176,
+    "cause": "高温预警",
+    "effect": "期货波动波动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.017103503753360744
+  },
+  {
+    "id": 285,
+    "cause": "利率上升",
+    "effect": "债券价格下跌",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 243,
+    "cause": "电商促销数据",
+    "effect": "铜价价格变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1280223035087406
+  },
+  {
+    "id": 126,
+    "cause": "原油供应中断",
+    "effect": "大豆价格大涨8%",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8343371939810963
+  },
+  {
+    "id": 19,
+    "cause": "结束负利率收紧",
+    "effect": "消费电子承压",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.6509074188594164
+  },
+  {
+    "id": 80,
+    "cause": "上调准备金率收紧",
+    "effect": "房地产承压",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8384691685142838
+  },
+  {
+    "id": 208,
+    "cause": "苹果发布新耳机",
+    "effect": "阿里巴巴股价变动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.07185317450467937
+  },
+  {
+    "id": 113,
+    "cause": "铜产量增加",
+    "effect": "小麦价格涨停",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6517582539031019
+  },
+  {
+    "id": 199,
+    "cause": "零售数据增长",
+    "effect": "铁矿石价格价格变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.09245136453891796
+  },
+  {
+    "id": 144,
+    "cause": "银保监加强医药",
+    "effect": "三星合规成本盘后下跌10%",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7660805718473727
+  },
+  {
+    "id": 172,
+    "cause": "阿里巴巴发布新服务",
+    "effect": "阿里巴巴股价变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.008184917284151378
+  },
+  {
+    "id": 4,
+    "cause": "铁矿石库存下降",
+    "effect": "原油价格涨停",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6794640499494158
+  },
+  {
+    "id": 117,
+    "cause": "三星发布年报",
+    "effect": "台积电股价涨停",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7718206739440778
+  },
+  {
+    "id": 174,
+    "cause": "旅游收入增加",
+    "effect": "原油价格价格变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.09800595047075576
+  },
+  {
+    "id": 269,
+    "cause": "失业率上升",
+    "effect": "经济衰退",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 104,
+    "cause": "通胀上升",
+    "effect": "欧股波动，房地产受波及",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8351670845610668
+  },
+  {
+    "id": 179,
+    "cause": "某明星结婚发生在东京",
+    "effect": "CPI数据发布发生在北京",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1386556310672308
+  },
+  {
+    "id": 181,
+    "cause": "台风登陆",
+    "effect": "债市调整波动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.14032681161938035
+  },
+  {
+    "id": 47,
+    "cause": "发改委加强互联网",
+    "effect": "三星合规成本大涨8%",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8942783154972201
+  },
+  {
+    "id": 214,
+    "cause": "旅游收入增加",
+    "effect": "原油价格价格变动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.13151494697898367
+  },
+  {
+    "id": 53,
+    "cause": "日本央行宣布结束负利率",
+    "effect": "港股剧烈波动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8108096318596814
+  },
+  {
+    "id": 168,
+    "cause": "英伟达发布新耳机",
+    "effect": "台积电股价变动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.13417914260668437
+  },
+  {
+    "id": 169,
+    "cause": "台风登陆",
+    "effect": "债市调整波动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11998486454234251
+  },
+  {
+    "id": 12,
+    "cause": "银保监加强教育",
+    "effect": "苹果合规成本大涨8%",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6942551588386728
+  },
+  {
+    "id": 229,
+    "cause": "台积电发布新服务",
+    "effect": "腾讯股价变动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.0919167144542657
+  },
+  {
+    "id": 88,
+    "cause": "台积电发布Q2财报",
+    "effect": "特斯拉股价涨停",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8807476161004165
+  },
+  {
+    "id": 42,
+    "cause": "发改委加强教育",
+    "effect": "台积电合规成本跌停",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6221585700848619
+  },
+  {
+    "id": 289,
+    "cause": "GDP增长",
+    "effect": "就业增加",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 127,
+    "cause": "新能源电池成本降低50%",
+    "effect": "消费电子创历史新高",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6007705518097533
+  },
+  {
+    "id": 263,
+    "cause": "通胀上升",
+    "effect": "油价上涨",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 258,
+    "cause": "房价下跌",
+    "effect": "央行降息",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 110,
+    "cause": "美国实施出口管制",
+    "effect": "半导体产业链受益",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8071311917166393
+  },
+  {
+    "id": 290,
+    "cause": "GDP增长",
+    "effect": "就业增加",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 207,
+    "cause": "暴雪天气",
+    "effect": "汇率变动波动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.09652155035824646
+  },
+  {
+    "id": 95,
+    "cause": "欧盟实施禁运",
+    "effect": "消费电子概念股爆发",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8903358565639881
+  },
+  {
+    "id": 158,
+    "cause": "旅游收入增加",
+    "effect": "原油价格价格变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.03140735525026166
+  },
+  {
+    "id": 121,
+    "cause": "大豆库存下降",
+    "effect": "原油价格股价创新高",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6940054432322719
+  },
+  {
+    "id": 120,
+    "cause": "美联储宣布加息25基点",
+    "effect": "欧股全线下跌",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6916527734532691
+  },
+  {
+    "id": 74,
+    "cause": "中国实施禁运",
+    "effect": "半导体产业链受益",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7435995329745761
+  },
+  {
+    "id": 151,
+    "cause": "某明星结婚发生在纽约",
+    "effect": "GDP数据发布发生在伦敦",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.12773792596389635
+  },
+  {
+    "id": 51,
+    "cause": "量子计算获得专利",
+    "effect": "半导体剧烈波动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6285257517826892
+  },
+  {
+    "id": 63,
+    "cause": "美国实施制裁",
+    "effect": "汽车概念股爆发",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6712590604340775
+  },
+  {
+    "id": 299,
+    "cause": "科技股下跌",
+    "effect": "纳斯达克下跌",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 72,
+    "cause": "GDP放缓",
+    "effect": "日股波动，房地产受波及",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7497131880769401
+  },
+  {
+    "id": 255,
+    "cause": "股市下跌",
+    "effect": "美联储加息",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 18,
+    "cause": "GDP放缓",
+    "effect": "日股波动，汽车受波及",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.722517872585765
+  },
+  {
+    "id": 160,
+    "cause": "台风登陆",
+    "effect": "债市调整波动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.05753257144615405
+  },
+  {
+    "id": 17,
+    "cause": "欧盟发布上调准备金率",
+    "effect": "医药股价涨停",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7303691275693933
+  },
+  {
+    "id": 167,
+    "cause": "某电影上映发生在东京",
+    "effect": "央行利率决议发生在伦敦",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.007512029371942097
+  },
+  {
+    "id": 100,
+    "cause": "日本发布加息25基点",
+    "effect": "半导体股价盘后下跌10%",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7579367956200649
+  },
+  {
+    "id": 166,
+    "cause": "暴雪天气",
+    "effect": "汇率变动波动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.013350425929069558
+  },
+  {
+    "id": 300,
+    "cause": "科技股下跌",
+    "effect": "纳斯达克下跌",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 157,
+    "cause": "某明星结婚发生在纽约",
+    "effect": "CPI数据发布发生在北京",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.14807873990692597
+  },
+  {
+    "id": 246,
+    "cause": "寒潮来袭",
+    "effect": "期货波动波动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.027240560791111312
+  },
+  {
+    "id": 187,
+    "cause": "某明星结婚发生在北京",
+    "effect": "GDP数据发布发生在纽约",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1064533944474471
+  },
+  {
+    "id": 298,
+    "cause": "科技股下跌",
+    "effect": "纳斯达克下跌",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 122,
+    "cause": "新能源电池获得专利",
+    "effect": "医药大幅上涨",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7054606921149389
+  },
+  {
+    "id": 22,
+    "cause": "小麦供应中断",
+    "effect": "黄金价格涨停",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7627833421511746
+  },
+  {
+    "id": 87,
+    "cause": "美联储宣布结束负利率",
+    "effect": "A股跌入熊市",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6818511244493978
+  },
+  {
+    "id": 34,
+    "cause": "欧盟实施禁运",
+    "effect": "半导体需求增加",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6751103707236011
+  },
+  {
+    "id": 38,
+    "cause": "区块链获得专利",
+    "effect": "新能源创历史新高",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7739770151650213
+  },
+  {
+    "id": 225,
+    "cause": "奥运会举办发生在纽约",
+    "effect": "央行利率决议发生在悉尼",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.134147437930531
+  },
+  {
+    "id": 75,
+    "cause": "结束负利率收紧",
+    "effect": "新能源承压",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.66764108541464
+  },
+  {
+    "id": 244,
+    "cause": "特斯拉发布新软件",
+    "effect": "特斯拉股价变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.007444810833464793
+  },
+  {
+    "id": 149,
+    "cause": "英国央行宣布降息50基点",
+    "effect": "美股剧烈波动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7190826832549493
+  },
+  {
+    "id": 288,
+    "cause": "GDP增长",
+    "effect": "就业增加",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 130,
+    "cause": "就业数据超预期",
+    "effect": "美股波动，房地产受波及",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.6400541550752871
+  },
+  {
+    "id": 228,
+    "cause": "电商促销数据",
+    "effect": "原油价格价格变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.059057538427859685
+  },
+  {
+    "id": 101,
+    "cause": "就业数据超预期",
+    "effect": "美股波动，汽车受波及",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7499575179338376
+  },
+  {
+    "id": 13,
+    "cause": "区块链性能提升10倍",
+    "effect": "汽车创历史新高",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6907551428936669
+  },
+  {
+    "id": 211,
+    "cause": "阿里巴巴发布新服务",
+    "effect": "英伟达股价变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.01983197976861534
+  },
+  {
+    "id": 215,
+    "cause": "假期消费旺盛",
+    "effect": "铜价价格变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.0159874824674188
+  },
+  {
+    "id": 129,
+    "cause": "特斯拉发布年报",
+    "effect": "腾讯股价盘后下跌10%",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6698993225579228
+  },
+  {
+    "id": 183,
+    "cause": "假期消费旺盛",
+    "effect": "原油价格价格变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11252775280050806
+  },
+  {
+    "id": 39,
+    "cause": "日本发布下调准备金率",
+    "effect": "医药股价大涨8%",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8942454415979355
+  },
+  {
+    "id": 238,
+    "cause": "电商促销数据",
+    "effect": "黄金价格价格变动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.06647406402209477
+  },
+  {
+    "id": 139,
+    "cause": "中国发布降息50基点",
+    "effect": "医药股价大涨8%",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7918940318350872
+  },
+  {
+    "id": 82,
+    "cause": "新能源电池量产突破",
+    "effect": "半导体跌入熊市",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7441346351143242
+  },
+  {
+    "id": 11,
+    "cause": "日本发布下调准备金率",
+    "effect": "消费电子股价涨停",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7430365551326805
+  },
+  {
+    "id": 135,
+    "cause": "大豆出口限制",
+    "effect": "黄金价格涨停",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6964813256004034
+  },
+  {
+    "id": 79,
+    "cause": "美联储加息",
+    "effect": "欧股波动，半导体受波及",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8541517096180404
+  },
+  {
+    "id": 14,
+    "cause": "证监会加强医药",
+    "effect": "三星合规成本盘后下跌10%",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6010637067263347
+  },
+  {
+    "id": 171,
+    "cause": "世界杯开幕发生在东京",
+    "effect": "央行利率决议发生在北京",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.07872268680579443
+  },
+  {
+    "id": 3,
+    "cause": "GDP放缓",
+    "effect": "美股波动，医药受波及",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7602419631089123
+  },
+  {
+    "id": 155,
+    "cause": "电商促销数据",
+    "effect": "铜价价格变动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11443773274789537
+  },
+  {
+    "id": 59,
+    "cause": "日本发布结束负利率",
+    "effect": "医药股价跌停",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7933999408727512
+  },
+  {
+    "id": 31,
+    "cause": "美国实施出口管制",
+    "effect": "汽车产业链受益",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7731063469412455
+  },
+  {
+    "id": 294,
+    "cause": "油价上涨",
+    "effect": "机票涨价",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 112,
+    "cause": "台积电发布Q2财报",
+    "effect": "阿里巴巴股价股价创新高",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.601335012997841
+  },
+  {
+    "id": 90,
+    "cause": "原油出口限制",
+    "effect": "铁矿石价格跌停",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6493611469748265
+  },
+  {
+    "id": 261,
+    "cause": "通胀上升",
+    "effect": "油价上涨",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 15,
+    "cause": "美国实施出口管制",
+    "effect": "房地产概念股爆发",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6630229615019262
+  },
+  {
+    "id": 282,
+    "cause": "利率上升",
+    "effect": "债券价格下跌",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 283,
+    "cause": "利率上升",
+    "effect": "债券价格下跌",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 178,
+    "cause": "奥运会举办发生在悉尼",
+    "effect": "GDP数据发布发生在东京",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1389939795805966
+  },
+  {
+    "id": 201,
+    "cause": "旅游收入增加",
+    "effect": "原油价格价格变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.0909941499106292
+  },
+  {
+    "id": 190,
+    "cause": "暴雪天气",
+    "effect": "债市调整波动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.09205516455911915
+  },
+  {
+    "id": 165,
+    "cause": "零售数据增长",
+    "effect": "黄金价格价格变动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.14596795834787918
+  },
+  {
+    "id": 222,
+    "cause": "台风登陆",
+    "effect": "债市调整波动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.015969743458886486
+  },
+  {
+    "id": 202,
+    "cause": "暴雨预警",
+    "effect": "期货波动波动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.03909244821608362
+  },
+  {
+    "id": 148,
+    "cause": "日本发布上调准备金率",
+    "effect": "新能源股价涨停",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8601566911650678
+  },
+  {
+    "id": 210,
+    "cause": "假期消费旺盛",
+    "effect": "铁矿石价格价格变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.12455453620564211
+  },
+  {
+    "id": 125,
+    "cause": "证监会加强教育",
+    "effect": "台积电合规成本大涨8%",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8860283930148216
+  },
+  {
+    "id": 45,
+    "cause": "GDP放缓",
+    "effect": "港股波动，半导体受波及",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7105756975848116
+  },
+  {
+    "id": 124,
+    "cause": "苹果发布Q4财报",
+    "effect": "三星股价大涨8%",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6859463400287271
+  },
+  {
+    "id": 250,
+    "cause": "电商促销数据",
+    "effect": "原油价格价格变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.09668623449718776
+  },
+  {
+    "id": 20,
+    "cause": "特斯拉发布Q2财报",
+    "effect": "台积电股价涨停",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6442714035273894
+  },
+  {
+    "id": 56,
+    "cause": "加息25基点收紧",
+    "effect": "汽车承压",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.6126906784688374
+  },
+  {
+    "id": 146,
+    "cause": "英伟达发布Q3财报",
+    "effect": "台积电股价盘后下跌10%",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7699781781165319
+  },
+  {
+    "id": 103,
+    "cause": "区块链性能提升10倍",
+    "effect": "房地产跌入熊市",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7190109147926879
+  },
+  {
+    "id": 204,
+    "cause": "三星发布新服务",
+    "effect": "英伟达股价变动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.032822867588854256
+  },
+  {
+    "id": 24,
+    "cause": "下调准备金率收紧",
+    "effect": "新能源承压",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8256029470664354
+  },
+  {
+    "id": 216,
+    "cause": "零售数据增长",
+    "effect": "铁矿石价格价格变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.07237016355103208
+  },
+  {
+    "id": 231,
+    "cause": "台风登陆",
+    "effect": "债市调整波动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.12844631081173202
+  },
+  {
+    "id": 60,
+    "cause": "腾讯发布年报",
+    "effect": "阿里巴巴股价盘后下跌10%",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7313274822927699
+  },
+  {
+    "id": 64,
+    "cause": "中国发布上调准备金率",
+    "effect": "房地产股价跌停",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8622350835156711
+  },
+  {
+    "id": 150,
+    "cause": "阿里巴巴发布Q4财报",
+    "effect": "苹果股价跌停",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6620192958468577
+  },
+  {
+    "id": 94,
+    "cause": "中国发布加息25基点",
+    "effect": "新能源股价大涨8%",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6182872911320286
+  },
+  {
+    "id": 68,
+    "cause": "银保监加强互联网",
+    "effect": "三星合规成本涨停",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8942457557366548
+  },
+  {
+    "id": 36,
+    "cause": "就业数据超预期",
+    "effect": "港股波动，消费电子受波及",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7326122867166784
+  },
+  {
+    "id": 203,
+    "cause": "零售数据增长",
+    "effect": "铁矿石价格价格变动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.0015887524888051451
+  },
+  {
+    "id": 268,
+    "cause": "失业率上升",
+    "effect": "经济衰退",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 118,
+    "cause": "发改委加强医药",
+    "effect": "特斯拉合规成本股价创新高",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7208552319905462
+  },
+  {
+    "id": 10,
+    "cause": "加息25基点收紧",
+    "effect": "汽车承压",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7219242173857416
+  },
+  {
+    "id": 25,
+    "cause": "加息25基点收紧",
+    "effect": "新能源承压",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8098394913738453
+  },
+  {
+    "id": 279,
+    "cause": "美元走强",
+    "effect": "黄金下跌",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 205,
+    "cause": "假期消费旺盛",
+    "effect": "铁矿石价格价格变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.005985704787734647
+  },
+  {
+    "id": 147,
+    "cause": "三星发布年报",
+    "effect": "英伟达股价跌停",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6712737881748921
+  },
+  {
+    "id": 143,
+    "cause": "日本发布加息25基点",
+    "effect": "半导体股价大涨8%",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6273410632652038
+  },
+  {
+    "id": 131,
+    "cause": "结束负利率收紧",
+    "effect": "汽车承压",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7398165337309985
+  },
+  {
+    "id": 142,
+    "cause": "台积电发布Q1财报",
+    "effect": "腾讯股价股价创新高",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7715309423573224
+  },
+  {
+    "id": 71,
+    "cause": "日本发布下调准备金率",
+    "effect": "房地产股价涨停",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8335546120520596
+  },
+  {
+    "id": 177,
+    "cause": "英伟达发布新耳机",
+    "effect": "腾讯股价变动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.10823386431769738
+  },
+  {
+    "id": 272,
+    "cause": "股价暴跌",
+    "effect": "公司裁员",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 6,
+    "cause": "央行加强互联网",
+    "effect": "英伟达合规成本涨停",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8860499242960509
+  },
+  {
+    "id": 293,
+    "cause": "油价上涨",
+    "effect": "机票涨价",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 236,
+    "cause": "台积电发布新耳机",
+    "effect": "阿里巴巴股价变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1281317767013994
+  },
+  {
+    "id": 57,
+    "cause": "欧洲央行宣布加息25基点",
+    "effect": "港股跌入熊市",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.623594126244858
+  },
+  {
+    "id": 77,
+    "cause": "铜产量增加",
+    "effect": "原油价格涨停",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6937747497740799
+  },
+  {
+    "id": 2,
+    "cause": "中国央行宣布下调准备金率",
+    "effect": "港股剧烈波动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7855559257092738
+  },
+  {
+    "id": 78,
+    "cause": "GDP放缓",
+    "effect": "A股波动，消费电子受波及",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8801254605748214
+  },
+  {
+    "id": 35,
+    "cause": "三星发布Q3财报",
+    "effect": "阿里巴巴股价盘后下跌10%",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8573199283201058
+  },
+  {
+    "id": 133,
+    "cause": "量子计算成本降低50%",
+    "effect": "新能源创历史新高",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8991484278391422
+  },
+  {
+    "id": 5,
+    "cause": "原油供应中断",
+    "effect": "原油价格涨停",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6754242359945439
+  },
+  {
+    "id": 153,
+    "cause": "奥运会举办发生在伦敦",
+    "effect": "就业报告公布发生在纽约",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.09907954855216934
+  },
+  {
+    "id": 73,
+    "cause": "加息25基点收紧",
+    "effect": "医药承压",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8673995047061667
+  },
+  {
+    "id": 9,
+    "cause": "日本央行宣布加息25基点",
+    "effect": "日股大幅上涨",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6295253613455877
+  },
+  {
+    "id": 242,
+    "cause": "零售数据增长",
+    "effect": "铁矿石价格价格变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.10724069744771478
+  },
+  {
+    "id": 1,
+    "cause": "苹果发布Q1财报",
+    "effect": "台积电股价大涨8%",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.842829137003348
+  },
+  {
+    "id": 102,
+    "cause": "结束负利率收紧",
+    "effect": "半导体承压",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8786624820759985
+  },
+  {
+    "id": 115,
+    "cause": "中国实施关税",
+    "effect": "消费电子订单激增",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6098085260574212
+  },
+  {
+    "id": 116,
+    "cause": "铜出口限制",
+    "effect": "原油价格大涨8%",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6788445674223683
+  },
+  {
+    "id": 260,
+    "cause": "房价下跌",
+    "effect": "央行降息",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 66,
+    "cause": "英伟达发布Q4财报",
+    "effect": "台积电股价股价创新高",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7259476631260329
+  },
+  {
+    "id": 191,
+    "cause": "腾讯发布新手机",
+    "effect": "台积电股价变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.04446509543614269
+  },
+  {
+    "id": 251,
+    "cause": "股市下跌",
+    "effect": "美联储加息",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 197,
+    "cause": "零售数据增长",
+    "effect": "黄金价格价格变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.09253273848602364
+  },
+  {
+    "id": 97,
+    "cause": "中国央行宣布降息50基点",
+    "effect": "美股创历史新高",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8284886907929134
+  },
+  {
+    "id": 277,
+    "cause": "美元走强",
+    "effect": "黄金下跌",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 140,
+    "cause": "苹果发布Q3财报",
+    "effect": "英伟达股价股价创新高",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7258959687555622
+  },
+  {
+    "id": 145,
+    "cause": "下调准备金率收紧",
+    "effect": "消费电子承压",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.6128027701900338
+  },
+  {
+    "id": 62,
+    "cause": "GDP放缓",
+    "effect": "A股波动，医药受波及",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.6679629139601662
+  },
+  {
+    "id": 280,
+    "cause": "美元走强",
+    "effect": "黄金下跌",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 83,
+    "cause": "证监会加强互联网",
+    "effect": "阿里巴巴合规成本盘后下跌10%",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6975148603278164
+  },
+  {
+    "id": 186,
+    "cause": "电商促销数据",
+    "effect": "原油价格价格变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11026192290393283
+  },
+  {
+    "id": 212,
+    "cause": "世界杯开幕发生在悉尼",
+    "effect": "PMI数据发布发生在北京",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11285747265538171
+  },
+  {
+    "id": 278,
+    "cause": "美元走强",
+    "effect": "黄金下跌",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 163,
+    "cause": "某明星结婚发生在伦敦",
+    "effect": "PMI数据发布发生在北京",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.06251633477693157
+  },
+  {
+    "id": 196,
+    "cause": "苹果发布新软件",
+    "effect": "阿里巴巴股价变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.0007544758611007673
+  },
+  {
+    "id": 106,
+    "cause": "就业数据超预期",
+    "effect": "港股波动，新能源受波及",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7452693941801786
+  },
+  {
+    "id": 96,
+    "cause": "央行加强医药",
+    "effect": "苹果合规成本盘后下跌10%",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.887105928158002
+  },
+  {
+    "id": 217,
+    "cause": "寒潮来袭",
+    "effect": "汇率变动波动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.015041792632406358
+  },
+  {
+    "id": 84,
+    "cause": "欧盟发布下调准备金率",
+    "effect": "汽车股价大涨8%",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7681462770708658
+  },
+  {
+    "id": 141,
+    "cause": "中国实施关税",
+    "effect": "消费电子板块上涨",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7641138775836694
+  },
+  {
+    "id": 257,
+    "cause": "房价下跌",
+    "effect": "央行降息",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 232,
+    "cause": "腾讯发布新手机",
+    "effect": "英伟达股价变动",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.08432076781075667
+  },
+  {
+    "id": 91,
+    "cause": "证监会加强医药",
+    "effect": "英伟达合规成本跌停",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.6653703926018877
+  },
+  {
+    "id": 239,
+    "cause": "三星发布新平板",
+    "effect": "特斯拉股价变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.02026723619871838
+  },
+  {
+    "id": 227,
+    "cause": "苹果发布会发生在北京",
+    "effect": "PMI数据发布发生在北京",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.130315325343683
+  },
+  {
+    "id": 81,
+    "cause": "通胀上升",
+    "effect": "A股波动，汽车受波及",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7178863763599449
+  },
+  {
+    "id": 173,
+    "cause": "三星发布新软件",
+    "effect": "腾讯股价变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.03340597847531985
+  },
+  {
+    "id": 206,
+    "cause": "寒潮来袭",
+    "effect": "股市波动波动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.07745576732513554
+  },
+  {
+    "id": 93,
+    "cause": "日本实施关税",
+    "effect": "新能源需求增加",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7781832442438072
+  },
+  {
+    "id": 86,
+    "cause": "原油需求激增",
+    "effect": "原油价格盘后下跌10%",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6856246023905975
+  },
+  {
+    "id": 54,
+    "cause": "5G获得专利",
+    "effect": "房地产大幅上涨",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7788671316615277
+  },
+  {
+    "id": 219,
+    "cause": "高温预警",
+    "effect": "期货波动波动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.12758514544764632
+  },
+  {
+    "id": 235,
+    "cause": "旅游收入增加",
+    "effect": "铁矿石价格价格变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.0242999233420478
+  },
+  {
+    "id": 184,
+    "cause": "苹果发布新手机",
+    "effect": "阿里巴巴股价变动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11092387202592749
+  },
+  {
+    "id": 55,
+    "cause": "中国央行宣布降息50基点",
+    "effect": "日股全线下跌",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6136252087813282
+  },
+  {
+    "id": 287,
+    "cause": "GDP增长",
+    "effect": "就业增加",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 92,
+    "cause": "阿里巴巴发布Q1财报",
+    "effect": "特斯拉股价跌停",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7179175895352122
+  },
+  {
+    "id": 128,
+    "cause": "中国央行宣布加息25基点",
+    "effect": "欧股剧烈波动",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8862238222381282
+  },
+  {
+    "id": 99,
+    "cause": "就业数据超预期",
+    "effect": "欧股波动，新能源受波及",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.6656159017363181
+  },
+  {
+    "id": 98,
+    "cause": "通胀上升",
+    "effect": "港股波动，新能源受波及",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7651927597551226
+  },
+  {
+    "id": 198,
+    "cause": "暴雨预警",
+    "effect": "股市波动波动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.10883838860012103
+  },
+  {
+    "id": 273,
+    "cause": "股价暴跌",
+    "effect": "公司裁员",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 119,
+    "cause": "量子计算获得专利",
+    "effect": "半导体剧烈波动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8682463974115668
+  },
+  {
+    "id": 52,
+    "cause": "上调准备金率收紧",
+    "effect": "半导体承压",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8604276446607195
+  },
+  {
+    "id": 50,
+    "cause": "就业数据超预期",
+    "effect": "美股波动，房地产受波及",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.6197046699960341
+  },
+  {
+    "id": 266,
+    "cause": "失业率上升",
+    "effect": "经济衰退",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 111,
+    "cause": "中国实施制裁",
+    "effect": "医药产业链受益",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8430557810756094
+  },
+  {
+    "id": 40,
+    "cause": "美国发布降息50基点",
+    "effect": "半导体股价跌停",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.85780265525048
+  },
+  {
+    "id": 156,
+    "cause": "苹果发布新耳机",
+    "effect": "阿里巴巴股价变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.07058048515060203
+  },
+  {
+    "id": 296,
+    "cause": "科技股下跌",
+    "effect": "纳斯达克下跌",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 21,
+    "cause": "美联储宣布下调准备金率",
+    "effect": "A股大幅上涨",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7350209271740724
+  },
+  {
+    "id": 271,
+    "cause": "股价暴跌",
+    "effect": "公司裁员",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 137,
+    "cause": "欧盟实施关税",
+    "effect": "汽车概念股爆发",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6002050489151493
+  },
+  {
+    "id": 30,
+    "cause": "铜出口限制",
+    "effect": "小麦价格股价创新高",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8124055457133095
+  },
+  {
+    "id": 189,
+    "cause": "三星发布新服务",
+    "effect": "特斯拉股价变动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.09950017146604155
+  },
+  {
+    "id": 213,
+    "cause": "某明星结婚发生在纽约",
+    "effect": "PMI数据发布发生在东京",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.11843333777264319
+  },
+  {
+    "id": 286,
+    "cause": "GDP增长",
+    "effect": "就业增加",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 185,
+    "cause": "苹果发布新服务",
+    "effect": "特斯拉股价变动",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.03770116925584586
+  },
+  {
+    "id": 32,
+    "cause": "中国央行宣布降息50基点",
+    "effect": "日股剧烈波动",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6633075585916179
+  },
+  {
+    "id": 240,
+    "cause": "腾讯发布新服务",
+    "effect": "英伟达股价变动",
+    "tags_c": [
+      "消费电子"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.05486749829225667
+  },
+  {
+    "id": 41,
+    "cause": "下调准备金率收紧",
+    "effect": "医药承压",
+    "tags_c": [
+      "医药"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.6436709387098195
+  },
+  {
+    "id": 252,
+    "cause": "股市下跌",
+    "effect": "美联储加息",
+    "tags_c": [
+      "半导体"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 107,
+    "cause": "阿里巴巴发布年报",
+    "effect": "苹果股价跌停",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "房地产"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6602554466106215
+  },
+  {
+    "id": 7,
+    "cause": "发改委加强互联网",
+    "effect": "英伟达合规成本涨停",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "汽车"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.726941382060266
+  },
+  {
+    "id": 37,
+    "cause": "中国央行宣布上调准备金率",
+    "effect": "日股大幅上涨",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "新能源"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7495126514121586
+  },
+  {
+    "id": 114,
+    "cause": "新能源电池成本降低50%",
+    "effect": "医药大幅上涨",
+    "tags_c": [
+      "新能源"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.6866504322148037
+  },
+  {
+    "id": 188,
+    "cause": "英伟达发布新服务",
+    "effect": "英伟达股价变动",
+    "tags_c": [
+      "房地产"
+    ],
+    "tags_e": [
+      "医药"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.07880926007773205
+  },
+  {
+    "id": 26,
+    "cause": "美联储加息",
+    "effect": "日股波动，房地产受波及",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "消费电子"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7984564022062068
+  },
+  {
+    "id": 132,
+    "cause": "结束负利率收紧",
+    "effect": "房地产承压",
+    "tags_c": [
+      "汽车"
+    ],
+    "tags_e": [
+      "半导体"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.8031550130967215
+  }
+]

@@ -1,0 +1,800 @@
+[
+  {
+    "id": 1,
+    "cause": "美联储宣布加息25基点",
+    "effect": "美股三大指数下跌",
+    "tags_c": [
+      "加息",
+      "美联储"
+    ],
+    "tags_e": [
+      "股市",
+      "下跌"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8
+  },
+  {
+    "id": 2,
+    "cause": "OPEC宣布减产200万桶/日",
+    "effect": "国际原油价格上涨",
+    "tags_c": [
+      "OPEC",
+      "减产"
+    ],
+    "tags_e": [
+      "原油",
+      "上涨"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.9
+  },
+  {
+    "id": 3,
+    "cause": "特斯拉Q4财报营收不及预期",
+    "effect": "特斯拉股价盘后下跌10%",
+    "tags_c": [
+      "特斯拉",
+      "财报"
+    ],
+    "tags_e": [
+      "特斯拉",
+      "股价"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.85
+  },
+  {
+    "id": 4,
+    "cause": "比特币现货ETF获批上市",
+    "effect": "比特币价格突破历史新高",
+    "tags_c": [
+      "比特币",
+      "ETF"
+    ],
+    "tags_e": [
+      "比特币",
+      "新高"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8
+  },
+  {
+    "id": 5,
+    "cause": "日本央行结束负利率政策",
+    "effect": "日元兑美元大幅升值",
+    "tags_c": [
+      "日本央行",
+      "利率"
+    ],
+    "tags_e": [
+      "日元",
+      "汇率"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.85
+  },
+  {
+    "id": 6,
+    "cause": "中国央行下调存款准备金率",
+    "effect": "A股市场流动性改善",
+    "tags_c": [
+      "央行",
+      "降准"
+    ],
+    "tags_e": [
+      "A股",
+      "流动性"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8
+  },
+  {
+    "id": 7,
+    "cause": "俄乌冲突升级",
+    "effect": "全球小麦期货价格飙升",
+    "tags_c": [
+      "俄乌",
+      "冲突"
+    ],
+    "tags_e": [
+      "小麦",
+      "期货"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.75
+  },
+  {
+    "id": 8,
+    "cause": "硅谷银行突发流动性危机",
+    "effect": "美国区域银行股集体暴跌",
+    "tags_c": [
+      "硅谷银行",
+      "危机"
+    ],
+    "tags_e": [
+      "银行股",
+      "暴跌"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.85
+  },
+  {
+    "id": 9,
+    "cause": "英伟达发布新一代AI芯片",
+    "effect": "纳斯达克指数上涨",
+    "tags_c": [
+      "英伟达",
+      "AI芯片"
+    ],
+    "tags_e": [
+      "纳斯达克",
+      "上涨"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.7
+  },
+  {
+    "id": 10,
+    "cause": "美国CPI数据连续低于预期",
+    "effect": "市场押注美联储降息",
+    "tags_c": [
+      "CPI",
+      "通胀"
+    ],
+    "tags_e": [
+      "降息",
+      "预期"
+    ],
+    "expected": true,
+    "category": "直接因果",
+    "confidence_hint": 0.8
+  },
+  {
+    "id": 11,
+    "cause": "美联储加息",
+    "effect": "FTX交易所破产",
+    "tags_c": [
+      "加息",
+      "美联储"
+    ],
+    "tags_e": [
+      "FTX",
+      "破产"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.4
+  },
+  {
+    "id": 12,
+    "cause": "中国房地产调控政策收紧",
+    "effect": "家电行业股价下跌",
+    "tags_c": [
+      "房地产",
+      "调控"
+    ],
+    "tags_e": [
+      "家电",
+      "股价"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.5
+  },
+  {
+    "id": 13,
+    "cause": "全球芯片短缺",
+    "effect": "汽车制造商停产",
+    "tags_c": [
+      "芯片",
+      "短缺"
+    ],
+    "tags_e": [
+      "汽车",
+      "停产"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.7
+  },
+  {
+    "id": 14,
+    "cause": "马斯克发布加密货币推文",
+    "effect": "狗狗币价格暴涨",
+    "tags_c": [
+      "马斯克",
+      "推文"
+    ],
+    "tags_e": [
+      "狗狗币",
+      "暴涨"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.6
+  },
+  {
+    "id": 15,
+    "cause": "巴拿马运河干旱",
+    "effect": "航运股价格上涨",
+    "tags_c": [
+      "干旱",
+      "运河"
+    ],
+    "tags_e": [
+      "航运",
+      "上涨"
+    ],
+    "expected": true,
+    "category": "间接因果",
+    "confidence_hint": 0.5
+  },
+  {
+    "id": 16,
+    "cause": "苹果发布iPhone16",
+    "effect": "美联储维持利率不变",
+    "tags_c": [
+      "苹果",
+      "iPhone"
+    ],
+    "tags_e": [
+      "美联储",
+      "利率"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1
+  },
+  {
+    "id": 17,
+    "cause": "北京发布暴雨预警",
+    "effect": "特斯拉股价下跌",
+    "tags_c": [
+      "暴雨",
+      "北京"
+    ],
+    "tags_e": [
+      "特斯拉",
+      "股价"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.05
+  },
+  {
+    "id": 18,
+    "cause": "某演员投资初创公司",
+    "effect": "该行业其他公司股价上涨",
+    "tags_c": [
+      "演员",
+      "投资"
+    ],
+    "tags_e": [
+      "股价",
+      "上涨"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1
+  },
+  {
+    "id": 19,
+    "cause": "日本丰田发布新电动车",
+    "effect": "美国咖啡期货价格上涨",
+    "tags_c": [
+      "丰田",
+      "电动车"
+    ],
+    "tags_e": [
+      "咖啡",
+      "期货"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.0
+  },
+  {
+    "id": 20,
+    "cause": "英国伦敦遭遇暴雪",
+    "effect": "澳大利亚铁矿石期货上涨",
+    "tags_c": [
+      "暴雪",
+      "伦敦"
+    ],
+    "tags_e": [
+      "铁矿石",
+      "期货"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.05
+  },
+  {
+    "id": 21,
+    "cause": "特斯拉注册地从特拉华迁至得州",
+    "effect": "全球咖啡期货上涨",
+    "tags_c": [
+      "特斯拉",
+      "注册地"
+    ],
+    "tags_e": [
+      "咖啡",
+      "期货"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.0
+  },
+  {
+    "id": 22,
+    "cause": "端午节旅游消费旺盛",
+    "effect": "国际原油价格下跌",
+    "tags_c": [
+      "端午",
+      "旅游"
+    ],
+    "tags_e": [
+      "原油",
+      "下跌"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.05
+  },
+  {
+    "id": 23,
+    "cause": "加密交易所下架小市值代币",
+    "effect": "以太坊价格上涨",
+    "tags_c": [
+      "交易所",
+      "下架"
+    ],
+    "tags_e": [
+      "以太坊",
+      "上涨"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1
+  },
+  {
+    "id": 24,
+    "cause": "黄金ETF持仓量增加",
+    "effect": "美元指数上涨",
+    "tags_c": [
+      "黄金",
+      "ETF"
+    ],
+    "tags_e": [
+      "美元",
+      "上涨"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.1
+  },
+  {
+    "id": 25,
+    "cause": "美国非农就业数据强劲",
+    "effect": "中国A股当月上涨",
+    "tags_c": [
+      "非农",
+      "就业"
+    ],
+    "tags_e": [
+      "A股",
+      "上涨"
+    ],
+    "expected": false,
+    "category": "无因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 26,
+    "cause": "冰淇淋销量增加",
+    "effect": "溺水事故增加",
+    "tags_c": [
+      "冰淇淋",
+      "销量"
+    ],
+    "tags_e": [
+      "溺水",
+      "事故"
+    ],
+    "expected": false,
+    "category": "相关非因果",
+    "confidence_hint": 0.1
+  },
+  {
+    "id": 27,
+    "cause": "公鸡打鸣",
+    "effect": "太阳升起",
+    "tags_c": [
+      "公鸡",
+      "打鸣"
+    ],
+    "tags_e": [
+      "太阳",
+      "升起"
+    ],
+    "expected": false,
+    "category": "相关非因果",
+    "confidence_hint": 0.0
+  },
+  {
+    "id": 28,
+    "cause": "鞋子尺码大",
+    "effect": "阅读能力强",
+    "tags_c": [
+      "鞋子",
+      "尺码"
+    ],
+    "tags_e": [
+      "阅读",
+      "能力"
+    ],
+    "expected": false,
+    "category": "相关非因果",
+    "confidence_hint": 0.0
+  },
+  {
+    "id": 29,
+    "cause": "消防员数量增加",
+    "effect": "火灾损失增加",
+    "tags_c": [
+      "消防员",
+      "增加"
+    ],
+    "tags_e": [
+      "火灾",
+      "损失"
+    ],
+    "expected": false,
+    "category": "相关非因果",
+    "confidence_hint": 0.1
+  },
+  {
+    "id": 30,
+    "cause": "海盗数量减少",
+    "effect": "全球变暖加剧",
+    "tags_c": [
+      "海盗",
+      "减少"
+    ],
+    "tags_e": [
+      "全球变暖",
+      "加剧"
+    ],
+    "expected": false,
+    "category": "相关非因果",
+    "confidence_hint": 0.0
+  },
+  {
+    "id": 31,
+    "cause": "股市下跌",
+    "effect": "美联储加息",
+    "tags_c": [
+      "股市",
+      "下跌"
+    ],
+    "tags_e": [
+      "美联储",
+      "加息"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.2
+  },
+  {
+    "id": 32,
+    "cause": "房价下跌",
+    "effect": "央行降息",
+    "tags_c": [
+      "房价",
+      "下跌"
+    ],
+    "tags_e": [
+      "央行",
+      "降息"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.2
+  },
+  {
+    "id": 33,
+    "cause": "通胀上升",
+    "effect": "油价上涨",
+    "tags_c": [
+      "通胀",
+      "上升"
+    ],
+    "tags_e": [
+      "油价",
+      "上涨"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.15
+  },
+  {
+    "id": 34,
+    "cause": "失业率上升",
+    "effect": "经济衰退",
+    "tags_c": [
+      "失业率",
+      "上升"
+    ],
+    "tags_e": [
+      "经济",
+      "衰退"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.25
+  },
+  {
+    "id": 35,
+    "cause": "股价暴跌",
+    "effect": "公司裁员",
+    "tags_c": [
+      "股价",
+      "暴跌"
+    ],
+    "tags_e": [
+      "裁员"
+    ],
+    "expected": false,
+    "category": "反向因果",
+    "confidence_hint": 0.2
+  },
+  {
+    "id": 36,
+    "cause": "比特币减半事件",
+    "effect": "比特币价格一年后上涨",
+    "tags_c": [
+      "比特币",
+      "减半"
+    ],
+    "tags_e": [
+      "比特币",
+      "上涨"
+    ],
+    "expected": true,
+    "category": "边界案例",
+    "confidence_hint": 0.5
+  },
+  {
+    "id": 37,
+    "cause": "中国PMI重回扩张区间",
+    "effect": "周期股上涨",
+    "tags_c": [
+      "PMI",
+      "经济"
+    ],
+    "tags_e": [
+      "周期股",
+      "上涨"
+    ],
+    "expected": true,
+    "category": "边界案例",
+    "confidence_hint": 0.6
+  },
+  {
+    "id": 38,
+    "cause": "全球央行增持黄金",
+    "effect": "金价长期上涨",
+    "tags_c": [
+      "央行",
+      "黄金"
+    ],
+    "tags_e": [
+      "金价",
+      "上涨"
+    ],
+    "expected": true,
+    "category": "边界案例",
+    "confidence_hint": 0.65
+  },
+  {
+    "id": 39,
+    "cause": "新能源汽车补贴政策",
+    "effect": "新能源板块上涨",
+    "tags_c": [
+      "新能源",
+      "补贴"
+    ],
+    "tags_e": [
+      "新能源",
+      "板块"
+    ],
+    "expected": true,
+    "category": "边界案例",
+    "confidence_hint": 0.7
+  },
+  {
+    "id": 40,
+    "cause": "微软收购动视暴雪",
+    "effect": "游戏板块股价波动",
+    "tags_c": [
+      "微软",
+      "收购"
+    ],
+    "tags_e": [
+      "游戏",
+      "板块"
+    ],
+    "expected": true,
+    "category": "边界案例",
+    "confidence_hint": 0.5
+  },
+  {
+    "id": 41,
+    "cause": "美联储加息",
+    "effect": "新兴市场资本外流",
+    "tags_c": [
+      "加息",
+      "美联储"
+    ],
+    "tags_e": [
+      "新兴市场",
+      "资本外流"
+    ],
+    "expected": true,
+    "category": "因果链",
+    "confidence_hint": 0.6
+  },
+  {
+    "id": 42,
+    "cause": "芯片出口管制",
+    "effect": "中国芯片产业加速自主化",
+    "tags_c": [
+      "出口管制",
+      "芯片"
+    ],
+    "tags_e": [
+      "中国",
+      "自主化"
+    ],
+    "expected": true,
+    "category": "因果链",
+    "confidence_hint": 0.55
+  },
+  {
+    "id": 43,
+    "cause": "气候变化加剧",
+    "effect": "保险公司赔付增加",
+    "tags_c": [
+      "气候变化"
+    ],
+    "tags_e": [
+      "保险",
+      "赔付"
+    ],
+    "expected": true,
+    "category": "因果链",
+    "confidence_hint": 0.5
+  },
+  {
+    "id": 44,
+    "cause": "人口老龄化",
+    "effect": "养老金支出增加",
+    "tags_c": [
+      "老龄化",
+      "人口"
+    ],
+    "tags_e": [
+      "养老金",
+      "支出"
+    ],
+    "expected": true,
+    "category": "因果链",
+    "confidence_hint": 0.7
+  },
+  {
+    "id": 45,
+    "cause": "AI技术突破",
+    "effect": "部分岗位被替代",
+    "tags_c": [
+      "AI",
+      "技术"
+    ],
+    "tags_e": [
+      "岗位",
+      "替代"
+    ],
+    "expected": true,
+    "category": "因果链",
+    "confidence_hint": 0.6
+  },
+  {
+    "id": 46,
+    "cause": "中国双减政策发布",
+    "effect": "教育行业股价暴跌",
+    "tags_c": [
+      "双减",
+      "政策"
+    ],
+    "tags_e": [
+      "教育",
+      "股价"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.85
+  },
+  {
+    "id": 47,
+    "cause": "欧盟GDPR实施",
+    "effect": "科技公司合规成本增加",
+    "tags_c": [
+      "GDPR",
+      "欧盟"
+    ],
+    "tags_e": [
+      "科技",
+      "合规"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.75
+  },
+  {
+    "id": 48,
+    "cause": "美国对中国加征关税",
+    "effect": "相关商品价格上涨",
+    "tags_c": [
+      "关税",
+      "中美"
+    ],
+    "tags_e": [
+      "商品",
+      "价格"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.8
+  },
+  {
+    "id": 49,
+    "cause": "碳中和政策推进",
+    "effect": "新能源投资增加",
+    "tags_c": [
+      "碳中和",
+      "政策"
+    ],
+    "tags_e": [
+      "新能源",
+      "投资"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.7
+  },
+  {
+    "id": 50,
+    "cause": "房地产限购取消",
+    "effect": "核心城市成交量回升",
+    "tags_c": [
+      "限购",
+      "取消"
+    ],
+    "tags_e": [
+      "房地产",
+      "成交量"
+    ],
+    "expected": true,
+    "category": "政策因果",
+    "confidence_hint": 0.75
+  }
+]
