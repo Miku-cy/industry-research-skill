@@ -1153,12 +1153,29 @@ start_idx 和 end_idx 是事件序号（从1开始）。"""
             result = llm_config.call("mining", prompt, max_tokens=2048)
             content = result.get("content", "")
 
-            match = re.search(r'\[[\s\S]*\]', content)
-            if not match:
-                return self.detect(min_events, max_chapters)
-
+            # 提取 JSON：支持代码块格式和裸 JSON
             import json
-            stages = json.loads(match.group(0))
+            stages = None
+
+            # 先尝试从 ```json ... ``` 代码块提取
+            code_match = re.search(r'```(?:json)?\s*(\[[\s\S]*?\])\s*```', content)
+            if code_match:
+                try:
+                    stages = json.loads(code_match.group(1))
+                except json.JSONDecodeError:
+                    pass
+
+            # 再尝试裸 JSON 数组
+            if stages is None:
+                match = re.search(r'\[[\s\S]*\]', content)
+                if match:
+                    try:
+                        stages = json.loads(match.group(0))
+                    except json.JSONDecodeError:
+                        pass
+
+            if not stages:
+                return self.detect(min_events, max_chapters)
 
             if not stages:
                 return self.detect(min_events, max_chapters)
