@@ -807,7 +807,7 @@ class TimelineBase:
                         source_reliability = SourceReliability.GENERAL
 
                     data_str = row.get("data", "").strip()
-                    data = json.loads(data_str) if data_str else None
+                    data = json_module.loads(data_str) if data_str else None
 
                     # 校验
                     valid, errors = validate_event_data(timestamp, summary, tags, source)
@@ -1121,6 +1121,8 @@ class ChapterDetector:
 
     def detect_with_llm(self, min_events: int = 3, max_chapters: int = 8) -> List[Chapter]:
         """LLM 辅助章节检测：理解事件结构性意义，按研究规律划分阶段"""
+        import re as re_module
+        import json as json_module
         from .llm_config import llm_config
 
         events = self.timeline.get_all_events()
@@ -1154,23 +1156,22 @@ start_idx 和 end_idx 是事件序号（从1开始）。"""
             content = result.get("content", "")
 
             # 提取 JSON：支持代码块格式和裸 JSON
-            import json
             stages = None
 
             # 先尝试从 ```json ... ``` 代码块提取
-            code_match = re.search(r'```(?:json)?\s*(\[[\s\S]*?\])\s*```', content)
+            code_match = re_module.search(r'```(?:json)?\s*(\[[\s\S]*?\])\s*```', content)
             if code_match:
                 try:
-                    stages = json.loads(code_match.group(1))
+                    stages = json_module.loads(code_match.group(1))
                 except json.JSONDecodeError:
                     pass
 
             # 再尝试裸 JSON 数组
             if stages is None:
-                match = re.search(r'\[[\s\S]*\]', content)
+                match = re_module.search(r'\[[\s\S]*\]', content)
                 if match:
                     try:
-                        stages = json.loads(match.group(0))
+                        stages = json_module.loads(match.group(0))
                     except json.JSONDecodeError:
                         pass
 
@@ -1208,7 +1209,10 @@ start_idx 和 end_idx 是事件序号（从1开始）。"""
 
             return chapters
 
-        except Exception:
+        except Exception as e:
+            import traceback
+            print(f"  [detect_with_llm] LLM 失败，回退到算法: {e}")
+            traceback.print_exc()
             return self.detect(min_events, max_chapters)
 
     def _find_time_gaps(self, events: List[TimelineEvent]) -> List[int]:
