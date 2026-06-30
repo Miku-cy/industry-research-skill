@@ -152,7 +152,7 @@ class CounterfactualAnalyzer:
                     f"（P={p_without:.0%}）。"
                 )
             else:
-                alt_names = "、".join(a[:10] for a in alternatives[:2])
+                alt_names = "、".join(a.summary[:10] for a in alternatives[:2])
                 return (
                     f"【{strength}】{cause_name} 是 {effect_name} 的主要原因，"
                     f"但即使没有 {cause_name}，{effect_name} 仍有 {p_without:.0%} 概率发生"
@@ -161,7 +161,7 @@ class CounterfactualAnalyzer:
 
         elif effect_size > 0.2:
             strength = "中等因果"
-            alt_names = "、".join(a[:10] for a in alternatives[:2])
+            alt_names = "、".join(a.summary[:10] for a in alternatives[:2])
             return (
                 f"【{strength}】{cause_name} 对 {effect_name} 有一定影响，"
                 f"但不是唯一原因。没有 {cause_name} 时，"
