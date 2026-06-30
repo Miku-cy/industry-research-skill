@@ -3,10 +3,13 @@ from .task_decomposer import TaskDecomposer
 from .data_collector import DataCollector
 from .validator import RealTimeValidator
 from .analyzer import AnalyzerEngine, PESTResult, SWOTResult, CausalChain, CausalNetwork, ScenarioAnalysis
+from .causal_graph import CausalGraph
 from .causal_mining import CausalMiningEngine
 from .causal_lag import CausalLagModel
+from .counterfactual import CounterfactualAnalyzer, CounterfactualResult
 from .report_generator import ReportGenerator
 from .semantic import SemanticClassifier, SemanticScores
+from .llm_config import llm_config, LLMConfig
 
 __all__ = [
     "Timeline",
@@ -20,8 +23,16 @@ __all__ = [
     "PESTResult",
     "SWOTResult",
     "CausalChain",
+    "CausalNetwork",
     "ScenarioAnalysis",
+    "CausalGraph",
+    "CausalMiningEngine",
+    "CausalLagModel",
+    "CounterfactualAnalyzer",
+    "CounterfactualResult",
     "ReportGenerator",
     "SemanticClassifier",
     "SemanticScores",
+    "LLMConfig",
+    "llm_config",
 ]

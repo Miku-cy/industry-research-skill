@@ -1,6 +1,6 @@
 name: chronovisor
 display_name: "ChronoVisor · 时轴之眼"
-version: 1.0.0
+version: 1.1.0
 description: 时间轴驱动的深度研究智能引擎 —— 像看纪录片一样做研究
 author:
   name: Miku-cy
@@ -29,6 +29,11 @@ modules:
     - analyzer
     - semantic
     - report_generator
+    - causal_graph
+    - causal_lag
+    - causal_mining
+    - counterfactual
+    - llm_config
 
 config:
   search_budget_per_task: 5
