@@ -808,7 +808,7 @@ class TimelineBase:
                         source_reliability = SourceReliability.GENERAL
 
                     data_str = row.get("data", "").strip()
-                    data = json_module.loads(data_str) if data_str else None
+                    data = json.loads(data_str) if data_str else None
 
                     # 校验
                     valid, errors = validate_event_data(timestamp, summary, tags, source)
