@@ -48,15 +48,23 @@ class CausalMiningEngine:
             import yaml
             with open(config_path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f) or {}
-            semantic = data.get("semantic", {})
-            api = semantic.get("api", {})
-            return {
-                "api_url": api.get("url", ""),
-                "api_key": api.get("key", ""),
-                "api_model": api.get("model", ""),
-            }
+        except ImportError:
+            # pyyaml 不可用 → 用 llm_config 的简易解析器
+            from .llm_config import LLMConfig
+            data = LLMConfig._parse_yaml_simple(config_path)
         except Exception:
             return {}
+        semantic = data.get("semantic", {})
+        if not isinstance(semantic, dict):
+            semantic = {}
+        api = semantic.get("api", {})
+        if not isinstance(api, dict):
+            api = {}
+        return {
+            "api_url": api.get("url", ""),
+            "api_key": api.get("key", ""),
+            "api_model": api.get("model", ""),
+        }
 
     def mine(
         self,

@@ -24,7 +24,7 @@ import os
 import json
 import csv
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 添加项目路径
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -109,7 +109,7 @@ def load_events_text(text):
     events = []
     for i, summary in enumerate(items):
         events.append({
-            "timestamp": datetime(2022, 3, 1) + __import__("datetime").timedelta(days=i * 30),
+            "timestamp": datetime(2022, 3, 1) + timedelta(days=i * 30),
             "summary": summary,
             "tags": [],
         })
@@ -205,6 +205,12 @@ def cmd_mine(args):
         config_path=args.config,
     )
 
+    # 显式提示 LLM 未配置（避免静默生成空 HTML）
+    if not config.get("api_url") or not config.get("api_key"):
+        print("⚠️  未检测到 LLM 配置（chronovisor.yaml / openclaw.json）。")
+        print("   将仅使用 ConceptNet 因果图谱挖掘，覆盖范围有限。")
+        print("   配置方法：复制 chronovisor.yaml.example → chronovisor.yaml 并填入 api_key。")
+
     print(f"🤖 使用 {model} 挖掘因果关系...")
     print(f"   批大小={args.batch_size}, 最小置信度={args.min_conf}")
 
@@ -215,6 +221,13 @@ def cmd_mine(args):
     )
 
     print(f"\n✅ 挖掘完成：{network.event_count} 节点 / {network.chain_count} 条因果链")
+
+    if network.chain_count == 0:
+        print("\n⚠️  未发现任何因果链。可能原因：")
+        print("   1) 事件之间无 ConceptNet 已知因果关系，且 LLM 未配置或调用失败")
+        print("   2) 事件时间间隔超出领域传导窗口（默认会被过滤）")
+        print("   3) 事件过少（至少需要 2 个有时序先后的事件）")
+        print("   仍会生成 HTML，但网络为空。建议配置 LLM 后重试。")
 
     chains = []
     for cause_id, effects in network._downstream.items():
@@ -310,6 +323,15 @@ def cmd_predict_be(args):
 
 
 def main():
+    # 兼容旧用法：python mine.py --text "..." 或 python mine.py events.csv -o ...
+    # 如果第一个参数不是已知子命令，自动注入 "mine"
+    SUBCMDS = {"mine", "predict", "predict-be"}
+    argv = sys.argv[1:]
+    if argv and argv[0] not in SUBCMDS and not argv[0].startswith("-h"):
+        # 第一个非选项参数若不是子命令，就当 mine 处理
+        if argv[0] not in ("-h", "--help"):
+            argv = ["mine"] + argv
+
     parser = argparse.ArgumentParser(description="ChronoVisor 因果挖掘 CLI")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -340,21 +362,17 @@ def main():
     be_parser.add_argument("--model", default="", help="LLM 模型名")
     be_parser.add_argument("--config", default="", help="配置文件路径")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    # 兼容：无子命令时当作 mine
     if args.command == "predict":
         cmd_predict(args)
     elif args.command == "predict-be":
         cmd_predict_be(args)
-    else:
-        # 兼容旧用法：python mine.py events.csv -o ...
-        if args.command is None and args.input:
-            args.command = "mine"
-        elif args.command is None:
-            parser.print_help()
-            sys.exit(1)
+    elif args.command == "mine":
         cmd_mine(args)
+    else:
+        parser.print_help()
+        sys.exit(1)
 
 
 if __name__ == "__main__":
