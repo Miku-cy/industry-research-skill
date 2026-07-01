@@ -126,6 +126,7 @@ class CausalNetwork:
         self._downstream: Dict[str, Dict[str, CausalChain]] = {}
         self._upstream: Dict[str, Dict[str, CausalChain]] = {}
         self._events: Dict[str, TimelineEvent] = {}
+        self._analyzed_ids: set = set()  # 已分析过的事件 ID
 
     def add_chain(self, chain: CausalChain):
         """添加一条因果链到网络"""
@@ -263,6 +264,84 @@ class CausalNetwork:
     def leaf_ids(self) -> List[str]:
         """没有下游的叶事件（最终的果）"""
         return [eid for eid in self._events if eid not in self._downstream]
+
+    # ── 多跳推理 ─────────────────────────────────────
+
+    def find_multihop_chains(
+        self,
+        max_hops: int = 3,
+        min_confidence: float = 0.1,
+        confidence_decay: float = 0.7,
+    ) -> List["CausalChain"]:
+        """多跳因果链推理：从直接因果链推导间接因果链
+
+        原理：如果 A→B (conf=0.5) 且 B→C (conf=0.4)，
+        则 A→C 为间接因果链 (conf=0.5*0.4*decay)。
+
+        Args:
+            max_hops: 最大跳数（默认 3，即 A→B→C→D）
+            min_confidence: 最低置信度阈值
+            confidence_decay: 每跳的置信度衰减因子
+
+        Returns:
+            间接因果链列表（不含已有直接链）
+        """
+        indirect_chains = []
+        # 已有的直接链（避免重复）
+        existing_pairs = set()
+        for cause_id, effects in self._downstream.items():
+            for effect_id in effects:
+                existing_pairs.add((cause_id, effect_id))
+
+        # 从每个根节点开始 BFS
+        for root_id in self.root_ids:
+            # BFS: (current_id, path, cumulative_confidence)
+            queue = [(root_id, [root_id], 1.0)]
+            while queue:
+                current_id, path, cum_conf = queue.pop(0)
+                if len(path) > max_hops:
+                    continue
+                # 遍历当前节点的下游
+                downstream = self._downstream.get(current_id, {})
+                for next_id, chain in downstream.items():
+                    if next_id in path:
+                        continue  # 避免环
+                    new_path = path + [next_id]
+                    new_conf = cum_conf * chain.confidence * confidence_decay
+                    # 跳数 >= 2 时记录间接链
+                    if len(new_path) >= 2:
+                        pair = (new_path[0], new_path[-1])
+                        if pair not in existing_pairs:
+                            # 时间顺序检查
+                            cause_event = self._events.get(new_path[0])
+                            effect_event = self._events.get(new_path[-1])
+                            if cause_event and effect_event and \
+                               cause_event.timestamp < effect_event.timestamp:
+                                # 构造间接链描述
+                                mid_summaries = [
+                                    self._events[sid].summary[:20]
+                                    for sid in new_path[1:-1]
+                                    if sid in self._events
+                                ]
+                                chain_desc = "→".join(
+                                    [cause_event.summary[:25]] +
+                                    mid_summaries +
+                                    [effect_event.summary[:25]]
+                                ) + " [间接因果]"
+                                indirect = CausalChain(
+                                    cause_event=cause_event,
+                                    effect_event=effect_event,
+                                    time_gap=effect_event.timestamp - cause_event.timestamp,
+                                    confidence=new_conf,
+                                    description=chain_desc,
+                                )
+                                indirect_chains.append(indirect)
+                                existing_pairs.add(pair)
+                    if new_conf >= min_confidence:
+                        queue.append((next_id, new_path, new_conf))
+
+        indirect_chains.sort(key=lambda c: c.confidence, reverse=True)
+        return indirect_chains
 
     # ── 导出 ─────────────────────────────────────────
 
@@ -621,9 +700,6 @@ class AnalyzerEngine:
         events = self.timeline.timeline.get_all_events()
         chains = []
 
-        # 也发现间接因果链
-        indirect = self._find_indirect_chains(events)
-
         for i in range(len(events)):
             for j in range(i + 1, len(events)):
                 cause = events[i]
@@ -645,12 +721,12 @@ class AnalyzerEngine:
                 )
                 chains.append(chain)
 
-        chains.extend(indirect)
         chains.sort(key=lambda x: x.confidence, reverse=True)
         return chains
 
     def build_causal_network(
-        self, min_confidence: float = 0.3
+        self, min_confidence: float = 0.3, multihop: bool = True,
+        max_hops: int = 3,
     ) -> CausalNetwork:
         """构建因果网络图
 
@@ -658,12 +734,141 @@ class AnalyzerEngine:
         - 从任意事件查看因果后代/祖先
         - 导出 Mermaid/DOT/JSON 格式
         - 截取子网络
+        - 多跳间接因果链推理
         """
         chains = self.find_causal_chains(min_confidence)
         network = CausalNetwork(title=self.timeline.timeline.title or "因果网络")
         for chain in chains:
             network.add_chain(chain)
+
+        # 多跳推理：从直接链推导间接链
+        if multihop and network.chain_count > 0:
+            indirect = network.find_multihop_chains(
+                max_hops=max_hops,
+                min_confidence=min_confidence * 0.5,
+                confidence_decay=0.7,
+            )
+            for chain in indirect:
+                network.add_chain(chain)
+
         return network
+
+    def update_incremental(
+        self,
+        network: CausalNetwork,
+        new_events: List[TimelineEvent],
+        min_confidence: float = 0.3,
+        multihop: bool = True,
+        max_hops: int = 3,
+    ) -> CausalNetwork:
+        """增量更新因果网络
+
+        只分析新事件与已有事件之间的因果关系，
+        将新链合并进现有网络，不重新分析旧事件对。
+
+        Args:
+            network: 已有的因果网络
+            new_events: 新加入的事件列表
+            min_confidence: 最低置信度阈值
+            multihop: 是否进行多跳推理
+            max_hops: 最大跳数
+
+        Returns:
+            更新后的因果网络（同一个对象）
+        """
+        if not new_events:
+            return network
+
+        all_events = list(network._events.values()) + new_events
+
+        # 只分析新事件对：
+        # 1. 新事件 vs 已有事件（双向）
+        # 2. 新事件 vs 新事件
+        pairs = []
+        for new_evt in new_events:
+            for old_evt in all_events:
+                if old_evt.id == new_evt.id:
+                    continue
+                if old_evt.id in network._analyzed_ids and \
+                   new_evt.id in network._analyzed_ids:
+                    continue  # 两个都分析过了
+
+                if new_evt.timestamp < old_evt.timestamp:
+                    cause, effect = new_evt, old_evt
+                elif old_evt.timestamp < new_evt.timestamp:
+                    cause, effect = old_evt, new_evt
+                else:
+                    continue
+                pairs.append((cause, effect))
+
+        # 图谱评分 + LLM 分析（复用 find_causal_chains 的逻辑）
+        new_chains = self._analyze_pairs(pairs, min_confidence)
+
+        for chain in new_chains:
+            network.add_chain(chain)
+
+        # 标记已分析
+        for evt in new_events:
+            network._analyzed_ids.add(evt.id)
+
+        # 增量多跳：只从新事件出发
+        if multihop and new_chains:
+            # 临时构建只含新链的子网络做多跳
+            sub = CausalNetwork()
+            for chain in new_chains:
+                sub.add_chain(chain)
+            indirect = sub.find_multihop_chains(
+                max_hops=max_hops,
+                min_confidence=min_confidence * 0.5,
+                confidence_decay=0.7,
+            )
+            for chain in indirect:
+                network.add_chain(chain)
+
+        return network
+
+    def _analyze_pairs(
+        self,
+        pairs: List[tuple],
+        min_confidence: float,
+    ) -> List[CausalChain]:
+        """分析事件对，返回因果链（复用于增量更新）"""
+        from .causal_graph import CausalGraph
+        graph = CausalGraph()
+
+        fast_lane = []
+        slow_lane = []
+
+        for cause, effect in pairs:
+            all_tags = cause.tags + effect.tags
+            graph_result = graph.score(cause.summary, effect.summary, all_tags)
+
+            if graph_result.known and graph_result.score > 0:
+                chain = CausalChain(
+                    cause_event=cause,
+                    effect_event=effect,
+                    time_gap=effect.timestamp - cause.timestamp,
+                    confidence=graph_result.score,
+                    description=f"{cause.summary} -> {effect.summary} [graph]",
+                )
+                fast_lane.append(chain)
+            elif graph_result.source == "partial":
+                slow_lane.append((cause, effect))
+
+        # 规则引擎评分（不依赖 LLM）
+        for cause, effect in slow_lane:
+            confidence = self._calculate_causality_confidence(cause, effect)
+            if confidence >= min_confidence:
+                chain = CausalChain(
+                    cause_event=cause,
+                    effect_event=effect,
+                    time_gap=effect.timestamp - cause.timestamp,
+                    confidence=confidence,
+                    description=self._generate_causal_description(cause, effect),
+                )
+                fast_lane.append(chain)
+
+        return fast_lane
 
     def _find_indirect_chains(
         self, events: List[TimelineEvent]
@@ -758,12 +963,12 @@ class AnalyzerEngine:
                 antonym_score = max(antonym_score, boost)
         confidence += antonym_score
 
-        # 3. 标签重叠（保留，权重降低）
+        # 3. 标签重叠（权重降低，标签是相关性不是因果性）
         common_tags = set(cause.tags) & set(effect.tags)
         if common_tags:
-            confidence += min(len(common_tags) * 0.08, 0.2)
+            confidence += min(len(common_tags) * 0.03, 0.08)
 
-        # 4. 关键词重叠（保留，权重降低）
+        # 4. 关键词重叠（权重降低）
         all_pest_kw = set()
         for kws in self.PEST_KEYWORDS.values():
             all_pest_kw.update(kws)
@@ -776,7 +981,27 @@ class AnalyzerEngine:
         effect_kw = {kw for kw in all_kw if kw in effect_text}
         shared_kw = cause_kw & effect_kw
         if shared_kw:
-            confidence += min(len(shared_kw) * 0.05, 0.15)
+            confidence += min(len(shared_kw) * 0.02, 0.06)
+
+        # 4b. 反向惩罚：果事件包含"因型"关键词（发布/公布/推出/扩产）
+        #     说明果更可能是主动行为者，不是被动结果
+        cause_action_keywords = [
+            "发布", "公布", "推出", "宣布", "扩产", "投产", "量产",
+            "突破", "创新", "签署", "获批", "收购", "合并",
+            "市值", "股价", "估值", "融资", "上市", "ipo",
+        ]
+        effect_action_hits = sum(1 for kw in cause_action_keywords if kw in effect_text)
+        if effect_action_hits > 0:
+            confidence -= effect_action_hits * 0.12
+
+        # 4c. 同实体惩罚：因和果是同一公司/主题，且果是主动行为
+        #     例：英伟达市值→英伟达发布产品，后者是前者的原因，不是结果
+        cause_entities = {tag for tag in cause.tags}
+        effect_entities = {tag for tag in effect.tags}
+        shared_entities = cause_entities & effect_entities
+        if shared_entities and effect_action_hits > 0:
+            # 同一实体的"主动行为"事件更可能是原因而非结果
+            confidence -= 0.1
 
         # 5. 时间衰减（非线性，越近越强）
         time_gap = effect.timestamp - cause.timestamp

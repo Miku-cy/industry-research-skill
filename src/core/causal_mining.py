@@ -129,13 +129,37 @@ class CausalMiningEngine:
                 slow_lane.append((cause, effect))
 
         # Layer 4: LLM 精细分析（只分析慢车道）
+        # 并发处理多个批次，提高吞吐量
         all_chains = list(fast_lane)  # 快车道直接加入
         all_similar_cases: Dict[str, List[Dict]] = {}
+
+        batches = []
         for batch_start in range(0, len(slow_lane), batch_size):
-            batch = slow_lane[batch_start:batch_start + batch_size]
-            chains, similar_cases_map = self._analyze_batch(batch)
-            all_chains.extend(chains)
-            all_similar_cases.update(similar_cases_map)
+            batches.append(slow_lane[batch_start:batch_start + batch_size])
+
+        if batches:
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+            max_workers = min(3, len(batches))  # 最多 3 个并发，受速率限制约束
+
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                future_to_idx = {
+                    executor.submit(self._analyze_batch, batch): i
+                    for i, batch in enumerate(batches)
+                }
+                batch_results = [None] * len(batches)
+                for future in as_completed(future_to_idx):
+                    idx = future_to_idx[future]
+                    try:
+                        batch_results[idx] = future.result()
+                    except Exception as e:
+                        print(f"  [causal_mining] 批次 {idx} 失败: {e}")
+                        batch_results[idx] = ([], {})
+
+                for chains, similar_cases_map in batch_results:
+                    if chains:
+                        all_chains.extend(chains)
+                    if similar_cases_map:
+                        all_similar_cases.update(similar_cases_map)
 
         # LLM 结果后处理：用滞后模型校准置信度
         network = CausalNetwork(title="因果挖掘结果")

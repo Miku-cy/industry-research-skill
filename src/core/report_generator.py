@@ -152,6 +152,9 @@ class ReportGenerator:
 
     def __init__(self, timeline_base: TimelineBase):
         self.timeline = timeline_base
+        # 加载插件
+        from ..plugins import plugin_registry
+        self.plugins = plugin_registry
 
     def generate(self, title: str, author: str = "", topic_type: str = "") -> Report:
         report = Report(title=title, author=author)
@@ -240,10 +243,13 @@ class ReportGenerator:
         return sections
 
     def _generate_section_content(self, section_title: str, topic_type: str) -> str:
-        """根据章节标题和数据生成内容摘要"""
+        """根据章节标题和数据生成内容摘要（集成插件分析）"""
         events = self.timeline.timeline.get_all_events()
         if not events:
             return "暂无足够数据进行分析。"
+
+        # 运行相关插件
+        plugin_insights = self._run_relevant_plugins(section_title, events)
 
         # 根据章节标题匹配相关事件
         relevant = []
@@ -253,10 +259,19 @@ class ReportGenerator:
             if any(kw in text for kw in keywords):
                 relevant.append(e)
 
+        parts = []
         if relevant:
             summaries = [e.summary for e in relevant[:5] if e.summary]
-            return "基于时间轴数据：" + "；".join(summaries) + "。"
-        return f"基于 {len(events)} 个时间轴数据点进行{section_title}。"
+            parts.append("基于时间轴数据：" + "；".join(summaries) + "。")
+        else:
+            parts.append(f"基于 {len(events)} 个时间轴数据点进行{section_title}。")
+
+        if plugin_insights:
+            parts.append("\n**插件分析洞察：**")
+            for insight in plugin_insights:
+                parts.append(f"- {insight}")
+
+        return "\n".join(parts)
 
     def _generate_subsections(self, section_title: str, chapter_num: int) -> List[ReportSection]:
         """为每个主章节生成合理的子节"""
@@ -361,6 +376,41 @@ class ReportGenerator:
         return ReportSection(title="四、结论与建议", level=2,
             content="综合宏观、中观、微观三个层面的分析，得出最终结论。")
 
+    def _run_relevant_plugins(self, section_title: str, events: list) -> List[str]:
+        """根据章节标题运行相关插件，返回洞察列表"""
+        insights = []
+        # 章节标题 → 插件映射
+        plugin_map = {
+            "宏观": ["pest"],
+            "环境": ["pest"],
+            "政策": ["pest"],
+            "竞争": ["swot"],
+            "格局": ["swot"],
+            "优势": ["swot"],
+            "情景": ["scenario"],
+            "周期": ["cycle", "trend"],
+            "趋势": ["trend"],
+            "风险": ["anomaly"],
+            "异常": ["anomaly"],
+            "因果": ["correlation"],
+            "相关": ["correlation"],
+        }
+        plugin_names = set()
+        for keyword, names in plugin_map.items():
+            if keyword in section_title:
+                plugin_names.update(names)
+
+        for name in plugin_names:
+            plugin = self.plugins.get(name)
+            if plugin:
+                try:
+                    result = plugin.analyze(events)
+                    insights.extend(result.insights[:3])  # 最多3条
+                except Exception:
+                    pass
+
+        return insights
+
     def _find_chapter_by_tag(self, tag: str) -> Optional[Dict]:
         for chapter in self.timeline.timeline.chapters:
             if tag in chapter.tags:
@@ -381,6 +431,22 @@ class ReportGenerator:
         if self.timeline.timeline.chapters:
             latest_chapter = self.timeline.timeline.chapters[-1]
             summary_parts.append(f"当前研究阶段：{latest_chapter.title}。")
+
+        # 插件分析摘要
+        events = self.timeline.timeline.get_all_events()
+        plugin_summaries = []
+        for name in ["pest", "swot", "cycle", "anomaly"]:
+            plugin = self.plugins.get(name)
+            if plugin:
+                try:
+                    result = plugin.analyze(events)
+                    if result.insights:
+                        plugin_summaries.append(f"{result.category}: {result.insights[0]}")
+                except Exception:
+                    pass
+        if plugin_summaries:
+            summary_parts.append(" 插件分析发现：" + "；".join(plugin_summaries) + "。")
+
         return "".join(summary_parts)
 
     def _extract_key_conclusions(self) -> List[str]:

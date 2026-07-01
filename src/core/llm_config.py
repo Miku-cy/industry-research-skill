@@ -18,9 +18,11 @@
 """
 import json
 import os
+import threading
 import time
 import urllib.request
-from typing import Any, Dict, Optional
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Any, Dict, List, Optional
 
 
 # ═══ 默认配置 ═══
@@ -88,6 +90,7 @@ class LLMConfig:
         self.profiles: Dict[str, Dict] = {}
         self._config_path = config_path or self._find_config()
         self._last_call_time = 0.0
+        self._rate_lock = threading.Lock()  # 线程安全的速率限制锁
         self._load()
 
     def _find_config(self) -> str:
@@ -248,6 +251,54 @@ class LLMConfig:
 
         return self._call_openai_compat(cfg, prompt, temperature, max_tokens)
 
+    def call_batch(
+        self,
+        profile_name: str,
+        prompts: List[str],
+        max_workers: int = 3,
+        temperature: Optional[float] = None,
+        max_tokens: Optional[int] = None,
+    ) -> List[Dict[str, Any]]:
+        """批量并发 LLM 调用
+
+        用 ThreadPoolExecutor 并发执行多个 call()，
+        内部速率限制器保证不超限。
+
+        Args:
+            profile_name: 配置名
+            prompts: 提示词列表
+            max_workers: 最大并发数（默认 3，受速率限制约束）
+            temperature: 覆盖默认温度
+            max_tokens: 覆盖默认最大 token
+
+        Returns:
+            结果列表，与 prompts 顺序一致
+        """
+        if not prompts:
+            return []
+        if len(prompts) == 1:
+            return [self.call(profile_name, prompts[0], temperature, max_tokens)]
+
+        results = [None] * len(prompts)
+
+        def _call_one(idx: int):
+            return idx, self.call(profile_name, prompts[idx], temperature, max_tokens)
+
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = [executor.submit(_call_one, i) for i in range(len(prompts))]
+            for future in as_completed(futures):
+                try:
+                    idx, result = future.result()
+                    results[idx] = result
+                except Exception as e:
+                    # 找到对应的 index
+                    for i, f in enumerate(futures):
+                        if f is future:
+                            results[i] = {"content": "", "error": str(e)}
+                            break
+
+        return results
+
     def _call_openai_compat(
         self,
         cfg: Dict,
@@ -270,12 +321,13 @@ class LLMConfig:
         }).encode()
 
         for attempt in range(self.MAX_RETRIES):
-            # 速率限制：确保请求间隔 >= MIN_INTERVAL
-            now = time.time()
-            elapsed = now - self._last_call_time
-            if elapsed < self.MIN_INTERVAL:
-                time.sleep(self.MIN_INTERVAL - elapsed)
-            self._last_call_time = time.time()
+            # 速率限制（线程安全）
+            with self._rate_lock:
+                now = time.time()
+                elapsed = now - self._last_call_time
+                if elapsed < self.MIN_INTERVAL:
+                    time.sleep(self.MIN_INTERVAL - elapsed)
+                self._last_call_time = time.time()
 
             req = urllib.request.Request(
                 f"{base}/chat/completions",

@@ -1426,17 +1426,60 @@ start_idx 和 end_idx 是事件序号（从1开始）。"""
             )
             chapters.append(chapter)
             self.timeline.add_chapter(chapter)
+
+        # 去重标题
+        chapters = self._generate_distinctive_titles(chapters)
         return chapters
 
     def _generate_title(self, events: List[TimelineEvent], index: int) -> str:
         tags = self._extract_tags(events)
-        if tags:
-            primary_tag = tags[0]
-        else:
-            primary_tag = "发展阶段"
         start = events[0].timestamp.strftime("%Y-%m")
         end = events[-1].timestamp.strftime("%Y-%m")
-        return f"第{index + 1}章：{primary_tag} ({start} -> {end})"
+
+        # 用 top 2 标签让标题更具区分度
+        if len(tags) >= 2:
+            primary = f"{tags[0]}/{tags[1]}"
+        elif tags:
+            primary = tags[0]
+        else:
+            primary = "发展阶段"
+
+        return f"第{index + 1}章：{primary} ({start} -> {end})"
+
+    def _generate_distinctive_titles(self, chapters: List[Chapter]) -> List[Chapter]:
+        """为标题重复的章节生成更具区分度的标题"""
+        title_counts: Dict[str, int] = {}
+        for ch in chapters:
+            title_counts[ch.title] = title_counts.get(ch.title, 0) + 1
+
+        duplicates = {t for t, c in title_counts.items() if c > 1}
+        if not duplicates:
+            return chapters
+
+        # 为重复标题的章节，用不同标签组合重新生成
+        for dup_title in duplicates:
+            dup_chapters = [ch for ch in chapters if ch.title == dup_title]
+            for i, ch in enumerate(dup_chapters):
+                events = [self.timeline.get_event(eid) for eid in ch.event_ids]
+                events = [e for e in events if e]
+                if not events:
+                    continue
+                # 用第 i+1 个最常见标签
+                tag_counts: Dict[str, int] = {}
+                for e in events:
+                    for tag in e.tags:
+                        tag_counts[tag] = tag_counts.get(tag, 0) + 1
+                sorted_tags = sorted(tag_counts.items(), key=lambda x: x[1], reverse=True)
+                if len(sorted_tags) > i:
+                    primary = sorted_tags[i][0]
+                    if len(sorted_tags) > i + 1:
+                        primary = f"{sorted_tags[i][0]}/{sorted_tags[i+1][0]}"
+                    start = ch.start_time.strftime("%Y-%m")
+                    end = ch.end_time.strftime("%Y-%m")
+                    idx = chapters.index(ch)
+                    ch.title = f"第{idx + 1}章：{primary} ({start} -> {end})"
+
+        return chapters
 
     def _generate_summary(self, events: List[TimelineEvent]) -> str:
         summaries = [e.summary for e in events if e.summary]

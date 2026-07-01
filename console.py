@@ -15,29 +15,52 @@ from urllib.parse import urlparse, parse_qs
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from src import TimelineBase, AnalyzerEngine, CausalMiningEngine, CausalNetwork
+from src.core.storage import StorageEngine
+from src.core.llm_config import llm_config
 
 # ═══ 数据存储 ═══
 DB_DIR = os.path.join(os.path.dirname(__file__), "data")
 os.makedirs(DB_DIR, exist_ok=True)
 
-EVENTS_FILE = os.path.join(DB_DIR, "events.json")
 NETWORKS_DIR = os.path.join(DB_DIR, "networks")
 os.makedirs(NETWORKS_DIR, exist_ok=True)
+
+# StorageEngine (SQLite)
+storage = StorageEngine(os.path.join(DB_DIR, "chronovisor.db"))
+storage.create_project("default", "默认项目")
 
 # 任务状态
 tasks = {}
 
 
 def load_events():
-    if os.path.exists(EVENTS_FILE):
-        with open(EVENTS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return []
+    """从 SQLite 加载事件"""
+    rows = storage.load_events("default")
+    return [{"timestamp": r["timestamp"], "summary": r["summary"],
+             "tags": json.loads(r.get("tags", "[]")), "id": r["id"]}
+            for r in rows]
 
 
 def save_events(events):
-    with open(EVENTS_FILE, "w", encoding="utf-8") as f:
-        json.dump(events, f, ensure_ascii=False, indent=2)
+    """保存事件到 SQLite（兼容旧格式）"""
+    from src.core.timeline import TimelineEvent, TimeType, SourceReliability
+    objs = []
+    for ed in events:
+        ts = ed.get("timestamp", "")
+        if not ts:
+            continue
+        try:
+            dt = datetime.fromisoformat(ts) if "T" in ts else datetime.strptime(ts, "%Y-%m-%d")
+        except Exception:
+            continue
+        evt = TimelineEvent(
+            timestamp=dt, time_type=TimeType.HISTORICAL, data={},
+            source=ed.get("source", "web"), source_reliability=SourceReliability.GENERAL,
+            tags=ed.get("tags", []), summary=ed.get("summary", ""),
+        )
+        objs.append(evt)
+    if objs:
+        storage.save_events("default", objs)
 
 
 def save_network(name, network_data):
@@ -84,19 +107,16 @@ def run_mining_task(task_id, events_data, config):
                 tags=ed.get("tags", []),
             )
 
-        miner = CausalMiningEngine(
-            api_url=config.get("api_url", ""),
-            api_key=config.get("api_key", ""),
-            api_model=config.get("api_model", "mimo-v2.5"),
-        )
+        miner = CausalMiningEngine()
 
         tasks[task_id]["progress"] = f"正在分析 {len(events_data)} 个事件的因果关系..."
         tasks[task_id]["started_at"] = time.time()
 
-        network = miner.mine(
-            tb.timeline.get_all_events(),
-            batch_size=config.get("batch_size", 15),
-            min_confidence=config.get("min_confidence", 0.3),
+        # 全量构建 + 多跳推理
+        engine = AnalyzerEngine(tb)
+        network = engine.build_causal_network(
+            min_confidence=config.get("min_confidence", 0.2),
+            multihop=True, max_hops=3,
         )
 
         # 序列化结果
@@ -219,13 +239,8 @@ def run_ai_task(task_id, query, config):
             except Exception:
                 continue
 
-        miner = CausalMiningEngine(
-            api_url=config.get("api_url", ""),
-            api_key=config.get("api_key", ""),
-            api_model=config.get("api_model", "mimo-v2.5"),
-        )
-
-        network = miner.mine(tb.timeline.get_all_events(), batch_size=15, min_confidence=0.3)
+        engine = AnalyzerEngine(tb)
+        network = engine.build_causal_network(min_confidence=0.2, multihop=True, max_hops=3)
 
         # 序列化结果
         nodes = []
@@ -290,6 +305,27 @@ class ChronoVisorHandler(SimpleHTTPRequestHandler):
                 self.json_response(data)
             else:
                 self.json_response({"error": "not found"}, 404)
+        elif path == "/api/stats":
+            self.json_response(storage.stats("default"))
+        elif path == "/api/domains":
+            from src.core.causal_lag import CausalLagModel
+            lag = CausalLagModel()
+            domains = list(lag.profiles.keys())
+            self.json_response({"domains": domains})
+        elif path == "/api/classify":
+            q = params.get("q", [""])[0]
+            if q:
+                from src.core.causal_lag import CausalLagModel
+                lag = CausalLagModel()
+                domain = lag.classify_domain([], q)
+                profile = lag.get_profile(domain)
+                self.json_response({
+                    "domain": domain,
+                    "peak_days": profile.peak_days,
+                    "max_days": profile.typical_max_days,
+                })
+            else:
+                self.json_response({"error": "missing q param"}, 400)
         elif path.startswith("/api/task/"):
             task_id = path.split("/")[-1]
             if task_id in tasks:
@@ -377,10 +413,40 @@ class ChronoVisorHandler(SimpleHTTPRequestHandler):
         else:
             self.json_response({"error": "not found"}, 404)
 
+    def do_PUT(self):
+        """增量更新"""
+        parsed = urlparse(self.path)
+        if parsed.path == "/api/incremental":
+            body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))))
+            new_events = body.get("events", [])
+            if not new_events:
+                self.json_response({"error": "no events"}, 400)
+                return
+            # 转换为 TimelineEvent
+            from src.core.timeline import TimelineEvent, TimeType, SourceReliability
+            objs = []
+            for ed in new_events:
+                ts = ed.get("timestamp", "")
+                try:
+                    dt = datetime.fromisoformat(ts) if "T" in ts else datetime.strptime(ts, "%Y-%m-%d")
+                except Exception:
+                    continue
+                evt = TimelineEvent(
+                    timestamp=dt, time_type=TimeType.HISTORICAL, data={},
+                    source="web", source_reliability=SourceReliability.GENERAL,
+                    tags=ed.get("tags", []), summary=ed.get("summary", ""),
+                )
+                objs.append(evt)
+            # 保存新事件
+            storage.save_events("default", objs)
+            self.json_response({"ok": True, "added": len(objs)})
+        else:
+            self.json_response({"error": "not found"}, 404)
+
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 

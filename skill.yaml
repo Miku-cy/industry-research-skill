@@ -1,58 +1,44 @@
 name: chronovisor
 display_name: "ChronoVisor · 时轴之眼"
-version: 1.1.0
-description: 时间轴驱动的深度研究智能引擎 —— 像看纪录片一样做研究
+version: 1.3.0
+description: 通用因果分析引擎 — 时间轴驱动的因果链挖掘、多跳推理、反事实分析、领域分类
 author:
   name: Miku-cy
-  email: ""
   url: https://github.com/Miku-cy
 repository:
   type: github
   url: https://github.com/Miku-cy/industry-research-skill
-homepage: https://github.com/Miku-cy/industry-research-skill
 keywords:
-  - time-axis
-  - research
-  - intelligence
-  - causal-chain
+  - causal-analysis
   - timeline
-  - analysis
-  - deep-research
-  - knowledge-management
+  - counterfactual
+  - do-calculus
+  - multi-hop-reasoning
+  - domain-classification
+  - knowledge-graph
+  - research-engine
 license: MIT
 modules:
   core:
     - timeline
-    - task_decomposer
-    - data_collector
-    - validator
     - analyzer
-    - semantic
-    - report_generator
     - causal_graph
     - causal_lag
     - causal_mining
     - counterfactual
     - llm_config
-
-config:
-  search_budget_per_task: 5
-  min_validation_sources: 2
-  max_timeline_past_years: 5
-  max_timeline_future_years: 2
-  chapter_min_events: 3
-  freshness_thresholds:
-    realtime_hours: 1
-    recent_hours: 24
-    stale_days: 7
-  analysis_frameworks:
-    - PEST
-    - SWOT
-    - scenario_analysis
-    - porters_five_forces
-  source_reliability_levels:
-    5: "官方数据"
-    4: "专业机构"
-    3: "权威媒体"
-    2: "一般来源"
-    1: "需要验证"
+    - report_generator
+    - semantic
+    - storage
+  plugins:
+    - pest
+    - swot
+    - cycle
+  extras:
+    - anomaly
+    - trend
+    - correlation
+    - scenario
+    - data_collector
+    - task_decomposer
+    - validator

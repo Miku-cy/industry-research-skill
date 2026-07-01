@@ -23,32 +23,32 @@ from src.core.causal_lag import LagProfile, CausalLagModel, DEFAULT_PROFILES
 
 class TestLagProfile:
     def test_decay_factor_before_peak(self):
-        p = DEFAULT_PROFILES["金融市场"]  # peak=7
+        p = DEFAULT_PROFILES["金融与资本市场"]  # peak=7
         assert p.decay_factor(0) == 0.0
         assert p.decay_factor(3.5) == pytest.approx(0.5, abs=0.01)
         assert p.decay_factor(7) == pytest.approx(1.0, abs=0.01)
 
     def test_decay_factor_at_peak(self):
-        p = DEFAULT_PROFILES["金融市场"]
+        p = DEFAULT_PROFILES["金融与资本市场"]
         assert p.decay_factor(7) == 1.0
 
     def test_decay_factor_after_peak(self):
-        p = DEFAULT_PROFILES["金融市场"]  # peak=7, decay_rate=2.0
+        p = DEFAULT_PROFILES["金融与资本市场"]  # peak=7, decay_rate=2.0
         val = p.decay_factor(14)  # 7天超出峰值
         assert 0 < val < 1.0
 
     def test_decay_factor_negative(self):
-        p = DEFAULT_PROFILES["金融市场"]
+        p = DEFAULT_PROFILES["金融与资本市场"]
         assert p.decay_factor(-1) == 0.0
 
     def test_decay_factor_zero(self):
-        p = DEFAULT_PROFILES["金融市场"]
+        p = DEFAULT_PROFILES["金融与资本市场"]
         assert p.decay_factor(0) == 0.0
 
     def test_to_dict(self):
-        p = DEFAULT_PROFILES["金融市场"]
+        p = DEFAULT_PROFILES["金融与资本市场"]
         d = p.to_dict()
-        assert d["domain"] == "金融市场"
+        assert d["domain"] == "金融与资本市场"
         assert d["peak_days"] == 7
         assert "decay_rate" in d
 
@@ -60,7 +60,7 @@ class TestLagProfile:
         assert p.peak_days == 10
 
     def test_roundtrip(self):
-        p = DEFAULT_PROFILES["加密货币"]
+        p = DEFAULT_PROFILES["加密货币与区块链"]
         d = p.to_dict()
         p2 = LagProfile.from_dict(d)
         assert p2.domain == p.domain
@@ -74,12 +74,12 @@ class TestClassifyDomain:
     def test_financial(self):
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = {}
-        assert model.classify_domain(["股票", "暴跌"]) == "金融市场"
+        assert model.classify_domain(["股票", "暴跌"]) == "金融与资本市场"
 
     def test_crypto(self):
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = {}
-        assert model.classify_domain(["比特币", "加密"]) == "加密货币"
+        assert model.classify_domain(["比特币", "加密"]) == "加密货币与区块链"
 
     def test_macro(self):
         model = CausalLagModel.__new__(CausalLagModel)
@@ -89,12 +89,12 @@ class TestClassifyDomain:
     def test_policy(self):
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = {}
-        assert model.classify_domain(["央行", "美联储"]) == "政策效果"
+        assert model.classify_domain(["制裁", "关税"]) == "政策与治理"
 
     def test_company(self):
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = {}
-        assert model.classify_domain(["营收", "财报"]) == "公司经营"
+        assert model.classify_domain(["营收", "财报"]) == "企业与组织"
 
     def test_default_fallback(self):
         model = CausalLagModel.__new__(CausalLagModel)
@@ -104,12 +104,12 @@ class TestClassifyDomain:
     def test_summary_used(self):
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = {}
-        assert model.classify_domain([], "股市暴跌引发恐慌") == "金融市场"
+        assert model.classify_domain([], "股市暴跌引发恐慌") == "金融与资本市场"
 
     def test_multiple_keywords_higher_score(self):
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = {}
-        assert model.classify_domain(["比特币", "加密", "交易所"]) == "加密货币"
+        assert model.classify_domain(["比特币", "加密", "交易所"]) == "加密货币与区块链"
 
 
 # ─── CausalLagModel.get_decay / get_profile ───
@@ -118,7 +118,7 @@ class TestGetDecay:
     def test_known_domain(self):
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = dict(DEFAULT_PROFILES)
-        decay = model.get_decay(7, "金融市场")
+        decay = model.get_decay(7, "金融与资本市场")
         assert decay == pytest.approx(1.0, abs=0.01)  # peak=7
 
     def test_unknown_domain_fallback(self):
@@ -130,8 +130,8 @@ class TestGetDecay:
     def test_get_profile_known(self):
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = dict(DEFAULT_PROFILES)
-        p = model.get_profile("金融市场")
-        assert p.domain == "金融市场"
+        p = model.get_profile("金融与资本市场")
+        assert p.domain == "金融与资本市场"
 
     def test_get_profile_unknown(self):
         model = CausalLagModel.__new__(CausalLagModel)
@@ -155,22 +155,22 @@ class TestObserveAndLearn:
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = dict(DEFAULT_PROFILES)
         model.observations = [
-            {"domain": "金融市场", "gap_days": 5, "confidence": 0.8, "timestamp": "", "cause_summary": "", "effect_summary": ""},
-            {"domain": "金融市场", "gap_days": 7, "confidence": 0.7, "timestamp": "", "cause_summary": "", "effect_summary": ""},
+            {"domain": "金融与资本市场", "gap_days": 5, "confidence": 0.8, "timestamp": "", "cause_summary": "", "effect_summary": ""},
+            {"domain": "金融与资本市场", "gap_days": 7, "confidence": 0.7, "timestamp": "", "cause_summary": "", "effect_summary": ""},
         ]
         model.learn()
         # 2条 < 3条阈值，不应更新
-        assert model.profiles["金融市场"].peak_days == 7  # 未改变
+        assert model.profiles["金融与资本市场"].peak_days == 7  # 未改变
 
     def test_learn_updates_profile(self):
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = dict(DEFAULT_PROFILES)
         model.observations = [
-            {"domain": "金融市场", "gap_days": i, "confidence": 0.8, "timestamp": "", "cause_summary": "", "effect_summary": ""}
+            {"domain": "金融与资本市场", "gap_days": i, "confidence": 0.8, "timestamp": "", "cause_summary": "", "effect_summary": ""}
             for i in [3, 5, 7, 10, 14]
         ]
         model.learn()
-        p = model.profiles["金融市场"]
+        p = model.profiles["金融与资本市场"]
         assert p.sample_count == 5
         assert p.peak_days > 0
 
@@ -197,9 +197,9 @@ class TestPersistence:
             model.save()
 
             model2 = CausalLagModel(config_path=path)
-            assert "金融市场" in model2.profiles
+            assert "金融与资本市场" in model2.profiles
             assert len(model2.observations) == 1
-            assert model2.profiles["金融市场"].peak_days == 7
+            assert model2.profiles["金融与资本市场"].peak_days == 7
         finally:
             os.unlink(path)
 
@@ -234,7 +234,7 @@ class TestPredictLag:
         model = CausalLagModel.__new__(CausalLagModel)
         model.profiles = dict(DEFAULT_PROFILES)
         result = model.predict_lag(["比特币"], "加密暴跌")
-        assert result["domain"] == "加密货币"
+        assert result["domain"] == "加密货币与区块链"
 
     def test_ci_90_wider_than_ci_50(self):
         model = CausalLagModel.__new__(CausalLagModel)
@@ -307,8 +307,8 @@ class TestSummary:
         model.profiles = dict(DEFAULT_PROFILES)
         model.observations = []
         s = model.summary()
-        assert "金融市场" in s
-        assert "加密货币" in s
+        assert "金融与资本市场" in s
+        assert "加密货币与区块链" in s
         assert "待学习观测" in s
 
     def test_summary_format(self):

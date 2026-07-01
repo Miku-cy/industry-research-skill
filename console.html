@@ -33,6 +33,7 @@ body{font-family:-apple-system,'SF Pro Display','PingFang SC','Microsoft YaHei',
 .event-item{padding:10px 12px;border-radius:8px;margin-bottom:4px;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:10px}
 .event-item:hover{background:#f0f0f4}
 .event-item.selected{background:#FFF5F0;border:1px solid rgba(213,94,0,0.2)}
+.domain-badge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;background:#E8F5E9;color:#2E7D32;margin-left:4px}
 .event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
 .event-info{flex:1;min-width:0}
 .event-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -429,6 +430,19 @@ function onSearchClick(type, name) {
 }
 
 // ═══ 因果挖掘 ═══
+async function classifyDomain(text) {
+  try {
+    const res = await fetch('/api/classify?q=' + encodeURIComponent(text));
+    const data = await res.json();
+    if(data.domain) {
+      const info = document.getElementById('domain-info');
+      info.innerHTML = '<div style="margin-bottom:4px"><b>' + data.domain + '</b></div>' +
+        '<div>峰值传导: ' + data.peak_days + '天</div>' +
+        '<div>最大窗口: ' + data.max_days + '天</div>';
+    }
+  } catch(e) {}
+}
+
 async function startMining() {
   const text = document.getElementById('task-input').value.trim();
   let mineEvents = events;

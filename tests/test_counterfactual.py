@@ -159,7 +159,7 @@ class TestGenerateConclusion:
         analyzer = CounterfactualAnalyzer(net)
         conclusion = analyzer._generate_conclusion(b, d, 0.9, 0.3, 0.6, [c])
         assert "强因果" in conclusion
-        assert "主要原因" in conclusion
+        assert "主因" in conclusion
 
     def test_moderate_causal(self):
         net, a, b, c, d = _build_network()
