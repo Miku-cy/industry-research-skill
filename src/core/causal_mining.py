@@ -104,10 +104,14 @@ class CausalMiningEngine:
 
         # Layer 3: 动态路由
         fast_lane = []   # 图谱认识，直接进后处理
-        slow_lane = []   # 图谱部分认识，送 LLM 确认
+        slow_lane = []   # 图谱未确认，送 LLM 确认
+        llm_configured = bool(self.api_url) and bool(self.api_key)
         for cause, effect in pairs:
-            all_tags = cause.tags + effect.tags
-            graph_result = self.graph.score(cause.summary, effect.summary, all_tags)
+            # 方向分离传标签，避免因果两端标签混合破坏方向敏感性
+            graph_result = self.graph.score(
+                cause.summary, effect.summary,
+                cause_tags=cause.tags, effect_tags=effect.tags,
+            )
 
             if graph_result.known and graph_result.score > 0:
                 # 图谱确认有因果（方向正确）→ 快车道
@@ -129,8 +133,10 @@ class CausalMiningEngine:
                 slow_lane.append((cause, effect))
 
             elif graph_result.source == "unknown":
-                # 图谱完全不认识 → 淘汰（没有已知因果机制）
-                pass
+                # 图谱完全不认识：设计意图是走 LLM 慢车道（设计文档明确要求）
+                # 仅在 LLM 已配置时才送，未配置时静默淘汰以避免大量无意义调用
+                if llm_configured:
+                    slow_lane.append((cause, effect))
 
             else:
                 # 其他情况 → 送 LLM

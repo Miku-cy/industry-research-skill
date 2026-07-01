@@ -389,8 +389,14 @@ class Timeline:
         merged_tags = list(dict.fromkeys(ch1.tags + ch2.tags))
 
         # 创建合并章节
+        # 移除章节标记后缀（前）/（后），避免误用 str.rstrip（其按字符集删除）
+        base_title = ch1.title
+        for suffix in ("（前）", "（后）"):
+            if base_title.endswith(suffix):
+                base_title = base_title[:-len(suffix)]
+                break
         merged = Chapter(
-            title=ch1.title.rstrip("（前）（后）") + "（合并）",
+            title=base_title + "（合并）",
             start_time=ch1.start_time,
             end_time=ch2.end_time,
             summary=ch1.summary + "；" + ch2.summary if ch1.summary and ch2.summary else (ch1.summary or ch2.summary),

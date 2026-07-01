@@ -397,13 +397,20 @@ class LLMConfig:
         }).encode()
 
         for attempt in range(self.MAX_RETRIES):
-            # 速率限制（线程安全）
+            # 速率限制（线程安全）：在锁内只计算等待时间，释放锁后再 sleep，
+            # 避免在持有锁期间阻塞导致所有线程串行化
             with self._rate_lock:
                 now = time.time()
                 elapsed = now - self._last_call_time
-                if elapsed < self.MIN_INTERVAL:
-                    time.sleep(self.MIN_INTERVAL - elapsed)
-                self._last_call_time = time.time()
+                wait_for_rate = max(0.0, self.MIN_INTERVAL - elapsed)
+                # 预占位：把下次合法调用时间设为"现在 + 待等时间"，
+                # 让并发的其他线程排队到自己应等的时刻
+                if wait_for_rate > 0:
+                    self._last_call_time = now + wait_for_rate
+                else:
+                    self._last_call_time = now
+            if wait_for_rate > 0:
+                time.sleep(wait_for_rate)
 
             req = urllib.request.Request(
                 f"{base}/chat/completions",

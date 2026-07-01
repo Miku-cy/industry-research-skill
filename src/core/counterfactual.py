@@ -10,6 +10,7 @@
 """
 import json
 import os
+import collections
 from typing import Dict, List, Optional, Set, Tuple
 from dataclasses import dataclass, field
 from .timeline import TimelineEvent, Timeline
@@ -55,12 +56,18 @@ class CounterfactualAnalyzer:
     # ═══ do-calculus 实现 ═══
 
     def _analyze_do(self, cause_id: str, effect_id: str) -> CounterfactualResult:
-        """Pearl do-calculus 反事实分析
+        """do-calculus 反事实分析（Noisy-OR 近似）
 
-        核心思想：P(B | do(¬A)) 通过图手术计算
-        1. 切断 A 的所有上游边（消除混杂）
-        2. 在修改后的图中计算 P(B)
-        3. 与 P(B | A) 比较得到因果效应
+        实现说明：
+        - 严格的 Pearl do-calculus 需要识别后门调整集 Z 并对 P(B|do(A)) 做边际化。
+        - 本实现采用工程上常用的 Noisy-OR 近似：
+            P(B | do(¬A)) ≈ 1 - Π_{i≠A}(1 - conf_i)
+          即 B 的非 A 直接上游按独立原因并联合并。
+        - `_find_paths_to_cut` 仅用于向用户展示"图手术"会切断哪些路径，
+          并不直接改写图的拓扑；上游被切断的语义通过"过滤掉经由 A 的中介"
+          在 `_compute_interventional_prob` 中体现。
+        - 当存在同时影响 A 和 B 的真正混杂因素时，本近似会高估 P(B|do(¬A))，
+          建议结合领域知识复核。
         """
         cause_event = self.network._events.get(cause_id)
         effect_event = self.network._events.get(effect_id)
@@ -148,14 +155,14 @@ class CounterfactualAnalyzer:
     def _compute_interventional_prob(
         self, cause_id: str, effect_id: str, paths_cut: List[str],
     ) -> float:
-        """计算 P(B | do(¬A))
+        """计算 P(B | do(¬A))（Noisy-OR 近似）
 
         在截断图中，B 的概率来自：
-        1. B 的非 A 上游（混杂因素被切断后剩余的）
-        2. B 的先验概率
+        1. B 的非 A 直接上游（不含经由 A 的中介）
+        2. 无任何剩余上游时，回落到先验 0.1
 
-        使用截断因子分解：
-        P(B | do(¬A)) = Σ_{parents(B) \\ A} P(B | parents(B)) × P(parents(B))
+        合并方式采用 Noisy-OR（假设各上游独立）：
+            P(B | do(¬A)) ≈ 1 - Π_{i∈parents(B)\\A}(1 - conf_i)
         """
         # 找 B 的所有上游（排除通过 A 的路径）
         b_upstream = self.network._upstream.get(effect_id, {})
@@ -165,7 +172,7 @@ class CounterfactualAnalyzer:
         for up_id, chain in b_upstream.items():
             if up_id == cause_id:
                 continue  # 排除 A 本身
-            # 检查是否通过 A 到达 B
+            # 检查是否通过 A 到达 B（即 up → A → B 形态的中介）
             if self._is_on_path(up_id, cause_id, effect_id):
                 continue  # 排除通过 A 的中介
             valid_upstream[up_id] = chain
@@ -181,24 +188,35 @@ class CounterfactualAnalyzer:
 
         return 1 - joint
 
-    def _is_on_path(self, node_id: str, from_id: str, to_id: str) -> bool:
-        """检查 node_id 是否在 from_id → to_id 的某条路径上"""
-        if node_id == from_id or node_id == to_id:
+    def _reachable(self, src: str, dst: str) -> bool:
+        """BFS 判断 src 是否可达 dst（沿下游方向）"""
+        if src == dst:
             return True
-        # BFS 从 from_id 到 node_id
-        visited = set()
-        queue = [from_id]
+        visited = {src}
+        queue = collections.deque([src])
         while queue:
-            current = queue.pop(0)
-            if current == node_id:
-                return True
-            if current in visited:
-                continue
-            visited.add(current)
+            current = queue.popleft()
             for next_id in self.network._downstream.get(current, {}):
+                if next_id == dst:
+                    return True
                 if next_id not in visited:
+                    visited.add(next_id)
                     queue.append(next_id)
         return False
+
+    def _is_on_path(self, node_id: str, from_id: str, to_id: str) -> bool:
+        """检查 node_id 是否在 from_id → to_id 的某条路径上
+
+        node_id 在路径上 ⟺ from_id 可达 node_id 且 node_id 可达 to_id
+        （BFS 严格判断两段连通性，而非只判断能否到达 node_id）
+        """
+        if node_id == from_id or node_id == to_id:
+            return True
+        # 第一段：from_id 是否能到达 node_id
+        if not self._reachable(from_id, node_id):
+            return False
+        # 第二段：node_id 是否能到达 to_id
+        return self._reachable(node_id, to_id)
 
     def _generate_do_conclusion(
         self, cause, effect, p_with, p_without,

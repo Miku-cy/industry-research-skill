@@ -13,6 +13,7 @@
 import json
 import os
 import re
+import threading
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 
@@ -43,6 +44,7 @@ class CausalGraph:
         self._pairs: List[ConceptPair] = []
         self.persist_path = persist_path or self._default_path()
         self._loaded = False
+        self._load_lock = threading.Lock()
         self._trigger_index: Dict[str, List[int]] = {}
         self._effect_index: Dict[str, List[int]] = {}
 
@@ -52,12 +54,18 @@ class CausalGraph:
         return self._pairs
 
     def _ensure_loaded(self):
-        """懒加载：首次调用时才加载数据和构建索引"""
+        """懒加载：首次调用时才加载数据和构建索引（线程安全）
+
+        使用双重检查锁定避免多线程首次调用时重复加载 builtin/conceptnet/learned
+        导致索引与 _pairs 不一致。
+        """
         if not self._loaded:
-            self._load_builtin()
-            self._load_learned()
-            self._build_index()
-            self._loaded = True
+            with self._load_lock:
+                if not self._loaded:
+                    self._load_builtin()
+                    self._load_learned()
+                    self._build_index()
+                    self._loaded = True
 
     def _default_path(self) -> str:
         base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -354,26 +362,49 @@ class CausalGraph:
 
     # ═══ 评分 ═══
 
-    def score(self, cause: str, effect: str, tags: List[str] = None) -> GraphResult:
+    def score(self, cause: str, effect: str, tags: List[str] = None,
+              cause_tags: List[str] = None, effect_tags: List[str] = None) -> GraphResult:
         """因果关系评分（方向敏感）
 
         关键：触发词必须在因文本中，效果词必须在果文本中。
         这样才能区分方向：加息→股市下跌 ✓，股市下跌→加息 ✗
+
+        Args:
+            cause: 因事件摘要
+            effect: 果事件摘要
+            tags: 旧参数，会同时拼到因/果两端（向后兼容，破坏方向性，不推荐）
+            cause_tags: 仅拼到因文本（推荐，保留方向性）
+            effect_tags: 仅拼到果文本（推荐，保留方向性）
         """
         self._ensure_loaded()
-        cause_text = (cause + " " + " ".join(tags or [])).lower()
-        effect_text = (effect + " " + " ".join(tags or [])).lower()
+        if cause_tags is not None or effect_tags is not None:
+            # 方向分离接口（推荐）
+            ct = cause_tags or []
+            et = effect_tags or []
+        else:
+            # 旧接口：tags 同时拼到两端（破坏方向性，仅向后兼容）
+            ct = tags or []
+            et = tags or []
+        cause_text = (cause + " " + " ".join(ct)).lower()
+        effect_text = (effect + " " + " ".join(et)).lower()
 
         best_score = 0.0
         best_match = ""
+        best_source = "builtin"
         trigger_found = False
 
         # 倒排索引优化：只检查包含命中关键词的概念对
         candidate_indices = set()
+        # 英文 token（空格分隔）
         for kw in cause_text.split():
             if kw in self._trigger_index:
                 candidate_indices.update(self._trigger_index[kw])
-        # 也检查子串匹配（中文词没有空格分隔）
+        # 中文 2-4 字 token（中文没有空格，split 拿不到，需用正则提取候选词）
+        for cn_kw in re.findall(r'[\u4e00-\u9fff]{2,4}', cause_text):
+            if cn_kw in self._trigger_index:
+                candidate_indices.update(self._trigger_index[cn_kw])
+        # 兜底：子串匹配（处理图谱关键词长度 > 4 或含混合字符的情况）
+        # 复杂度 O(K)，K = 索引中关键词数，作为正则提取的补集
         for key, indices in self._trigger_index.items():
             if len(key) > 1 and key in cause_text:
                 candidate_indices.update(indices)
@@ -390,13 +421,14 @@ class CausalGraph:
             if effect_hit:
                 if pair.weight > best_score:
                     best_score = pair.weight
+                    best_source = pair.source  # 保留真实来源（builtin/conceptnet/learned）
                     matched_triggers = {kw for kw in pair.trigger if kw.lower() in cause_text}
                     matched_effects = {kw for kw in pair.effect if kw.lower() in effect_text}
                     best_match = f"{matched_triggers}->{matched_effects} [{pair.source}]"
 
         if best_score > 0:
             return GraphResult(score=best_score, known=True,
-                              source="builtin", match_info=best_match)
+                              source=best_source, match_info=best_match)
 
         if trigger_found:
             # 反向检查：只检查已命中的候选对
@@ -404,6 +436,9 @@ class CausalGraph:
             for kw in effect_text.split():
                 if kw in self._trigger_index:
                     reverse_candidates.update(self._trigger_index[kw])
+            for cn_kw in re.findall(r'[\u4e00-\u9fff]{2,4}', effect_text):
+                if cn_kw in self._trigger_index:
+                    reverse_candidates.update(self._trigger_index[cn_kw])
             for key, indices in self._trigger_index.items():
                 if len(key) > 1 and key in effect_text:
                     reverse_candidates.update(indices)

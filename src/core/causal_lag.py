@@ -575,26 +575,31 @@ class CausalLagModel:
         profile = self.get_profile(domain)
 
         # 用 gamma 分布建模滞后
-        # 参数：shape = (peak/decay_rate)^2, scale = decay_rate^2/peak
-        # 这样 peak = shape * scale
-        shape = max(1.0, (profile.peak_days / max(profile.decay_rate, 0.1)) ** 0.5)
-        scale = max(1.0, profile.peak_days / shape)
-
-        # 计算分位数
-        import math
+        # 参数化目标：使众数（mode）≈ peak_days
+        # gamma 分布: mean = shape*scale, variance = shape*scale^2
+        # 众数 mode = (shape-1)*scale （仅当 shape >= 1）
+        # shape 越大分布越尖（与 decay_rate 含义一致：衰减越快 → 越集中在峰值附近）
+        shape = max(2.0, profile.decay_rate * 2.5)
+        scale = profile.peak_days / max(shape - 1, 0.5)
+        mode = (shape - 1) * scale   # 众数 ≈ peak_days
+        mu = shape * scale            # 均值（> mode，gamma 右偏）
+        sigma = math.sqrt(shape) * scale
 
         def gamma_cdf(x, shape, scale):
-            """简化的 gamma CDF（正则化不完全 gamma 函数近似）"""
+            """gamma CDF 近似（Wilson-Hilferty 正态变换）
+
+            比直接用 mean±sigma 的正态近似更贴合 gamma 的右偏形态，
+            尤其在 shape 较小时尾部概率更准确。
+            """
             if x <= 0:
                 return 0.0
-            # 使用正态近似
-            mu = shape * scale
-            sigma = math.sqrt(shape) * scale
-            z = (x - mu) / sigma if sigma > 0 else 0
+            # Wilson-Hilferty: x^(1/3) ~ Normal(mu_c, sigma_c)
+            mu_c = (1 - 1 / (9 * shape)) * (shape * scale) ** (1 / 3)
+            sigma_c = math.sqrt(1 / (9 * shape)) * (shape * scale) ** (1 / 3)
+            if sigma_c <= 0:
+                return 1.0 if x >= mu else 0.5
+            z = (x ** (1 / 3) - mu_c) / sigma_c
             return 0.5 * (1 + math.erf(z / math.sqrt(2)))
-
-        mu = shape * scale
-        sigma = math.sqrt(shape) * scale
 
         # 90% 和 50% 置信区间
         ci_90_lo = max(0, mu - 1.645 * sigma)
@@ -672,8 +677,6 @@ class CausalLagModel:
                                       ("10年", 3650)]:
             z = (days_val - posterior_mean) / posterior_std if posterior_std > 0 else 0
             prob_within[days_label] = round(0.5 * (1 + math.erf(z / math.sqrt(2))), 3)
-
-        return {"domain": prior["domain"], "peak_days": int(posterior_mean), "mean_days": round(posterior_mean, 1), "ci_90": [round(ci_90_lo), round(ci_90_hi)], "ci_50": [round(ci_50_lo), round(ci_50_hi)], "prob_within": prob_within, "confidence": min(1.0, prior["confidence"] + len(similar_cases) * 0.05), "sample_count": prior["sample_count"] + len(similar_cases), "method": "bayesian_with_evidence"}
 
         return {"domain": prior["domain"], "peak_days": int(posterior_mean), "mean_days": round(posterior_mean, 1), "ci_90": [round(ci_90_lo), round(ci_90_hi)], "ci_50": [round(ci_50_lo), round(ci_50_hi)], "prob_within": prob_within, "confidence": min(1.0, prior["confidence"] + len(similar_cases) * 0.05), "sample_count": prior["sample_count"] + len(similar_cases), "method": "bayesian_with_evidence"}
 

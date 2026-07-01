@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple
+import collections
 from .timeline import TimelineBase, TimelineEvent, TimeType, Chapter
 
 
@@ -164,10 +165,10 @@ class CausalNetwork:
         """
         result = []
         visited = {event_id}
-        queue = [(event_id, 0)]
+        queue = collections.deque([(event_id, 0)])
 
         while queue:
-            current_id, depth = queue.pop(0)
+            current_id, depth = queue.popleft()
             if depth >= max_depth:
                 continue
 
@@ -193,10 +194,10 @@ class CausalNetwork:
         """获取所有因果祖先（BFS，按层级展开）"""
         result = []
         visited = {event_id}
-        queue = [(event_id, 0)]
+        queue = collections.deque([(event_id, 0)])
 
         while queue:
-            current_id, depth = queue.pop(0)
+            current_id, depth = queue.popleft()
             if depth >= max_depth:
                 continue
 
@@ -223,10 +224,10 @@ class CausalNetwork:
         sub = CausalNetwork(title=f"{self.title} - 子网络")
         visited = set()
         queued = {event_id}
-        queue = [(event_id, 0)]
+        queue = collections.deque([(event_id, 0)])
 
         while queue:
-            current_id, depth = queue.pop(0)
+            current_id, depth = queue.popleft()
             if depth > max_depth or current_id in visited:
                 continue
             visited.add(current_id)
@@ -293,12 +294,14 @@ class CausalNetwork:
             for effect_id in effects:
                 existing_pairs.add((cause_id, effect_id))
 
-        # 从每个根节点开始 BFS
-        for root_id in self.root_ids:
+        # 从每个节点开始 BFS（不只是根节点）
+        # 否则中间起点的间接链（如 B→C→D，B 有上游 A）会被系统性遗漏：
+        # BFS 从 A 出发只会生成以 A 为起点的链，B→D 这条子路径不会被记录
+        for start_id in self._events:
             # BFS: (current_id, path, cumulative_confidence)
-            queue = [(root_id, [root_id], 1.0)]
+            queue = collections.deque([(start_id, [start_id], 1.0)])
             while queue:
-                current_id, path, cum_conf = queue.pop(0)
+                current_id, path, cum_conf = queue.popleft()
                 if len(path) > max_hops:
                     continue
                 # 遍历当前节点的下游
@@ -550,6 +553,19 @@ class AnalyzerEngine:
 
     def __init__(self, timeline_base: TimelineBase):
         self.timeline = timeline_base
+        # PEST+SWOT 合并关键词集合缓存，避免在 O(N²) 配对循环里重复构建
+        self._all_kw_cache: Optional[set] = None
+
+    def _get_all_keywords(self) -> set:
+        """获取所有 PEST+SWOT 关键词集合（缓存，避免在热路径中重复构建）"""
+        if self._all_kw_cache is None:
+            all_kw = set()
+            for kws in self.PEST_KEYWORDS.values():
+                all_kw.update(kws)
+            for kws in self.SWOT_KEYWORDS.values():
+                all_kw.update(kws)
+            self._all_kw_cache = all_kw
+        return self._all_kw_cache
 
     def _match_keywords(self, text: str, keywords: List[str]) -> int:
         text_lower = text.lower()
@@ -698,28 +714,20 @@ class AnalyzerEngine:
         self, min_confidence: float = 0.3
     ) -> List[CausalChain]:
         events = self.timeline.timeline.get_all_events()
-        chains = []
-
-        for i in range(len(events)):
-            for j in range(i + 1, len(events)):
-                cause = events[i]
-                effect = events[j]
-
+        # 按时间排序后两两配对，时序在前者为因、后者为果
+        events_sorted = sorted(events, key=lambda e: e.timestamp)
+        pairs = []
+        for i in range(len(events_sorted)):
+            for j in range(i + 1, len(events_sorted)):
+                cause = events_sorted[i]
+                effect = events_sorted[j]
                 if cause.timestamp >= effect.timestamp:
                     continue
+                pairs.append((cause, effect))
 
-                confidence = self._calculate_causality_confidence(cause, effect)
-                if confidence < min_confidence:
-                    continue
-
-                chain = CausalChain(
-                    cause_event=cause,
-                    effect_event=effect,
-                    time_gap=effect.timestamp - cause.timestamp,
-                    confidence=confidence,
-                    description=self._generate_causal_description(cause, effect),
-                )
-                chains.append(chain)
+        # 复用 _analyze_pairs，与 update_incremental 走同一评分路径，
+        # 保证全量构建与增量构建结果一致
+        chains = self._analyze_pairs(pairs, min_confidence)
 
         chains.sort(key=lambda x: x.confidence, reverse=True)
         return chains
@@ -784,14 +792,13 @@ class AnalyzerEngine:
         # 只分析新事件对：
         # 1. 新事件 vs 已有事件（双向）
         # 2. 新事件 vs 新事件
+        # 用 seen_pairs 去重，避免 new_events 内部交叉配对时产生 (X,Y) 与 (Y,X) 重复
         pairs = []
+        seen_pairs = set()
         for new_evt in new_events:
             for old_evt in all_events:
                 if old_evt.id == new_evt.id:
                     continue
-                if old_evt.id in network._analyzed_ids and \
-                   new_evt.id in network._analyzed_ids:
-                    continue  # 两个都分析过了
 
                 if new_evt.timestamp < old_evt.timestamp:
                     cause, effect = new_evt, old_evt
@@ -799,6 +806,10 @@ class AnalyzerEngine:
                     cause, effect = old_evt, new_evt
                 else:
                     continue
+                pair_key = (cause.id, effect.id)
+                if pair_key in seen_pairs:
+                    continue
+                seen_pairs.add(pair_key)
                 pairs.append((cause, effect))
 
         # 图谱评分 + LLM 分析（复用 find_causal_chains 的逻辑）
@@ -832,16 +843,24 @@ class AnalyzerEngine:
         pairs: List[tuple],
         min_confidence: float,
     ) -> List[CausalChain]:
-        """分析事件对，返回因果链（复用于增量更新）"""
-        from .causal_graph import CausalGraph
-        graph = CausalGraph()
+        """分析事件对，返回因果链（复用于增量更新和全量构建）
+
+        评分路径与 _calculate_causality_confidence 共用：先用 CausalGraph 单例
+        走快车道，未命中的再用规则评分兜底，保证全量与增量结果一致。
+        """
+        # 复用模块级单例，避免每次新建 CausalGraph 触发磁盘重载 + 索引重建
+        from .causal_graph import causal_graph
+        graph = causal_graph
 
         fast_lane = []
         slow_lane = []
 
         for cause, effect in pairs:
-            all_tags = cause.tags + effect.tags
-            graph_result = graph.score(cause.summary, effect.summary, all_tags)
+            # 方向分离传标签（与 causal_mining 保持一致）
+            graph_result = graph.score(
+                cause.summary, effect.summary,
+                cause_tags=cause.tags, effect_tags=effect.tags,
+            )
 
             if graph_result.known and graph_result.score > 0:
                 chain = CausalChain(
@@ -852,7 +871,10 @@ class AnalyzerEngine:
                     description=f"{cause.summary} -> {effect.summary} [graph]",
                 )
                 fast_lane.append(chain)
-            elif graph_result.source == "partial":
+            else:
+                # partial / reverse / unknown 都走规则评分兜底
+                # （图谱 reverse 不必然反向，partial 触发词命中但效果词未命中，
+                #  unknown 完全未识别 — 三者皆由规则评分识别真实因果）
                 slow_lane.append((cause, effect))
 
         # 规则引擎评分（不依赖 LLM）
@@ -969,13 +991,8 @@ class AnalyzerEngine:
             confidence += min(len(common_tags) * 0.03, 0.08)
 
         # 4. 关键词重叠（权重降低）
-        all_pest_kw = set()
-        for kws in self.PEST_KEYWORDS.values():
-            all_pest_kw.update(kws)
-        all_swot_kw = set()
-        for kws in self.SWOT_KEYWORDS.values():
-            all_swot_kw.update(kws)
-        all_kw = all_pest_kw | all_swot_kw
+        # 使用缓存的关键词集合，避免在 O(N²) 配对循环里重复构建
+        all_kw = self._get_all_keywords()
 
         cause_kw = {kw for kw in all_kw if kw in cause_text}
         effect_kw = {kw for kw in all_kw if kw in effect_text}

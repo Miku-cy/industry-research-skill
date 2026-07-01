@@ -234,6 +234,39 @@ class StorageEngine:
 
     def save_chains(self, project_id: str, chains: list) -> int:
         """保存因果链"""
+        rows = self._build_chain_rows(project_id, chains)
+        with self._lock:
+            self.conn.executemany("""
+                INSERT INTO causal_chains
+                (project_id, cause_id, effect_id, confidence, time_gap_days, description, is_indirect)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, rows)
+            self.conn.commit()
+        return len(rows)
+
+    def replace_chains(self, project_id: str, chains: list) -> int:
+        """原子地替换项目的全部因果链（推荐替代 clear_chains + save_chains）
+
+        DELETE + INSERT 在同一事务内提交，避免并发查询时拿到
+        "部分旧链 + 部分新链"的混合视图。
+        """
+        rows = self._build_chain_rows(project_id, chains)
+        with self._lock:
+            # 单一事务：先删后插，原子提交
+            self.conn.execute(
+                "DELETE FROM causal_chains WHERE project_id = ?", (project_id,)
+            )
+            if rows:
+                self.conn.executemany("""
+                    INSERT INTO causal_chains
+                    (project_id, cause_id, effect_id, confidence, time_gap_days, description, is_indirect)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, rows)
+            self.conn.commit()
+        return len(rows)
+
+    @staticmethod
+    def _build_chain_rows(project_id: str, chains: list) -> list:
         rows = []
         for chain in chains:
             gap = chain.time_gap
@@ -247,14 +280,7 @@ class StorageEngine:
                 chain.description or "",
                 1 if "[间接因果]" in (chain.description or "") else 0,
             ))
-        with self._lock:
-            self.conn.executemany("""
-                INSERT INTO causal_chains
-                (project_id, cause_id, effect_id, confidence, time_gap_days, description, is_indirect)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, rows)
-            self.conn.commit()
-        return len(rows)
+        return rows
 
     def load_chains(self, project_id: str,
                     min_confidence: float = 0,
