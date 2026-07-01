@@ -122,22 +122,23 @@ class LLMConfig:
 
             # 读取 llm 配置段
             llm_section = data.get("llm", {})
-            for name, overrides in llm_section.items():
-                if name in self.profiles and isinstance(overrides, dict):
-                    for key, value in overrides.items():
-                        if value:
-                            self.profiles[name][key] = value
+            if isinstance(llm_section, dict):
+                for name, overrides in llm_section.items():
+                    if name in self.profiles and isinstance(overrides, dict):
+                        for key, value in overrides.items():
+                            if value:
+                                self.profiles[name][key] = value
 
             # 兼容旧格式：semantic.api 段
             semantic = data.get("semantic", {})
-            if semantic:
+            if isinstance(semantic, dict) and semantic:
                 api = semantic.get("api", {})
-                if api and "semantic" in self.profiles:
+                if isinstance(api, dict) and api and "semantic" in self.profiles:
                     self.profiles["semantic"]["api_url"] = api.get("url", "") or self.profiles["semantic"]["api_url"]
                     self.profiles["semantic"]["api_key"] = api.get("key", "") or self.profiles["semantic"]["api_key"]
                     self.profiles["semantic"]["api_model"] = api.get("model", "") or self.profiles["semantic"]["api_model"]
                 ollama = semantic.get("ollama", {})
-                if ollama and "semantic" in self.profiles:
+                if isinstance(ollama, dict) and ollama and "semantic" in self.profiles:
                     self.profiles["semantic"]["ollama_url"] = ollama.get("url", "") or self.profiles["semantic"]["ollama_url"]
                     self.profiles["semantic"]["ollama_model"] = ollama.get("model", "") or self.profiles["semantic"]["ollama_model"]
                 mode = semantic.get("mode", "")
@@ -187,15 +188,90 @@ class LLMConfig:
 
     @staticmethod
     def _parse_yaml_simple(path: str) -> Dict:
-        config: Dict[str, Any] = {}
+        """简易 YAML 解析器（pyyaml 不可用时的回退）
+
+        支持的特性：
+        - 缩进表示嵌套 dict（2 空格为常见单位，但实际按相对缩进解析）
+        - `key: value` 叶节点（字符串、数字、布尔）
+        - `key:` 开启子字典
+        - `#` 注释、空行
+        - 引号包裹的字符串
+
+        不支持：列表、锚点、多行字符串、流式语法。
+        足以覆盖 chronovisor.yaml 的结构。
+        """
         with open(path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line.startswith("#") or ":" not in line:
-                    continue
-                key, _, val = line.partition(":")
-                config[key.strip()] = val.strip().strip('"').strip("'")
-        return config
+            lines = f.readlines()
+
+        root: Dict[str, Any] = {}
+        # stack: [(indent, dict_obj)]
+        stack: list = [(-1, root)]
+
+        def _parse_scalar(raw: str) -> Any:
+            raw = raw.strip()
+            if not raw:
+                return ""
+            # 去引号
+            if (raw.startswith('"') and raw.endswith('"')) or (raw.startswith("'") and raw.endswith("'")):
+                return raw[1:-1]
+            low = raw.lower()
+            if low in ("true", "yes"):
+                return True
+            if low in ("false", "no"):
+                return False
+            if low in ("null", "none", "~"):
+                return None
+            # 数字
+            try:
+                if "." in raw:
+                    return float(raw)
+                return int(raw)
+            except ValueError:
+                return raw
+
+        for raw_line in lines:
+            # 去行尾换行
+            line = raw_line.rstrip("\n")
+            # 去注释（粗略：行首 # 或纯空白后 #）
+            stripped = line.lstrip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            # 行内注释：`key: value # comment` —— 只在 value 段无引号时简单处理
+            if "#" in stripped:
+                # 不处理引号内的 #，简化
+                hash_idx = stripped.find("#")
+                # 检查 # 前是否有非空白字符
+                before = stripped[:hash_idx].rstrip()
+                if before == "" or before.endswith(":"):
+                    # 整行或仅 key: 形式后的注释，跳过
+                    if before.endswith(":"):
+                        stripped = before
+                    else:
+                        continue
+                else:
+                    stripped = before
+
+            indent = len(line) - len(line.lstrip())
+            key, sep, val = stripped.partition(":")
+            if not sep:
+                continue
+            key = key.strip()
+            val = val.strip()
+
+            # 弹栈到当前缩进的父级
+            while stack and stack[-1][0] >= indent:
+                stack.pop()
+            parent = stack[-1][1] if stack else root
+
+            if val == "":
+                # 开启子字典
+                child: Dict[str, Any] = {}
+                parent[key] = child
+                stack.append((indent, child))
+            else:
+                parent[key] = _parse_scalar(val)
+
+        return root
 
     # ═══ 查询接口 ═══
 
