@@ -9,12 +9,17 @@
 import json
 import os
 import sqlite3
+import threading
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple
 
 
 class StorageEngine:
-    """SQLite 持久化存储引擎"""
+    """SQLite 持久化存储引擎
+
+    线程安全：连接开启 check_same_thread=False（允许多线程复用同一连接），
+    并在写操作上加 RLock 串行化，避免并发事务交错。读操作在 WAL 模式下可并发。
+    """
 
     def __init__(self, db_path: str = ""):
         if not db_path:
@@ -22,8 +27,16 @@ class StorageEngine:
             db_path = os.path.join(base, "..", "data", "chronovisor.db")
         self.db_path = db_path
         os.makedirs(os.path.dirname(db_path) or ".", exist_ok=True)
-        self.conn = sqlite3.connect(db_path)
+        # check_same_thread=False 让 daemon 线程能复用此连接
+        self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
+        # WAL 模式：读不阻塞写，写不阻塞读，崩溃恢复更稳健
+        try:
+            self.conn.execute("PRAGMA journal_mode=WAL")
+            self.conn.execute("PRAGMA busy_timeout=5000")
+        except sqlite3.Error:
+            pass
+        self._lock = threading.RLock()
         self._init_tables()
 
     def _init_tables(self):
@@ -108,11 +121,12 @@ class StorageEngine:
     # ═══ 项目管理 ═══
 
     def create_project(self, project_id: str, name: str, description: str = ""):
-        self.conn.execute(
-            "INSERT OR IGNORE INTO projects (id, name, description) VALUES (?, ?, ?)",
-            (project_id, name, description),
-        )
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute(
+                "INSERT OR IGNORE INTO projects (id, name, description) VALUES (?, ?, ?)",
+                (project_id, name, description),
+            )
+            self.conn.commit()
 
     def list_projects(self) -> List[Dict]:
         rows = self.conn.execute("SELECT * FROM projects ORDER BY updated_at DESC").fetchall()
@@ -122,26 +136,29 @@ class StorageEngine:
 
     def save_event(self, project_id: str, event) -> str:
         """保存单个事件"""
-        self.conn.execute("""
-            INSERT OR REPLACE INTO events
-            (id, project_id, timestamp, time_type, summary, data, source, source_reliability, tags, chapter_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            event.id, project_id,
-            event.timestamp.isoformat() if hasattr(event.timestamp, 'isoformat') else str(event.timestamp),
-            getattr(event.time_type, 'value', str(event.time_type)),
-            event.summary or "",
-            json.dumps(event.data, ensure_ascii=False) if event.data else "{}",
-            event.source or "",
-            getattr(event.source_reliability, 'value', 3),
-            json.dumps(event.tags, ensure_ascii=False),
-            event.chapter_id,
-        ))
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute("""
+                INSERT OR REPLACE INTO events
+                (id, project_id, timestamp, time_type, summary, data, source, source_reliability, tags, chapter_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                event.id, project_id,
+                event.timestamp.isoformat() if hasattr(event.timestamp, 'isoformat') else str(event.timestamp),
+                getattr(event.time_type, 'value', str(event.time_type)),
+                event.summary or "",
+                json.dumps(event.data, ensure_ascii=False) if event.data else "{}",
+                event.source or "",
+                getattr(event.source_reliability, 'value', 3),
+                json.dumps(event.tags, ensure_ascii=False),
+                event.chapter_id,
+            ))
+            self.conn.commit()
         return event.id
 
     def save_events(self, project_id: str, events: list) -> int:
         """批量保存事件"""
+        if not events:
+            return 0
         rows = []
         for event in events:
             rows.append((
@@ -155,13 +172,28 @@ class StorageEngine:
                 json.dumps(event.tags, ensure_ascii=False),
                 event.chapter_id,
             ))
-        self.conn.executemany("""
-            INSERT OR REPLACE INTO events
-            (id, project_id, timestamp, time_type, summary, data, source, source_reliability, tags, chapter_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, rows)
-        self.conn.commit()
+        with self._lock:
+            self.conn.executemany("""
+                INSERT OR REPLACE INTO events
+                (id, project_id, timestamp, time_type, summary, data, source, source_reliability, tags, chapter_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, rows)
+            self.conn.commit()
         return len(rows)
+
+    def append_events(self, project_id: str, events: list) -> int:
+        """增量追加事件（不读取已有数据，直接 INSERT OR REPLACE）
+
+        避免 load-all → extend → save-all 模式导致的并发竞态与全量重写。
+        与 save_events 行为等价，但语义上更明确表示"增量"。
+        """
+        return self.save_events(project_id, events)
+
+    def clear_events(self, project_id: str):
+        """清空指定项目的事件"""
+        with self._lock:
+            self.conn.execute("DELETE FROM events WHERE project_id = ?", (project_id,))
+            self.conn.commit()
 
     def load_events(self, project_id: str,
                     start: Optional[str] = None,
@@ -215,12 +247,13 @@ class StorageEngine:
                 chain.description or "",
                 1 if "[间接因果]" in (chain.description or "") else 0,
             ))
-        self.conn.executemany("""
-            INSERT INTO causal_chains
-            (project_id, cause_id, effect_id, confidence, time_gap_days, description, is_indirect)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, rows)
-        self.conn.commit()
+        with self._lock:
+            self.conn.executemany("""
+                INSERT INTO causal_chains
+                (project_id, cause_id, effect_id, confidence, time_gap_days, description, is_indirect)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, rows)
+            self.conn.commit()
         return len(rows)
 
     def load_chains(self, project_id: str,
@@ -236,8 +269,9 @@ class StorageEngine:
 
     def clear_chains(self, project_id: str):
         """清除项目的因果链（重建前调用）"""
-        self.conn.execute("DELETE FROM causal_chains WHERE project_id = ?", (project_id,))
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute("DELETE FROM causal_chains WHERE project_id = ?", (project_id,))
+            self.conn.commit()
 
     # ═══ 章节存储 ═══
 
@@ -252,12 +286,13 @@ class StorageEngine:
                 json.dumps(ch.tags, ensure_ascii=False),
                 json.dumps(ch.event_ids, ensure_ascii=False),
             ))
-        self.conn.executemany("""
-            INSERT OR REPLACE INTO chapters
-            (id, project_id, title, start_time, end_time, summary, tags, event_ids)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, rows)
-        self.conn.commit()
+        with self._lock:
+            self.conn.executemany("""
+                INSERT OR REPLACE INTO chapters
+                (id, project_id, title, start_time, end_time, summary, tags, event_ids)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, rows)
+            self.conn.commit()
         return len(rows)
 
     def load_chapters(self, project_id: str) -> List[Dict]:
@@ -271,11 +306,12 @@ class StorageEngine:
 
     def save_observation(self, domain: str, gap_days: float, confidence: float,
                          cause_summary: str = "", effect_summary: str = ""):
-        self.conn.execute("""
-            INSERT INTO lag_observations (domain, gap_days, confidence, cause_summary, effect_summary)
-            VALUES (?, ?, ?, ?, ?)
-        """, (domain, gap_days, confidence, cause_summary, effect_summary))
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute("""
+                INSERT INTO lag_observations (domain, gap_days, confidence, cause_summary, effect_summary)
+                VALUES (?, ?, ?, ?, ?)
+            """, (domain, gap_days, confidence, cause_summary, effect_summary))
+            self.conn.commit()
 
     def load_observations(self, domain: Optional[str] = None, limit: int = 1000) -> List[Dict]:
         if domain:

@@ -53,17 +53,20 @@ def load_config():
     if not config.get("api_key"):
         oc_path = os.path.expanduser("~/.openclaw/openclaw.json")
         if os.path.exists(oc_path):
-            with open(oc_path) as f:
-                oc = json.load(f)
-            providers = oc.get("models", {}).get("providers", {})
-            for name, prov in providers.items():
-                if prov.get("apiKey"):
-                    config["api_url"] = prov.get("baseUrl", "")
-                    config["api_key"] = prov.get("apiKey", "")
-                    models = prov.get("models", [])
-                    if models:
-                        config["api_model"] = models[0].get("id", "")
-                    break
+            try:
+                with open(oc_path) as f:
+                    oc = json.load(f)
+                providers = oc.get("models", {}).get("providers", {})
+                for name, prov in providers.items():
+                    if prov.get("apiKey"):
+                        config["api_url"] = prov.get("baseUrl", "")
+                        config["api_key"] = prov.get("apiKey", "")
+                        models = prov.get("models", [])
+                        if models:
+                            config["api_model"] = models[0].get("id", "")
+                        break
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"⚠️  读取 {oc_path} 失败：{e}")
     return config
 
 

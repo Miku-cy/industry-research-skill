@@ -7,7 +7,6 @@ import json
 import os
 import re
 import csv
-import io
 
 
 class TimeType(Enum):
@@ -1282,9 +1281,6 @@ start_idx 和 end_idx 是事件序号（从1开始）。"""
                         stages = json_module.loads(match.group(0))
                     except json.JSONDecodeError:
                         pass
-
-            if not stages:
-                return self.detect(min_events, max_chapters)
 
             if not stages:
                 return self.detect(min_events, max_chapters)
