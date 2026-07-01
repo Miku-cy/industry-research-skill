@@ -4,9 +4,12 @@ from typing import Any, Dict, List, Optional, Callable, Tuple
 from enum import Enum
 import uuid
 import json
+import logging
 import os
 import re
 import csv
+
+logger = logging.getLogger(__name__)
 
 
 class TimeType(Enum):
@@ -1321,7 +1324,7 @@ start_idx 和 end_idx 是事件序号（从1开始）。"""
 
         except Exception as e:
             import traceback
-            print(f"  [detect_with_llm] LLM 失败，回退到算法: {e}")
+            logger.warning("[detect_with_llm] LLM 失败，回退到算法: %s", e)
             traceback.print_exc()
             return self.detect(min_events, max_chapters)
 

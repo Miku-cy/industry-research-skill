@@ -336,46 +336,6 @@ class ReportGenerator:
                 f"{self.timeline.timeline.end_time.strftime('%Y-%m-%d') if self.timeline.timeline.end_time else '?'}"),
         }
 
-    def _build_macro_section(self) -> ReportSection:
-        section = ReportSection(title="一、宏观层面：产业全景分析", level=2,
-            content="基于时间轴上的宏观数据进行产业全景分析。")
-        chapter_data = self._find_chapter_by_tag("宏观")
-        if chapter_data:
-            section.subsections.append(ReportSection(title="1.1 行业规模与增长", level=3,
-                content=chapter_data.get("summary", "暂无数据"),
-                data_points=chapter_data.get("data_points", [])))
-        section.subsections.append(ReportSection(title="1.2 政策环境分析", level=3,
-            content="基于时间轴上的政策事件进行分析。"))
-        section.subsections.append(ReportSection(title="1.3 行业趋势判断", level=3,
-            content="综合宏观数据与政策环境，识别行业发展趋势。"))
-        return section
-
-    def _build_meso_section(self) -> ReportSection:
-        return ReportSection(title="二、中观层面：行业竞争与公司对比", level=2,
-            content="在行业全景的基础上，聚焦上市公司层面的对比分析。",
-            subsections=[
-                ReportSection(title="2.1 上市公司财务对比", level=3,
-                    content="对比主要上市游戏公司的关键财务指标。"),
-                ReportSection(title="2.2 竞争格局分析", level=3,
-                    content="分析行业竞争格局与市场份额分布。"),
-            ])
-
-    def _build_micro_section(self) -> ReportSection:
-        return ReportSection(title="三、微观层面：目标公司深度分析", level=2,
-            content="聚焦目标公司的基本面与投资价值分析。",
-            subsections=[
-                ReportSection(title="3.1 公司基本面", level=3,
-                    content="分析公司财务状况、产品矩阵与管理团队。"),
-                ReportSection(title="3.2 SWOT分析", level=3,
-                    content="基于时间轴数据，识别公司优势、劣势、机会与威胁。"),
-                ReportSection(title="3.3 情景分析与估值", level=3,
-                    content="构建乐观/基准/风险三种情景，给出投资建议。"),
-            ])
-
-    def _build_conclusion_section(self) -> ReportSection:
-        return ReportSection(title="四、结论与建议", level=2,
-            content="综合宏观、中观、微观三个层面的分析，得出最终结论。")
-
     def _run_relevant_plugins(self, section_title: str, events: list) -> List[str]:
         """根据章节标题运行相关插件，返回洞察列表"""
         insights = []

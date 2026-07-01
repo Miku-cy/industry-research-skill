@@ -8,8 +8,11 @@
 """
 import json
 import os
+import logging
 import urllib.request
 from typing import List, Dict, Optional, Tuple, Any
+
+logger = logging.getLogger(__name__)
 from datetime import datetime
 from .timeline import TimelineEvent, TimelineBase
 from .analyzer import CausalChain, CausalNetwork
@@ -166,7 +169,7 @@ class CausalMiningEngine:
                     try:
                         batch_results[idx] = future.result()
                     except Exception as e:
-                        print(f"  [causal_mining] 批次 {idx} 失败: {e}")
+                        logger.warning("[causal_mining] 批次 %s 失败: %s", idx, e)
                         batch_results[idx] = ([], {})
 
                 for chains, similar_cases_map in batch_results:

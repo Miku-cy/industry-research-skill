@@ -13,9 +13,12 @@
 import json
 import os
 import re
+import logging
 import threading
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -344,7 +347,7 @@ class CausalGraph:
                 pass
 
         cn_count = sum(1 for p in self._pairs if p.source == "conceptnet")
-        print(f"  [causal_graph] 加载 ConceptNet: {cn_count} 条")
+        logger.info("[causal_graph] 加载 ConceptNet: %s 条", cn_count)
 
     def save_learned(self):
         """保存学习到的概念对"""

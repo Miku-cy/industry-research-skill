@@ -1,10 +1,13 @@
 """插件注册表 — 发现、加载、管理分析插件"""
 import importlib
+import logging
 import os
 import sys
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from .base import AnalysisPlugin
+
+logger = logging.getLogger(__name__)
 
 
 class PluginRegistry:
@@ -37,7 +40,7 @@ class PluginRegistry:
                 cls = getattr(mod, class_name)
                 self._plugins[name] = cls()
             except Exception as e:
-                print(f"  [plugin_registry] 核心插件 {name} 加载失败: {e}")
+                logger.warning("[plugin_registry] 核心插件 %s 加载失败: %s", name, e)
 
     def load_extras(self):
         """加载扩展插件（不随启动自动加载，需要显式调用）"""
@@ -49,12 +52,22 @@ class PluginRegistry:
                 cls = getattr(mod, class_name)
                 self._plugins[name] = cls()
             except Exception as e:
-                print(f"  [plugin_registry] 扩展插件 {name} 加载失败: {e}")
+                logger.warning("[plugin_registry] 扩展插件 %s 加载失败: %s", name, e)
 
-    def register(self, plugin: AnalysisPlugin):
-        """手动注册插件"""
+    def register(self, plugin: AnalysisPlugin, *, overwrite: bool = False):
+        """手动注册插件
+
+        Args:
+            plugin: 待注册的插件实例
+            overwrite: 是否覆盖同名插件。默认 False — 同名插件已存在时抛出 ValueError，
+                避免静默覆盖。
+        """
         if not isinstance(plugin, AnalysisPlugin):
             raise TypeError(f"插件必须继承 AnalysisPlugin, got {type(plugin)}")
+        if plugin.name in self._plugins and not overwrite:
+            raise ValueError(
+                f"插件名 '{plugin.name}' 已注册；如需覆盖请显式传 overwrite=True"
+            )
         self._plugins[plugin.name] = plugin
 
     def get(self, name: str) -> Optional[AnalysisPlugin]:
@@ -76,7 +89,7 @@ class PluginRegistry:
             raise KeyError(f"插件 '{name}' 未注册")
         return plugin.analyze(events, **kwargs)
 
-    def run_all(self, events: list, **kwargs) -> Dict[str, any]:
+    def run_all(self, events: list, **kwargs) -> Dict[str, Any]:
         results = {}
         for name, plugin in self._plugins.items():
             try:

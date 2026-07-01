@@ -115,6 +115,12 @@ class StorageEngine:
                 domain TEXT DEFAULT '',
                 created_at TEXT DEFAULT (datetime('now'))
             );
+
+            -- lag_observations：load_observations 按 domain 过滤，需建索引
+            CREATE INDEX IF NOT EXISTS idx_lag_domain ON lag_observations(domain);
+            -- learned_graph：按 domain / trigger_words 查询
+            CREATE INDEX IF NOT EXISTS idx_learned_domain ON learned_graph(domain);
+            CREATE INDEX IF NOT EXISTS idx_learned_trigger ON learned_graph(trigger_words);
         """)
         self.conn.commit()
 

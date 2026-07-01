@@ -18,11 +18,14 @@
 """
 import json
 import os
+import logging
 import threading
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 # ═══ 默认配置 ═══
@@ -441,7 +444,7 @@ class LLMConfig:
                 if e.code == 429:
                     # 限流，指数退避重试
                     wait = self.RETRY_BACKOFF ** (attempt + 1)
-                    print(f"  [llm_config] 429 限流，{wait:.1f}s 后重试 ({attempt+1}/{self.MAX_RETRIES})")
+                    logger.warning("[llm_config] 429 限流，%.1fs 后重试 (%s/%s)", wait, attempt+1, self.MAX_RETRIES)
                     time.sleep(wait)
                     continue
                 return {"content": "", "error": f"HTTP Error {e.code}: {e.reason}"}

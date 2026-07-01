@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple
 import collections
+import json
 from .timeline import TimelineBase, TimelineEvent, TimeType, Chapter
 
 
@@ -254,7 +255,26 @@ class CausalNetwork:
 
     @property
     def chain_count(self) -> int:
+        """因果链总数（直接 + 间接）
+
+        间接链通过 description 含 [间接因果] 标记识别。
+        """
         return sum(len(v) for v in self._downstream.values())
+
+    @property
+    def direct_chain_count(self) -> int:
+        """直接因果链数（不含 [间接因果] 标记的链）"""
+        return sum(
+            1
+            for effects in self._downstream.values()
+            for chain in effects.values()
+            if "[间接因果]" not in (chain.description or "")
+        )
+
+    @property
+    def indirect_chain_count(self) -> int:
+        """间接因果链数"""
+        return self.chain_count - self.direct_chain_count
 
     @property
     def root_ids(self) -> List[str]:
@@ -576,7 +596,7 @@ class AnalyzerEngine:
         return count
 
     def _score_event(self, event: TimelineEvent, keywords: List[str]) -> float:
-        text = (event.summary or "") + " " + str(event.data or "")
+        text = self._get_event_text(event)
         tag_text = " ".join(event.tags)
         summary_matches = self._match_keywords(text, keywords)
         tag_matches = self._match_keywords(tag_text, keywords)
@@ -591,7 +611,7 @@ class AnalyzerEngine:
         result = PESTResult()
 
         for event in events:
-            summary = event.summary or str(event.data)[:100]
+            summary = event.summary or self._get_event_text(event)[:100]
             scores = {
                 cat: self._score_event(event, keywords)
                 for cat, keywords in self.PEST_KEYWORDS.items()
@@ -628,7 +648,7 @@ class AnalyzerEngine:
         result = SWOTResult()
 
         for event in events:
-            summary = event.summary or str(event.data)[:100]
+            summary = event.summary or self._get_event_text(event)[:100]
             scores = {
                 cat: self._score_event(event, keywords)
                 for cat, keywords in self.SWOT_KEYWORDS.items()
@@ -677,35 +697,53 @@ class AnalyzerEngine:
 
     def analyze_scenario(
         self,
-        optimistic_assumptions: List[str],
-        optimistic_target: float,
-        optimistic_prob: float,
-        baseline_assumptions: List[str],
-        baseline_target: float,
-        baseline_prob: float,
-        pessimistic_assumptions: List[str],
-        pessimistic_target: float,
-        pessimistic_prob: float,
+        optimistic: Optional[Scenario] = None,
+        baseline: Optional[Scenario] = None,
+        pessimistic: Optional[Scenario] = None,
+        *,
+        # 兼容旧的位置参数调用形式（9 参数）。优先使用 Scenario 对象。
+        optimistic_assumptions: Optional[List[str]] = None,
+        optimistic_target: float = 0.0,
+        optimistic_prob: float = 0.0,
+        baseline_assumptions: Optional[List[str]] = None,
+        baseline_target: float = 0.0,
+        baseline_prob: float = 0.0,
+        pessimistic_assumptions: Optional[List[str]] = None,
+        pessimistic_target: float = 0.0,
+        pessimistic_prob: float = 0.0,
     ) -> ScenarioAnalysis:
-        analysis = ScenarioAnalysis(
-            optimistic=Scenario(
+        """构建三情景分析
+
+        推荐用法：传入三个 Scenario 对象
+            analyze_scenario(optimistic=Scenario(...), baseline=..., pessimistic=...)
+
+        兼容用法：传入 9 个位置参数（旧 API）
+        """
+        if optimistic is None:
+            optimistic = Scenario(
                 name="乐观情景",
                 probability=optimistic_prob,
                 target_price=optimistic_target,
-                key_assumptions=optimistic_assumptions,
-            ),
-            baseline=Scenario(
+                key_assumptions=optimistic_assumptions or [],
+            )
+        if baseline is None:
+            baseline = Scenario(
                 name="基准情景",
                 probability=baseline_prob,
                 target_price=baseline_target,
-                key_assumptions=baseline_assumptions,
-            ),
-            pessimistic=Scenario(
+                key_assumptions=baseline_assumptions or [],
+            )
+        if pessimistic is None:
+            pessimistic = Scenario(
                 name="风险情景",
                 probability=pessimistic_prob,
                 target_price=pessimistic_target,
-                key_assumptions=pessimistic_assumptions,
-            ),
+                key_assumptions=pessimistic_assumptions or [],
+            )
+        analysis = ScenarioAnalysis(
+            optimistic=optimistic,
+            baseline=baseline,
+            pessimistic=pessimistic,
         )
         analysis.calculate_weighted_target()
         return analysis
@@ -892,43 +930,6 @@ class AnalyzerEngine:
 
         return fast_lane
 
-    def _find_indirect_chains(
-        self, events: List[TimelineEvent]
-    ) -> List[CausalChain]:
-        """发现间接因果链（A→B→C）"""
-        chains = []
-        for i, mid_event in enumerate(events):
-            mid_text = self._get_event_text(mid_event).lower()
-            for chain_def in self.CAUSAL_INDIRECT_CHAINS:
-                trigger_concepts, mid_concepts, effect_concepts, boost = chain_def
-                # 检查中间事件是否匹配中间概念
-                if not self._matches_concepts(mid_text, mid_concepts):
-                    continue
-                # 向前找触发事件
-                for j in range(i):
-                    cause_event = events[j]
-                    cause_text = self._get_event_text(cause_event).lower()
-                    if not self._matches_concepts(cause_text, trigger_concepts):
-                        continue
-                    # 向后找结果事件
-                    for k in range(i + 1, len(events)):
-                        effect_event = events[k]
-                        effect_text = self._get_event_text(effect_event).lower()
-                        if not self._matches_concepts(effect_text, effect_concepts):
-                            continue
-                        time_gap = effect_event.timestamp - cause_event.timestamp
-                        if time_gap < timedelta(days=365):
-                            chains.append(CausalChain(
-                                cause_event=cause_event,
-                                effect_event=effect_event,
-                                time_gap=time_gap,
-                                confidence=min(0.7, boost + 0.2),
-                                description=self._generate_causal_description(
-                                    cause_event, effect_event
-                                ) + " [间接因果]",
-                            ))
-        return chains
-
     def _generate_causal_description(
         self, cause: TimelineEvent, effect: TimelineEvent
     ) -> str:
@@ -952,7 +953,14 @@ class AnalyzerEngine:
         return f"{cause_summary} {relation} {effect_summary}"
 
     def _get_event_text(self, event: TimelineEvent) -> str:
-        return (event.summary or "") + " " + " ".join(event.tags) + " " + str(event.data or "")
+        # 仅当 data 非空时附加，避免 str(None)="None" / str({})="{}" 污染评分文本
+        data_str = ""
+        if event.data:
+            try:
+                data_str = json.dumps(event.data, ensure_ascii=False, default=str)
+            except Exception:
+                data_str = str(event.data)
+        return f"{event.summary or ''} {' '.join(event.tags)} {data_str}".strip()
 
     def _matches_concepts(self, text: str, concepts: frozenset) -> bool:
         return any(concept in text for concept in concepts)
