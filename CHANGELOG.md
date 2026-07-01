@@ -4,6 +4,72 @@
 
 ---
 
+## v1.4.0 — 因果引擎正确性与性能修复（2026-07-02）
+
+### 🐛 P0 严重 Bug 修复（影响正确性）
+
+**causal_lag.py — gamma 分布数学错误**
+- 删除重复的 `return` 死代码（两条完全相同语句）
+- 修正 gamma 参数化：`mode ≈ peak_days`（原注释声称 `peak=shape·scale`，实际众数是 `(shape-1)·scale`）
+- CDF 改用 Wilson-Hilferty 正态变换，替代粗糙的正态近似（gamma 右偏分布尾部概率更准确）
+
+**counterfactual.py — do-calculus 实现与注释对齐**
+- `_is_on_path` 逻辑 bug 修复：原 BFS 只判断"能否到达 node"，不验证 node 之后能否到 to，导致 false positive 高发；改为严格判断两段连通性（from→node AND node→to）
+- do-calculus 注释对齐实现：明确标注为 Noisy-OR 近似（非严格 Pearl 后门准则），`paths_cut` 仅作展示不参与计算
+
+**timeline.py — rstrip 误用**
+- `rstrip("（前）（后）")` 改用 `endswith + 切片`：`str.rstrip` 接收字符集合非子串，会把 `"第3章：加息/降息（前）"` 错剥成 `"第3章：加息/降息（"`，导致合并标题损坏
+
+**causal_mining.py — 因果挖掘漏斗**
+- `unknown` 路由修复：原直接 `pass` 淘汰，与设计文档矛盾；改为在 LLM 已配置时送慢车道，系统性找回 LLM 才能发现的间接因果链
+- 标签方向分离：`cause_tags`/`effect_tags` 分离传参，避免把 `cause.tags+effect.tags` 同时塞入两端破坏图谱方向敏感评分
+
+**analyzer.py — 多跳推理遗漏**
+- `find_multihop_chains` 从所有节点出发 BFS（原只从根节点），修复中间起点间接链系统性遗漏（如 B→C→D，B 有上游 A 时，B→D 永远不被发现）
+
+### ⚡ P1 性能/架构修复
+
+**analyzer.py**
+- 缓存 PEST/SWOT 关键词集合，避免在 O(N²) 配对循环里每次重建（K≈200 关键词）
+- 复用 `causal_graph` 模块级单例，避免增量更新时磁盘重载 10967 条概念对 + 重建索引
+- `find_causal_chains` 复用 `_analyze_pairs`，统一全量/增量评分路径，保证结果可重复
+- 删除失效的"已分析跳过"死代码，加 `seen_pairs` 去重
+- 4 处 `list.pop(0)` → `deque.popleft()`（O(N) → O(1) 出队）
+
+**causal_graph.py**
+- 全局单例懒加载加双重检查锁，避免多线程首次调用重复加载
+- 倒排索引加 2-4 字中文 token 提取（中文场景下索引查询原本退化回 O(N) 全量扫描）
+- `source` 字段保留真实来源（不再被 `builtin` 覆盖，影响 mining 路由判断）
+
+**llm_config.py**
+- 限速锁内只计算等待时间，释放锁后再 sleep，避免所有线程串行化
+
+**storage.py**
+- 新增 `replace_chains` 原子方法（DELETE+INSERT 同事务），替代 `clear_chains + save_chains` 的非原子组合
+
+### 🧹 P2 代码质量改进
+
+**死代码清理**
+- 删除 `analyzer.py._find_indirect_chains`（从未被调用）
+- 删除 `report_generator.py` 的 4 个 `_build_*_section` 方法
+
+**代码质量**
+- 库代码 `print` → `logging`（causal_graph / causal_mining / llm_config / timeline / registry），支持级别配置和重定向
+- `registry.py`：`Dict[str, any]` → `Dict[str, Any]`；`register()` 增加 name 唯一性检查（默认 raise，可传 `overwrite=True` 覆盖）
+- `analyzer.py._get_event_text` 修复 `str(None)="None"` / `str({})="{}"` 污染评分文本
+- `storage.py` 给 `lag_observations(domain)` / `learned_graph(domain, trigger_words)` 补建索引
+- `analyzer.py.chain_count` 拆分为 `direct_chain_count` / `indirect_chain_count`
+- `analyze_scenario` 重构为接受 `Scenario` 对象（保留旧 9 参数位置形式兼容）
+
+### 📝 Changed Files
+- 10 files changed, +341 / -224 lines
+- 修改：analyzer.py, causal_graph.py, causal_lag.py, causal_mining.py, counterfactual.py, llm_config.py, report_generator.py, storage.py, timeline.py, plugins/registry.py
+
+### 🧪 Tests
+- 390 passed in 1.9s（无回归）
+
+---
+
 ## v1.3.0 — 通用因果分析引擎（2026-07-01）
 
 ### ✨ Features

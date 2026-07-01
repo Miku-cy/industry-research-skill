@@ -1,6 +1,6 @@
 name: chronovisor
 display_name: "ChronoVisor · 时轴之眼"
-version: 1.3.0
+version: 1.4.0
 description: 通用因果分析引擎 — 时间轴驱动的因果链挖掘、多跳推理、反事实分析、领域分类
 author:
   name: Miku-cy
