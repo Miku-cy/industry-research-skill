@@ -1,319 +1,154 @@
 <p align="right">
-  <a href="README.md">中文</a> | English
+  English | <a href="README.md">中文</a>
 </p>
 
 <p align="center">
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)
-![Python](https://img.shields.io/badge/python-3.8+-yellow?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.3.0-blue?style=flat-square)
+![Python](https://img.shields.io/badge/python-3.10+-yellow?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-390%20passed-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
-![Framework](https://img.shields.io/badge/framework-Time--Axis-orange?style=flat-square)
 
 <h1 align="center">⏳ ChronoVisor</h1>
-  <p align="center"><strong>Time-Axis Intelligence for Deep Research</strong></p>
+  <p align="center"><strong>Universal Causal Analysis Engine</strong></p>
   <p align="center">
-    <em>Stop stacking data. Start watching knowledge unfold like a film.</em>
+    <em>Causal chain mining · Multi-hop reasoning · do-calculus counterfactual · 12-domain classification · Incremental updates</em>
   </p>
 </p>
 
 ---
 
-## 💡 The Problem
+## What is ChronoVisor
 
-Traditional research is a pile of disconnected facts. You collect data, write analysis, draw conclusions — but when was that data actually valid? Did event A really cause event B, or did you reverse the timeline? How do you prove your reasoning is temporally sound?
+ChronoVisor is a **universal causal analysis engine** that discovers causal relationships from event sequences in any domain, builds causal networks, and performs counterfactual reasoning.
 
-**Every research paper, every investment memo, every industry report has a hidden fatal flaw: no one validates the arrow of time.**
-
----
-
-## 🎬 What Makes ChronoVisor Different
-
-ChronoVisor introduces a radical paradigm: **treat research as a knowledge documentary film**.
-
-Instead of a static document, your research becomes a **time-axis driven, navigable, replayable narrative** — where every data point has a precise timestamp, every causal claim is chronologically verified, and every conclusion can be traced back to its moment of origin.
-
-```
-Traditional Research:                    ChronoVisor:
-
-┌──────────────────┐              🎬 Knowledge Documentary
-│  Data Pile       │              ┌───────────────────────────┐
-│  ├── Event A     │              │ ▶ [Intro] [Rise] [Crisis] │
-│  ├── Data B      │      →       │ [Turn] [Outlook]          │
-│  ├── Analysis C  │              │ ───────────────────────── │
-│  └── Conclusion  │              │ ●────●────●────●────●     │
-└──────────────────┘              │ Q1  Q2  Q3  Q4  Q1'      │
-                                  │ ⏮ ⏪ ⏸ ⏩ ⏭              │
-                                  └───────────────────────────┘
-```
+Use cases: industry research, policy analysis, technology trends, social phenomena, historical events, financial market causal reasoning.
 
 ---
 
-## 🧬 Core Innovations
+## Core Capabilities
 
-### 1. The Time Axis Foundation
-
-ChronoVisor is built on a single, unified timeline that spans from the past into the future. **Every piece of data, every analysis, every prediction shares this one axis.** This is not a visualization layer — it is the infrastructure.
-
-| Capability | What It Enables |
-|---|---|
-| **Sub-minute timestamps** | Pinpoint exactly when each fact became true |
-| **Auto-chapter detection** | Research auto-segments into stages (growth → crisis → turn → outlook) |
-| **Bookmarks & annotations** | Mark critical moments, revisit anytime |
-| **Predictive extension** | The timeline extends into the future for scenario modeling |
-| **Bi-directional navigation** | Jump to any time point. Rewind. Fast-forward. Like a video. |
-
-### 2. Real-Time Freshness Validation
-
-The most dangerous data is **stale data that looks current**. ChronoVisor automatically classifies every data point's freshness and raises warnings when you're building analysis on outdated information.
+### 🔗 Causal Chain Mining (4-Layer Funnel)
 
 ```
-🔴 FRESH     (< 1 hour)   — Stock price, live metrics
-🟡 RECENT    (< 1 day)    — Today's news, announcements
-🟢 STALE     (< 7 days)   — ⚠️ Warning triggered
-🔵 EXPIRED   (< 1 year)   — ⚠️ Severely outdated
-⚫ ARCHIVE   (> 1 year)   — Historical reference only
+Layer 1: Temporal filter — A must precede B
+Layer 2: Time window — Eliminate pairs exceeding domain max transmission time
+Layer 3: Graph routing — Known concept pairs → fast lane; unknown → LLM slow lane
+Layer 4: LLM analysis — Transmission mechanism + similar cases
 ```
 
-**Example:** Your PPT says "Perfect World stock: ¥17.55" but the real-time price is ¥16.00. ChronoVisor flags the conflict instantly — preventing analysis built on phantom data.
+### ⛓️ Multi-hop Reasoning
 
-### 3. Causality Chain Engine
+Automatically discovers A→B→C chain transmission. Confidence auto-decays (×0.7 per hop), cycle detection, max 3 hops.
 
-ChronoVisor refuses to let you put the cart before the horse. Every causal claim is validated against the timeline:
+### 🔬 Counterfactual Analysis (Pearl do-calculus)
 
-- **Cause must precede effect** — temporal order is non-negotiable
-- **Confidence scoring** — shared tags, time proximity, source reliability all factor in
-- **Automatic chain discovery** — the engine finds and ranks causal relationships across the entire timeline
+- **Graph surgery**: do(¬A) cuts all incoming edges to A, eliminating confounders
+- **Truncated factorization**: Only computes probabilities from non-A independent upstream
+- **Confounding detection**: Alerts when P(B|A) vs P(B|do(¬A)) differ significantly
 
-```
-✅ Valid Chain:     [Policy Change 2024-01] → [Industry Recovery 2024-06] → [Stock Rally 2024-09]
-❌ Rejected Chain:  [Stock Rally 2024-09] → [Policy Change 2024-01]  ← TIME VIOLATION
-```
+### 🌍 12-Domain Classification
 
-### 4. Plug-In Analysis Frameworks
+Based on Wikipedia taxonomy, ~500 keywords:
 
-ChronoVisor's time axis is the **foundation**, not the ceiling. All your existing analytical frameworks plug into it:
+| Domain | Peak | Domain | Peak |
+|--------|------|--------|------|
+| Tech & Semiconductors | 60d | Commodities & Energy | 14d |
+| Finance & Capital Markets | 7d | Crypto & Blockchain | 3d |
+| Macroeconomics | 90d | Gaming & Entertainment | 90d |
+| Enterprise & Organizations | 180d | Society & Culture | 365d |
+| Policy & Governance | 365d | International Relations | 30d |
+| Environment & Climate | 3650d | Healthcare | 90d |
 
-| Framework | On the Timeline |
-|---|---|
-| **PEST** | Political/Economic/Social/Tech analysis per chapter |
-| **SWOT** | Compare SWOT between chapters (e.g. crisis vs recovery) |
-| **Scenario** | Optimistic/Baseline/Pessimistic mapped to future timeline |
-| **Porter's Five** | Competitive forces analyzed at specific time points |
-| **Your own** | Any framework — just plug it into the timeline |
+### 📈 Incremental Updates
 
-**The timeline never changes. You just add more lenses to view it through.**
+Only analyzes new event pairs when new events are added. 1000 old + 1 new ≈ 1000 analyses, not 500,000.
+
+### 🧩 Plugin System
+
+Core plugins (loaded at startup): PEST / SWOT / Cycle
+Extension plugins (loaded on demand): Anomaly / Trend / Correlation / Scenario
+
+### 💾 Persistent Storage
+
+SQLite storage engine with multi-project isolation, time range + tag filtering.
 
 ---
 
-## 📊 Real Case Study: Game Industry Deep-Dive
+## Performance
 
-### The Research Question
-*"Is Perfect World a viable investment in 2026?"*
-
-### ChronoVisor in Action
-
-**Step 1: Timeline Initialization**
-```
-Time Range: 2023-01-01 → 2027-12-31
-Base Time:  2026-05-16 (today)
-Chapters:   Auto-detected 5 chapters
-```
-
-**Step 2: Data Collection with Timestamps**
-| Timestamp | Event | Source | Freshness |
-|---|---|---|---|
-| 2023-03-15 | Game license freeze begins | Gov announcement | ARCHIVE |
-| 2024-06-01 | License approvals resume | NPPA official | EXPIRED |
-| 2025-03-28 | Perfect World reports ¥1.29B loss | Annual report | EXPIRED |
-| 2025-08-20 | 32% workforce reduction | Company filing | STALE ⚠️ |
-| 2026-03-01 | "Isekai Ring" receives license | NPPA official | RECENT |
-| 2026-05-01 | Global open beta launch | Official PR | RECENT |
-| 2026-05-16 15:00 | Stock price: ¥16.00 | Real-time feed | FRESH ✅ |
-
-**Step 3: Auto-Chapter Detection**
-```
-Chapter 1: Industry Winter    (2023-01 → 2024-06)   2 events
-Chapter 2: Company Crisis     (2024-06 → 2025-08)   2 events
-Chapter 3: Strategic Pivot    (2025-08 → 2026-03)   1 event
-Chapter 4: Critical Inflection (2026-03 → 2026-05)   2 events
-Chapter 5: Prediction Horizon  (2026-05 → 2027-12)   —
-```
-
-**Step 4: Causal Chain Analysis**
-```
-✅ Confirmed Chain (confidence: 0.85):
-   [License Freeze 2023-03] → [Industry Winter] → [Company ¥1.29B Loss]
-
-✅ Confirmed Chain (confidence: 0.75):
-   [32% Layoffs 2025-08] → [Strategic Pivot] → [Isekai Ring License 2026-03]
-
-⚠️  Warning: Causal chain confidence drops at prediction boundary.
-   Historical chains: verified. Predictive chains: speculative.
-```
-
-**Step 5: SWOT Comparison Across Chapters**
-```
-Chapter 2 (Crisis):         Chapter 4 (Inflection):
-  Strengths:  1               Strengths:  3  ▲
-  Weaknesses: 4               Weaknesses: 2  ▼
-  Opportunities: 1            Opportunities: 3 ▲
-  Threats:    3               Threats:    2 ▼
-
-→ The SWOT delta confirms: the inflection is real.
-```
-
-### What Traditional Research Misses
-
-| Issue | Traditional | ChronoVisor |
-|---|---|---|
-| Stale stock price in PPT | Silent failure | ⚠️ FRESH flag: ¥17.55 → ¥16.00 |
-| Reversed causality | "Stock fell because of layoffs" (layoffs happened first? wrong!) | Timeline validates: layoffs (Aug) → pivot (Sep) ✓ |
-| Missing inflection | Analyst might miss the license moment | Auto-chapter detects inflection at 2026-03 |
-| Unverifiable predictions | "Target ¥25" with no timeline | Prediction mapped to Chapter 5 with assumptions |
+| Operation | Time |
+|-----------|------|
+| Create CausalGraph (lazy) | 53ms |
+| First score() (loads 10967 pairs) | 363ms |
+| Subsequent score() (inverted index) | **0.13ms** |
+| 50-event causal discovery | 43ms |
+| 100-event network (with multi-hop) | 164ms |
+| do-calculus counterfactual | 0.2ms |
 
 ---
 
-## 🚀 Beyond Today: The Potential
-
-ChronoVisor's time-axis paradigm unlocks capabilities far beyond its current implementation:
-
-| Horizon | Capability |
-|---|---|
-| **Near-term** | Multi-source auto-collection with timestamp extraction from web |
-| **Mid-term** | LLM-powered causal reasoning that reads the timeline like a detective |
-| **Long-term** | Interactive knowledge documentaries — exportable, embeddable, collaborative |
-| **Vision** | Every research artifact becomes a living, replayable timeline — not a dead PDF |
-
----
-
-## 🏗️ Architecture
-
-```
-                        User Research Request
-                                │
-                    ┌───────────┴───────────┐
-                    │    ChronoVisor Core   │
-                    │  ┌─────────────────┐  │
-                    │  │ Task Decomposer │  │
-                    │  │ Data Collector │  │
-                    │  │ Freshness Valid.│  │
-                    │  │ Analyzer Engine│  │
-                    │  │ Report Generator│  │
-                    │  └────────┬────────┘  │
-                    └───────────┼───────────┘
-                                │
-              ┌─────────────────┼─────────────────┐
-              │     Analysis Frameworks           │
-              │  PEST │ SWOT │ Scenario │ Custom    │
-              └─────────────────┼─────────────────┘
-                                │
-              ┌─────────────────┴─────────────────┐
-              │       TIME AXIS FOUNDATION        │
-              │  ┌─────────────────────────────┐  │
-              │  │ 🎬 Knowledge Video Player   │  │
-              │  │ [Ch1] [Ch2] [Ch3] [Ch4]   │  │
-              │  │ ●────●────●────●────●        │  │
-              │  │ ⏮ ⏪ ⏸ ⏩ ⏭                  │  │
-              │  └─────────────────────────────┘  │
-              └───────────────────────────────────┘
-```
-
----
-
-## ⚡ Quick Start
+## Quick Start
 
 ```python
-from src import TimelineBase, TaskDecomposer, DataCollector
-from src import RealTimeValidator, AnalyzerEngine, ReportGenerator
+from src import TimelineBase, AnalyzerEngine, ReportGenerator
+from src.core.counterfactual import CounterfactualAnalyzer
 from datetime import datetime
 
-# 1. Initialize the time axis
-timeline = TimelineBase(title="Industry Deep-Dive")
-timeline.timeline.set_range(
-    start=datetime(2020, 1, 1),
-    end=datetime(2027, 12, 31)
+# 1. Build timeline
+timeline = TimelineBase(title="Research Topic")
+timeline.add_event(
+    timestamp=datetime(2024, 1, 1),
+    data={}, source="source", tags=["tag"], summary="Event description"
 )
 
-# 2. Decompose research tasks
-plan = TaskDecomposer().decompose("Analyze the gaming industry")
+# 2. Causal analysis (with multi-hop reasoning)
+engine = AnalyzerEngine(timeline)
+network = engine.build_causal_network(min_confidence=0.2, multihop=True)
 
-# 3. Collect time-stamped data
-collector = DataCollector(timeline)
-collector.collect(
-    data={"price": 16.00},
-    source="Real-time Market Data",
-    timestamp=datetime(2026, 5, 16, 15, 0),
-    summary="Perfect World closing price ¥16.00"
-)
+# 3. Counterfactual analysis
+cf = CounterfactualAnalyzer(network)
+result = cf.analyze(cause_id, effect_id, method="do_calculus")
+print(result.conclusion)
 
-# 4. Validate freshness
-validator = RealTimeValidator(timeline)
-summary = validator.get_validation_summary()
-print(f"Confidence: {summary['overall_confidence']:.0%}")
-
-# 5. Run analysis on the timeline
-analyzer = AnalyzerEngine(timeline)
-causal_chains = analyzer.find_causal_chains()
-swot_over_time = analyzer.compare_swot("ch1", "ch4")
-
-# 6. Generate navigable report
-report = ReportGenerator(timeline).generate("Investment Analysis Report")
-print(report.to_markdown())
+# 4. Generate report (auto-integrates plugin insights)
+gen = ReportGenerator(timeline)
+report = gen.generate(title="Research Report")
 ```
 
 ---
 
-## 📁 Project Structure
+## Architecture
 
 ```
-chronovisor/
-├── skill.yaml                  # Configuration
-├── skill.md                    # Usage documentation
-├── README.md                   # 中文默认 (Chinese default)
-├── README_EN.md                # English (You are here)
-├── CHANGELOG.md               # Changelog
-├── CONTRIBUTING.md             # Contributing guidelines
-├── src/
-│   ├── __init__.py
-│   └── core/
-│       ├── __init__.py
-│       ├── timeline.py         # 🎬 Time axis engine
-│       ├── task_decomposer.py  # Task decomposition
-│       ├── data_collector.py   # Timestamped data collection
-│       ├── validator.py        # Real-time freshness validation
-│       ├── analyzer.py         # PEST/SWOT/Causal chain engine
-│       ├── semantic.py         # Semantic classification layer
-│       └── report_generator.py # Report generation
-└── tests/
-    └── test_timeline.py        # Basic tests
+src/
+├── core/           Core engine (13 modules)
+│   ├── timeline         Timeline + chapter detection
+│   ├── analyzer         Causal network + multi-hop + incremental
+│   ├── causal_graph     Graph (79 builtin + 10882 ConceptNet)
+│   ├── causal_lag       12-domain classifier + gamma prediction
+│   ├── causal_mining    4-layer funnel + LLM batch
+│   ├── counterfactual   do-calculus + simplified
+│   ├── llm_config       LLM config center
+│   ├── storage          SQLite persistence
+│   └── report_generator Report generation + plugin integration
+├── plugins/        Core plugins (3)
+│   └── pest / swot / cycle
+└── extras/         Extension modules (lazy-loaded)
+    └── anomaly / trend / correlation / scenario
 ```
 
 ---
 
-## 🔮 Roadmap
+## Tests
 
-- [x] Time axis core engine
-- [x] Freshness validation (5-tier)
-- [x] Auto-chapter detection
-- [x] Causal chain discovery
-- [x] PEST / SWOT / Scenario frameworks
-- [x] Markdown + JSON report export
-- [ ] Web timestamp auto-extraction
-- [ ] LLM-powered causal reasoning
-- [ ] Interactive timeline visualization (HTML/JS)
-- [ ] Collaborative multi-researcher timelines
-- [ ] Real-time data feed integration
-- [ ] ChronoVisor Cloud API
+```bash
+python3 -m pytest tests/ -q
+# 390 passed in 2.6s
+```
 
 ---
 
-## 📄 License
+## License
 
 MIT
-
----
-
-<p align="center">
-  <strong>Research should be watched, not just read.</strong><br/>
-  <sub>Made with ⏳ by researchers, for researchers.</sub>
-</p>

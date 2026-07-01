@@ -4,316 +4,163 @@
 
 <p align="center">
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)
-![Python](https://img.shields.io/badge/python-3.8+-yellow?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.3.0-blue?style=flat-square)
+![Python](https://img.shields.io/badge/python-3.10+-yellow?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-390%20passed-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
-![Framework](https://img.shields.io/badge/framework-Time--Axis-orange?style=flat-square)
 
 <h1 align="center">⏳ ChronoVisor · 时轴之眼</h1>
-  <p align="center"><strong>时间轴驱动的深度研究智能引擎</strong></p>
+  <p align="center"><strong>通用因果分析引擎</strong></p>
   <p align="center">
-    <em>不再堆砌数据。像看电影一样，让知识在时间轴上展开。</em>
+    <em>因果链挖掘 · 多跳推理 · do-calculus 反事实 · 12 领域分类 · 增量更新</em>
   </p>
 </p>
 
 ---
 
-## 💡 一个被忽视的致命缺陷
+## 定位
 
-传统研究是什么？一堆互相割裂的事实堆在一起。你收集数据、写分析、下结论——但这些数据是什么时候生效的？事件 A 真的导致了事件 B，还是你把因果顺序搞反了？你的推理在时间上站得住脚吗？
+ChronoVisor 不是投资工具，不是行业分析工具。它是一个**通用因果分析底座**，能从任意领域的事件序列中发现因果关系、构建因果网络、进行反事实推理。
 
-**每一份研究报告、每一篇投资备忘录、每一份行业分析，都有一个隐藏的致命缺陷：没人验证时间的箭头。**
-
----
-
-## 🎬 ChronoVisor 做了什么不同的事
-
-ChronoVisor 引入了一个彻底的范式转换：**把研究当作一部知识纪录片**。
-
-你的研究不再是一份静态文档，而是一个**时间轴驱动的、可导航的、可反复播放的叙事**——每个数据点都有精确的时间戳，每个因果主张都经过时间顺序验证，每个结论都能追溯到它诞生的那一刻。
-
-```
-传统研究：                              ChronoVisor：
-
-┌──────────────────┐              🎬 知识纪录片
-│  数据堆砌        │              ┌───────────────────────────┐
-│  ├── 事件 A      │              │ ▶ [序幕] [发展] [危机]    │
-│  ├── 数据 B      │      →       │ [转折] [展望]             │
-│  ├── 分析 C      │              │ ───────────────────────── │
-│  └── 结论        │              │ ●────●────●────●────●     │
-└──────────────────┘              │ Q1  Q2  Q3  Q4  Q1'      │
-                                  │ ⏮ ⏪ ⏸ ⏩ ⏭              │
-                                  └───────────────────────────┘
-```
+适用场景：产业研究、政策分析、技术趋势、社会现象、历史事件、金融市场的因果推理。
 
 ---
 
-## 🧬 四大核心创新
+## 核心能力
 
-### 1. 时间轴底座
+### 🔗 因果链挖掘（四层漏斗）
 
-ChronoVisor 建立在一个统一的、从过去延伸到未来的时间轴上。**每一个数据、每一份分析、每一个预测，共享同一条时间轴。**这不是可视化层，这是基础设施。
-
-| 能力 | 它让你可以做什么 |
-|---|---|
-| **精确到分钟的时间戳** | 精确定位每个事实生效的时间点 |
-| **自动章节检测** | 研究自动分段（成长期→危机期→转折期→展望期） |
-| **书签与标注** | 标记关键瞬间，随时回看 |
-| **预测延伸** | 时间轴延伸到未来，支持情景建模 |
-| **双向导航** | 跳到任意时间点。回看。快进。像看视频一样 |
-
-### 2. 实时性交叉验证
-
-最危险的数据是什么？**看起来像"当下"的过时数据。**ChronoVisor 自动对每个数据点的新鲜度进行分级，当你在过时信息上构建分析时，会立刻发出警告。
+从事件序列中自动发现因果关系：
 
 ```
-🔴 实时     (< 1 小时)   — 股价、实时指标
-🟡 近期     (< 1 天)     — 今日新闻、公告
-🟢 过期     (< 7 天)     — ⚠️ 触发警告
-🔵 严重过期 (< 1 年)     — ⚠️ 高度不可靠
-⚫ 归档     (> 1 年)     — 仅作历史参考
+Layer 1: 时序过滤 — A 必须在 B 之前
+Layer 2: 时间窗口 — 超出领域最大传导时间的淘汰
+Layer 3: 图谱路由 — 已知概念对走快车道，未知走 LLM 慢车道
+Layer 4: LLM 分析 — 传导机制 + 类似案例
 ```
 
-**举例：**你的 PPT 写着"完美世界股价 17.55 元"，但实时股价是 16.00 元。ChronoVisor 会立刻标记冲突——杜绝基于幽灵数据做分析。
+### ⛓️ 多跳推理
 
-### 3. 因果链引擎
+自动发现 A→B→C 链式传导，置信度自动衰减（每跳 ×0.7），环检测，最大 3 跳。
 
-ChronoVisor 不允许你倒果为因。每一个因果主张都必须通过时间轴验证：
+### 🔬 反事实分析（Pearl do-calculus）
 
-- **因必须在果之前**——时间顺序不容妥协
-- **置信度评分**——共享标签、时间接近度、来源可靠性共同决定
-- **自动因果发现**——引擎自动在整个时间轴上发现并排序因果关系
+- **图手术**：do(¬A) 时切断 A 的所有上游边，消除混杂
+- **截断因子分解**：只计算非 A 的独立上游概率
+- **混杂检测**：P(B|A) vs P(B|do(¬A)) 差异大时提示混杂因素
 
-```
-✅ 有效因果链：   [政策收紧 2024-01] → [行业复苏 2024-06] → [股价反弹 2024-09]
-❌ 拒绝的因果链： [股价反弹 2024-09] → [政策收紧 2024-01]  ← 时间违规
-```
+### 🌍 12 领域自动分类
 
-### 4. 可插拔分析框架
+基于维基百科分类体系，~500 个关键词：
 
-ChronoVisor 的时间轴是**地基**，不是天花板。你学到的所有分析框架都可以插在上面：
+| 领域 | 峰值 | 领域 | 峰值 |
+|------|------|------|------|
+| 科技与半导体 | 60天 | 大宗商品与能源 | 14天 |
+| 金融与资本市场 | 7天 | 加密货币与区块链 | 3天 |
+| 宏观经济 | 90天 | 游戏与数字娱乐 | 90天 |
+| 企业与组织 | 180天 | 社会与文化 | 365天 |
+| 政策与治理 | 365天 | 国际关系与地缘 | 30天 |
+| 环境与气候 | 3650天 | 医疗与健康 | 90天 |
 
-| 分析框架 | 在时间轴上的工作方式 |
-|---|---|
-| **PEST** | 按章节分别分析政治/经济/社会/技术 |
-| **SWOT** | 跨章节对比 SWOT（如危机期 vs 恢复期） |
-| **情景分析** | 乐观/基准/风险映射到未来时间轴 |
-| **波特五力** | 在特定时间点分析竞争格局 |
-| **你的框架** | 任何框架——接入时间轴即可 |
+### 📈 增量更新
 
-**时间轴不变，你只是增加了更多观察的镜头。**
+新事件加入时只分析新事件对，不重新构建。1000 旧 + 1 新 ≈ 1000 次而非 500000 次。
+
+### 🧩 插件系统
+
+核心插件（启动加载）：PEST / SWOT / 周期识别
+扩展插件（按需加载）：异常检测 / 趋势外推 / 相关性分析 / 情景分析
+
+### 💾 持久化存储
+
+SQLite 存储引擎，多项目隔离，支持时间范围 + 标签过滤查询。
 
 ---
 
-## 📊 实战案例：游戏产业深度研究
+## 性能
 
-### 研究问题
-*"2026 年完美世界是否具有投资价值？"*
-
-### ChronoVisor 实战全流程
-
-**第一步：初始化时间轴**
-```
-时间范围：2023-01-01 → 2027-12-31
-基准时间：2026-05-16（今天）
-自动章节：5 章
-```
-
-**第二步：带时间标记的数据收集**
-| 时间戳 | 事件 | 来源 | 新鲜度 |
-|---|---|---|---|
-| 2023-03-15 | 游戏版号冻结开始 | 官方公告 | 归档 |
-| 2024-06-01 | 版号审批恢复 | 国家新闻出版署 | 严重过期 |
-| 2025-03-28 | 完美世界年报亏损 12.88 亿 | 年报 | 严重过期 |
-| 2025-08-20 | 裁员 32% | 公司公告 | 过期 ⚠️ |
-| 2026-03-01 | 异环获得版号 | 国家新闻出版署 | 近期 |
-| 2026-05-01 | 异环全球公测 | 官方 PR | 近期 |
-| 2026-05-16 15:00 | 股价：16.00 元 | 实时行情 | 实时 ✅ |
-
-**第三步：自动章节识别**
-```
-第一章：行业寒冬期  (2023-01 → 2024-06)   2 个事件
-第二章：公司困境期  (2024-06 → 2025-08)   2 个事件
-第三章：战略转型期  (2025-08 → 2026-03)   1 个事件
-第四章：关键转折期  (2026-03 → 2026-05)   2 个事件
-第五章：预测展望期  (2026-05 → 2027-12)   —
-```
-
-**第四步：因果链分析**
-```
-✅ 确认因果链（置信度 0.85）：
-   [版号冻结 2023-03] → [行业寒冬] → [完美巨亏 12.88 亿]
-
-✅ 确认因果链（置信度 0.75）：
-   [裁员 32% 2025-08] → [战略调整] → [异环版号获批 2026-03]
-
-⚠️  注意：进入预测区间后因果链置信度下降。
-   历史链已验证，预测链仅供参考。
-```
-
-**第五步：跨章节 SWOT 对比**
-```
-第二章（困境期）：          第四章（转折期）：
-  优势：  1 项              优势：  3 项 ▲
-  劣势：  4 项              劣势：  2 项 ▼
-  机会：  1 项              机会：  3 项 ▲
-  威胁：  3 项              威胁：  2 项 ▼
-
-→ SWOT 差值确认：转折是真实的。
-```
-
-### 传统方法会漏掉什么
-
-| 问题 | 传统方法 | ChronoVisor |
-|---|---|---|
-| PPT 中过时的股价 | 静默失败 | ⚠️ 实时标记：17.55 → 16.00 元 |
-| 因果倒置 | "股价跌因为裁员"（裁员在跌之后？错了！） | 时间轴验证：裁员(8月) → 调整(9月) ✓ |
-| 遗漏拐点 | 分析师可能忽略版号时刻 | 自动章节检测 2026-03 为拐点 |
-| 不可验证的预测 | "目标价 25 元"无时间锚点 | 预测映射到第五章，附带假设前提 |
+| 操作 | 耗时 |
+|------|------|
+| 创建 CausalGraph（懒加载） | 53ms |
+| 首次 score()（含加载 10967 对） | 363ms |
+| 后续 score()（倒排索引） | **0.13ms** |
+| 50 事件因果发现 | 43ms |
+| 100 事件因果网络（含多跳） | 164ms |
+| do-calculus 反事实 | 0.2ms |
 
 ---
 
-## 🚀 超越当下：ChronoVisor 的潜力
-
-ChronoVisor 的时间轴范式，将解锁远超当前实现的能力：
-
-| 阶段 | 能力 |
-|---|---|
-| **近期** | 多源自动采集，从网页自动提取时间戳 |
-| **中期** | LLM 驱动的因果推理，像侦探一样阅读时间轴 |
-| **远期** | 交互式知识纪录片——可导出、可嵌入、可协作 |
-| **愿景** | 每一份研究成果都成为活的、可回放的时间轴——而非死掉的 PDF |
-
----
-
-## 🏗️ 架构图
-
-```
-                        用户研究需求
-                             │
-                 ┌───────────┴───────────┐
-                 │    ChronoVisor 核心   │
-                 │  ┌─────────────────┐  │
-                 │  │ 任务拆解器      │  │
-                 │  │ 数据收集器      │  │
-                 │  │ 新鲜度验证器    │  │
-                 │  │ 分析引擎        │  │
-                 │  │ 报告生成器      │  │
-                 │  └────────┬────────┘  │
-                 └───────────┼───────────┘
-                             │
-           ┌─────────────────┼─────────────────┐
-           │     上层分析框架                  │
-           │  PEST │ SWOT │ 情景 │ 自定义      │
-           └─────────────────┼─────────────────┘
-                             │
-           ┌─────────────────┴─────────────────┐
-           │         时间轴底座（基础设施）     │
-           │  ┌─────────────────────────────┐  │
-           │  │ 🎬 知识视频播放器            │  │
-           │  │ [第1章][第2章][第3章][第4章] │  │
-           │  │ ●────●────●────●────●        │  │
-           │  │ ⏮ ⏪ ⏸ ⏩ ⏭                  │  │
-           │  └─────────────────────────────┘  │
-           └───────────────────────────────────┘
-```
-
----
-
-## ⚡ 快速开始
+## 快速开始
 
 ```python
-from src import TimelineBase, TaskDecomposer, DataCollector
-from src import RealTimeValidator, AnalyzerEngine, ReportGenerator
+from src import TimelineBase, AnalyzerEngine, ReportGenerator
+from src.core.counterfactual import CounterfactualAnalyzer
 from datetime import datetime
 
-# 1. 建立时间轴底座
-timeline = TimelineBase(title="游戏产业深度研究")
-timeline.timeline.set_range(
-    start=datetime(2020, 1, 1),
-    end=datetime(2027, 12, 31)
+# 1. 构建时间轴
+timeline = TimelineBase(title="研究课题")
+timeline.add_event(
+    timestamp=datetime(2024, 1, 1),
+    data={}, source="来源", tags=["标签"], summary="事件描述"
 )
 
-# 2. 拆解研究任务
-plan = TaskDecomposer().decompose("分析中国游戏产业的投资机会")
+# 2. 因果分析（含多跳推理）
+engine = AnalyzerEngine(timeline)
+network = engine.build_causal_network(min_confidence=0.2, multihop=True)
 
-# 3. 收集带时间标记的数据
-collector = DataCollector(timeline)
-collector.collect(
-    data={"price": 16.00},
-    source="实时行情",
-    timestamp=datetime(2026, 5, 16, 15, 0),
-    summary="完美世界收盘价 16.00 元"
-)
+# 3. 反事实分析
+cf = CounterfactualAnalyzer(network)
+result = cf.analyze(cause_id, effect_id, method="do_calculus")
+print(result.conclusion)
 
-# 4. 验证数据新鲜度
-validator = RealTimeValidator(timeline)
-summary = validator.get_validation_summary()
-print(f"整体置信度：{summary['overall_confidence']:.0%}")
-
-# 5. 在时间轴上运行分析
-analyzer = AnalyzerEngine(timeline)
-causal_chains = analyzer.find_causal_chains()
-swot_compare = analyzer.compare_swot("ch1", "ch4")
-
-# 6. 生成可导航的报告
-report = ReportGenerator(timeline).generate("完美世界投资分析报告")
-print(report.to_markdown())
+# 4. 生成报告（自动集成插件洞察）
+gen = ReportGenerator(timeline)
+report = gen.generate(title="研究报告")
 ```
 
 ---
 
-## 📁 项目结构
+## 架构
 
 ```
-chronovisor/
-├── skill.yaml                  # 配置文件
-├── skill.md                    # 使用文档
-├── README.md                   # 你在这里（中文默认）
-├── README_EN.md                # English
-├── CHANGELOG.md                # 变更记录
-├── CONTRIBUTING.md             # 贡献指南
-├── src/
-│   ├── __init__.py
-│   └── core/
-│       ├── __init__.py
-│       ├── timeline.py         # 🎬 时间轴引擎
-│       ├── task_decomposer.py  # 任务拆解器
-│       ├── data_collector.py   # 时间标记数据收集器
-│       ├── validator.py         # 实时新鲜度验证器
-│       ├── analyzer.py          # PEST/SWOT/因果链引擎
-│       ├── semantic.py          # 语义分类增强层
-│       └── report_generator.py  # 报告生成器
-└── tests/
-    └── test_timeline.py        # 基础测试
+src/
+├── core/           核心引擎（13 模块）
+│   ├── timeline         时间轴 + 章节检测
+│   ├── analyzer         因果网络 + 多跳推理 + 增量更新
+│   ├── causal_graph     因果图谱（79 内置 + 10882 ConceptNet）
+│   ├── causal_lag       12 领域分类 + gamma 预测
+│   ├── causal_mining    四层漏斗 + LLM 批量并发
+│   ├── counterfactual   do-calculus + 简化版
+│   ├── llm_config       LLM 配置中心
+│   ├── storage          SQLite 持久化
+│   └── report_generator 报告生成 + 插件集成
+├── plugins/        核心插件（3 个）
+│   └── pest / swot / cycle
+└── extras/         扩展模块（按需加载）
+    └── anomaly / trend / correlation / scenario
 ```
 
 ---
 
-## 🔮 路线图
+## 测试
 
-- [x] 时间轴核心引擎
-- [x] 五级新鲜度验证
-- [x] 自动章节检测
-- [x] 因果链发现
-- [x] PEST / SWOT / 情景分析框架
-- [x] Markdown + JSON 报告导出
-- [ ] 网页时间戳自动提取
-- [ ] LLM 驱动的因果推理
-- [ ] 交互式时间轴可视化（HTML/JS）
-- [ ] 多人协作研究时间轴
-- [ ] 实时数据源接入
-- [ ] ChronoVisor Cloud API
+```bash
+python3 -m pytest tests/ -q
+# 390 passed in 2.6s
+```
 
 ---
 
-## 📄 许可证
+## 安装
+
+```bash
+git clone https://github.com/Miku-cy/industry-research-skill.git
+cd industry-research-skill
+pip install -r requirements.txt  # 如有
+```
+
+---
+
+## License
 
 MIT
-
----
-
-<p align="center">
-  <strong>研究不应该只是被阅读，而应该被观看。</strong><br/>
-  <sub>研究者为研究者打造 ⏳</sub>
-</p>

@@ -1,6 +1,58 @@
 # Changelog
 
-所有版本的迭代记录。基于白银趋势分析实测驱动改进。
+所有版本的迭代记录。
+
+---
+
+## v1.3.0 — 通用因果分析引擎（2026-07-01）
+
+### ✨ Features
+
+**因果链多跳推理**
+- `CausalNetwork.find_multihop_chains()`: BFS 遍历发现 A→B→C 间接因果链
+- 置信度自动衰减（每跳 ×0.7），环检测，时间顺序保证
+
+**因果网络增量更新**
+- `AnalyzerEngine.update_incremental()`: 只分析新事件与已有事件的关系
+- `_analyzed_ids` 标记已分析事件，避免重复计算
+
+**do-calculus 反事实分析**
+- Pearl 图手术：do(¬A) 切断 A 的所有上游边
+- 截断因子分解 + 混杂检测
+- 保留简化版（method="simple"）向后兼容
+
+**持久化存储**
+- SQLite StorageEngine：事件/因果链/章节/滞后观测
+- 多项目隔离，时间范围 + 标签过滤
+
+**插件架构**
+- 核心插件（启动加载）：PEST / SWOT / Cycle
+- 扩展插件（按需加载）：Anomaly / Trend / Correlation / Scenario
+- 报告生成器自动集成插件洞察
+
+**性能优化**
+- 倒排索引：score() 30x 提速（2.8ms → 0.13ms）
+- 懒加载：CausalGraph 创建从 367ms 降到 53ms
+
+**领域分类器通用化**
+- 12 通用领域（基于维基百科分类体系）
+- ~500 关键词，去投资偏见
+
+**ConceptNet 中文扩充**
+- 10,882 条（4700 中文 + 6100 英文）
+- 内置概念对 24 → 79 条
+
+**架构精简**
+- core/ 13 模块 + plugins/ 3 插件 + extras/ 7 扩展
+- 非核心模块移入 extras/
+
+### 📝 Changed Files
+- 40 files changed, +60,617 lines
+- 新增：storage.py, plugins/*, extras/*, test_*.py × 7
+- 重构：analyzer.py, causal_graph.py, causal_lag.py, counterfactual.py
+
+### 🧪 Tests
+- 390 passed in 2.6s
 
 ---
 
